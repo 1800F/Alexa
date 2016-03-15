@@ -1,0 +1,20 @@
+<% include ../partials/header %>
+
+  <section class="screen">
+    <div class="container">
+      <div class="screen-head">
+        <img src="/img/logo-starbucks.png" alt="Starbucks Logo"/>
+        <h4>Congratulations!</h4>
+        <p>Your Starbucks account has been authenticated and connected to your Amazon Echo. You can now place orders with the Starbucks skill by saying,</p>
+      </div>
+      <div class="quote">
+        <p>Alexa, order my Starbucks.</p>
+      </div>
+      <a href="javascript:window.close()" class="btn gold close">Close</a>
+    </div>
+
+    <iframe src="<%- redirectUrl %>"></iframe>
+
+  </section>
+
+<% include ../partials/footer %>

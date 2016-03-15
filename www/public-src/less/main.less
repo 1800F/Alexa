@@ -1,0 +1,135 @@
+/**************************************************************************************************
+ *
+ *  @Section: Varaibles
+ *
+***************************************************************************************************/
+// colors
+@white:       #FFFFFF;
+@black:       #000000;
+@off-black:   #191919;
+@dark-gray:   #979797;
+@darker-gray: #9B9B9B;
+@light-gray:  #e7e7e7;
+@gray:        #9B9B9B;
+@gold:        #D0B786;
+@red:         #E85353;
+@green:       #2a8a15;
+
+//  media query breakpoints
+@width:		  90%;
+
+@breakpoint:			  767px;
+@tablet-landscape:	1024px;
+@tablet-portrait:		768px;
+@iphone:				    320px;
+@desktop:				    1200px;
+
+/**************************************************************************************************
+ *
+ *  @Section: Fonts
+ *
+***************************************************************************************************/
+
+.AvenirLTStd-Heavy { 
+  font-family: AvenirLTStd-Heavy;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.AvenirLTStd-Light { 
+  font-family: AvenirLTStd-Light;
+  font-weight: normal;
+  font-style: normal;
+}
+
+.AvenirLTStd-Book { 
+  font-family: AvenirLTStd-Book;
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/**************************************************************************************************
+ *
+ *  @Section: Mixins
+ *
+***************************************************************************************************/
+.clear {
+  content: '';
+  display: block;
+  clear: both;
+  height: 0;
+  line-height: 0;
+}
+
+.centered-vertically(@y: -50%;) {
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translateY(@y);
+  -ms-transform: translateY(@y);
+  transform: translateY(@y);
+}
+
+.centered-horizontally(@x: -50%;) {
+  -webkit-transform: translateX(@x);
+  -ms-transform: translateX(@x);
+  transform: translateX(@x);
+}
+
+.centered-both(@x: -50%, @y: -50%) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(@x, @y);
+  -ms-transform: translate(@x, @y);
+  transform: translate(@x, @y);
+}
+
+.rounded(@radius: 2px) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+}
+
+.transition(@property: all, @duration:0.2s, @ease:ease-out) {
+  -webkit-transition: @property @duration @ease;
+  -moz-transition: @property @duration @ease;
+  -o-transition: @property @duration @ease;
+  transition: @property @duration @ease;
+}
+
+.transition-delay(@d: 0.4s) {
+  -webkit-transition-delay: @d;
+  -moz-transition-delay: @d;
+  -ms-transition-delay: @d;
+  -o-transition-delay: @d;
+  transition-delay: @d;
+}
+
+.transform(@arguments) {
+  -webkit-transform: @arguments;
+  -moz-transform: @arguments;
+  -o-transform: @arguments;
+  -ms-transform: @arguments;
+  transform: @arguments;
+}
+
+iframe {
+  height: 0;
+  opacity: 0;
+}
+
+
+/**************************************************************************************************
+ *
+ *  @Section: Imports
+ *
+***************************************************************************************************/
+
+// Components
+
+// Includes
+@import "reset";
+@import "global";
+
+// Pages
