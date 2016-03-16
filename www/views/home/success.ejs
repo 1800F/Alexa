@@ -3,18 +3,20 @@
   <section class="screen">
     <div class="container">
       <div class="screen-head">
+        <h4>Almost Done!</h4>
+        <p>You have successfully created an account. <strong>You must add contacts</strong> in order to send flowers using the 1-800-Flowers Alexa Skill.</p>
+      </div>
+      <div class="copy-link">
+        <p class="note">Copy and paste the link below to your browser</p>
+        <p class="link">1800FLOWERS.COM</p>
+      </div>
+      <div class="screen-head screen-footer">
         <img src="/img/logo-1800flowers.png" alt="1800flowers Logo"/>
-        <h4>Congratulations!</h4>
-        <p>Your Starbucks account has been authenticated and connected to your Amazon Echo. You can now place orders with the Starbucks skill by saying,</p>
       </div>
-      <div class="quote">
-        <p>Alexa, order my Starbucks.</p>
-      </div>
-      <a href="javascript:window.close()" class="btn gold close">Close</a>
     </div>
-
-    <iframe src="<%- redirectUrl %>"></iframe>
-
   </section>
+  <div class="legal-container">
+    <p><a href="<%= url('/terms-of-use')%>">Terms of Use</a><a href="<%= url('/privacy-policy')%>">Privacy Policy</a></p>
+  </div>
 
 <% include ../partials/footer %>

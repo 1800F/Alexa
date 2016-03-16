@@ -46,16 +46,6 @@ router.get('/', function (req, res, next) {
   });
 });
 
-router.post('/forgotten-username', function (req, res, next) {
-  starbucks.forgotUsername(req.body.email).then(function () {
-    res.render('home/forgotten-username-success', {
-      page: 'forgotten-username-success',
-      title: '1800flowers',
-      email: req.body.email
-    });
-  }).catch(next);
-});
-
 router.get('/no-account', function (req, res, next) {
   res.render('home/no-account', {
     page: "no-account",
@@ -63,31 +53,17 @@ router.get('/no-account', function (req, res, next) {
   });
 });
 
-router.post('/payment-method', function (req, res, next) {
-  var tokens = oauthhelper.decryptCode(req.body.auth_code),
-      user = starbucks.User(tokens);
-  //1) Validate that we got a good payment method
-  //2) Set that user token as primary
-  //3) Redirect to Alexa success (in an iframe on a success page)
-  user.getPrimaryCard(req.body.paymentMethodId).then(function (payment) {
-    if (!payment) throw new Error('Unknown payment method');
-    return alexaStarbucks.setPaymentMethodId(user, req.body.paymentMethodId);
-  }).then(function () {
-    return res.render('home/success', {
-      page: "success",
-      title: "1800flowers - Success",
-      redirectUrl: oauthhelper.redirectTo(req.body.state, req.body.auth_code)
-    });
-  }).catch(function (e) {
-    console.error('Something died', e.stack || e);
-    next(e);
-  });
-});
-
 router.get('/create', function (req, res, next) {
   res.render('home/create', {
     page: "account-required",
     title: "1800flowers - Account Required"
+  });
+});
+
+router.get('/success', function (req, res, next) {
+  res.render('home/success', {
+    page: "success",
+    title: "1800flowers - Success"
   });
 });
 

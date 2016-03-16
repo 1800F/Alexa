@@ -40,6 +40,7 @@ p {
   &.center { text-align: center; }
   &.note { font-size: 1.4rem; }
   &.gold { color: @gold; }
+  &.red { color: @red; }
   &.gray { color: @darker-gray; }
   &:last-child { margin-bottom: 0; }
 
@@ -147,7 +148,7 @@ section {
   bottom: 20px;
   width: 100%;
   text-align: center;
-  color: @gray;
+  color: @med-gray;
 
   a {
     font-size: 1rem;
@@ -155,33 +156,10 @@ section {
 
     &:first-child {
       padding-right: 10px;
-      border-right: 1px solid @gray;
+      border-right: 1px solid @med-gray;
     }
 
     &:last-child { padding-left: 10px; }
-  }
-}
-
-.app-store-links {
-  margin: 40px 0;
-
-  &:after { .clear; }
-
-  a {
-    float: left;
-    width: 50%;
-
-    img { margin: auto; }
-
-    &.app-store {
-
-      img { max-width: 133px; }
-    }
-
-    &.play-store {
-
-      img { max-width: 114px; }
-    }
   }
 }
 
@@ -195,22 +173,36 @@ section {
   }
 }
 
+.copy-link {
+  text-align: center;
+
+  p {
+
+    &.note {
+      margin-bottom: 10px;
+      color: @med-gray;
+    }
+
+    &.link {
+      font-size: 1.4rem;
+      font-family: 'proxima_novasemibold';
+    }
+  }
+}
+
 .error-message {
-  background-color: #303030;
   text-align: center;
   max-height: 0;
   overflow: hidden;
   .transition(1s, max-height);
 
-  .error-message-container { padding: 20px 12.5%; }
+  .error-message-container { padding: 0 0 20px; }
 
   &.has-error { max-height: 500px; }
 
   p {
-    color: #B5B5B5;
 
     &.error {
-      color: @white;
 
       &:before {
         content: '';
@@ -228,51 +220,6 @@ section {
   }
 }
 
-.account-criteria,
-.permissions {
-  background-color: #303030;
-  padding: 40px 12.5%;
-
-  li {
-    margin-bottom: 20px;
-    padding-left: 30px;
-    position: relative;
-    font-family: 'proxima_novasemibold';
-
-    &:before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 2px;
-      display: inline-block;
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-
-    &.success {
-      color: @gold;
-
-      &:before {
-        width: 18px;
-        height: 14px;
-        background-image: url(../img/check.png);
-      }
-    }
-
-    &.fail {
-      color: @gray;
-
-      &:before {
-        width: 17px;
-        height: 17px;
-        background-image: url(../img/x.png);
-      }
-    }
-
-    &:last-child { margin-bottom: 0; }
-  }
-}
-
 .forgotten-username,
 .forgotten-password {
 
@@ -286,128 +233,6 @@ section {
       }
     }
   }
-}
-
-.starbucks-card {
-  background-color: #303030;
-  padding: 20px 12.5%;
-
-  &:after { .clear; }
-
-  .card,
-  .card-text {
-    display: inline-block;
-    vertical-align: middle;
-    width: 48%;
-    text-align: center;
-    font-size: 1.4rem;
-
-    p { margin: 0; }
-  }
-
-  .card {
-    margin-right: 4%;
-
-    img { margin: 10px 0; }
-  }
-
-  .card-text {
-    margin-left: -6px;
-    margin-right: 0;
-  }
-}
-
-.payment-method {
-
-  &:after { .clear; }
-
-  li {
-    padding: 20px;
-    margin-bottom: 5px;
-    background-color: #303030;
-
-    &.active { background-color: #525252; }
-    &.invalid { color: @red; }
-    &:last-child { margin-bottom: 0; }
-
-    &.apple-pay {
-
-      i { background-image: url(../img/logo-apple-pay.png); }
-    }
-
-    &.mastercard {
-
-      i { background-image: url(../img/logo-mastercard.png); }
-    }
-
-    &.amex {
-
-      i { background-image: url(../img/logo-amex.png); }
-    }
-
-    &.visa {
-
-      i { background-image: url(../img/logo-visa.png); }
-    }
-
-    &.discover {
-
-      i { background-image: url(../img/logo-discover.png); }
-    }
-
-    &.paypal {
-
-      i { background-image: url(../img/logo-paypal.png); }
-    }
-
-    i,
-    p {
-      font-size: 1.4rem;
-      display: inline-block;
-      vertical-align: middle;
-      width: 33.33%;
-    }
-
-    p {
-      margin-bottom: 0;
-      margin-left: -5px;
-    }
-
-    i {
-      height: 28px;
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-  }
-}
-
-.homepage {
-
-  a.gold { margin-bottom: 40px; }
-}
-
-.permissions {
-  list-style-type: disc;
-
-  li { padding-left: 0; }
-}
-
-.no-account,
-.account-error,
-.request-permission,
-.payment-method {
-
-  .screen-head {
-
-    p { text-align: left; }
-  }
-}
-
-.account-error,
-.payment-method {
-
-  .note { padding: 0; }
-  .screen-footer { margin-top: 0; }
 }
 
 .btn-container {
@@ -441,28 +266,6 @@ section {
   .btn {
     margin-top: 50px;
     display: inherit;
-  }
-}
-
-.quote {
-  margin: 40px 0;
-  text-align: center;
-
-  p {
-    display: inline-block;
-    line-height: 1;
-    font-size: 3.6rem;
-
-    &:before,
-    &:after {
-      content: '';
-      display: inline-block;
-      font-size: 5rem;
-      color: @gold;
-    }
-
-    &:before { content: '“'; }
-    &:after { content: '”'; }
   }
 }
 
