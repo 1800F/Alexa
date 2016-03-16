@@ -1,12 +1,11 @@
 <% include ../partials/header %>
 
-  <section class="screen login">
+  <section class="screen create">
     <div class="container">
       <div class="screen-head">
-        <img src="/img/logo-1800flowers.png" alt="1800flowers Logo"/>
-        <h4>Account Sign In</h4>
+        <h4>Create An Account</h4>
       </div>
-      <div class="error-message <%= badPassword ? 'has-error' : '' %>">
+      <div class="error-message">
         <div class="error-message-container">
           <p class="error"><strong>Sign In Error</strong></p>
           <p>Please check your sign-in<br>information and try again</p>
@@ -15,10 +14,19 @@
       <form method="POST">
         <div class="form-group">
           <div class="form-row">
-            <input type="text" name="email-address" id="email-address" placeholder="Email Address" required />
+            <input type="text" name="first-name" id="first-name" placeholder="First Name" required />
+          </div>
+          <div class="form-row">
+            <input type="text" name="last-name" id="last-name" placeholder="Last Name" required />
+          </div>
+          <div class="form-row">
+            <input type="text" name="email-address" id="email-address" placeholder="Email" required />
           </div>
           <div class="form-row">
             <input type="password" name="password" id="password" placeholder="Password" required />
+          </div>
+          <div class="form-row">
+            <input type="password" name="confirm-password" id="confirm-password" placeholder="Confirm Password" required />
           </div>
           <input type="hidden" name="state" value="<%= state %>" />
           <input type="hidden" name="client_id" value="<%= client_id  %>" />
@@ -29,8 +37,8 @@
         </div>
       </form>
       <div class="forgotten-create">
-        <a href="/forgotten-password">Forgotten Password</a>
-        <a href="/create">Create an Account</a>
+        <a href="/">Cancel</a>
+        <a href="/account-required">Why Have An Account</a>
       </div>
     </div>
   </section>
