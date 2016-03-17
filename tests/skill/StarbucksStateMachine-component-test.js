@@ -5,8 +5,8 @@ var assert = require('chai').assert,
     config = require('../../config'),
     Request = require('../../skill/Request.js'),
     _ = require('lodash'),
-    Starbucks = require('../../services/Starbucks.js'),
-    starbucks = Starbucks(config.starbucks),
+    Flowers = require('../../services/Flowers.js'),
+    starbucks = Flowers(config.starbucks),
     access_token = null,
     StateMachineSkill = require('../../skill/StateMachineSkill.js'),
     Promise = require('bluebird');
@@ -57,7 +57,7 @@ describe('StarbucksStateMachine', function () {
 });
 
 function testRequest(event) {
-  return Starbucks(config.starbucks).login('mitchellh@rain.agency', 'Happydave12!').then(function (user) {
+  return Flowers(config.starbucks).login('mitchellh@rain.agency', 'Happydave12!').then(function (user) {
     event.session.user.accessToken = user.tokens.access_token;
     return new Promise(function (resolve, reject) {
       var skill = new StateMachineSkill(config.alexa.appId, StarbucksStateMachine);

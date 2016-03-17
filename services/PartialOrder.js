@@ -1,7 +1,7 @@
 'use strict';
 
 var alexaStarbucks = require('./alexa-starbucks.js'),
-    Starbucks = require('./Starbucks.js'),
+    Starbucks = require('./Flowers.js'),
     StarbucksUser = Starbucks.StarbucksUser,
     config = require('../config'),
     _ = require('lodash'),

@@ -2,8 +2,8 @@
 
 var assert = require('chai').assert,
     PartialOrder = require('../../services/PartialOrder.js'),
-    Starbucks = require('../../services/Starbucks.js'),
-    ProductTypes = Starbucks.PRODUCTTYPES,
+    Flowers = require('../../services/Flowers.js'),
+    ProductTypes = Flowers.PRODUCTTYPES,
     _ = require('lodash');
 
 describe('PartialOrder', function () {

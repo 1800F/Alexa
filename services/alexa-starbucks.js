@@ -4,7 +4,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var Promise = require('bluebird'),
     _ = require('lodash'),
-    Starbucks = require('./Starbucks.js'),
+    Flowers = require('./Flowers.js'),
     url = require('url'),
     _ = require('lodash'),
     path = require('path');

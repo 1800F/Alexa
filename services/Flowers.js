@@ -9,7 +9,7 @@ var Promise = require('bluebird'),
     localeCode = 'en-us'
     ;
 
-var Starbucks = module.exports = function Starbucks(options, tokens) {
+var Flowers = module.exports = function Flowers(options, tokens) {
   options = _.assign({ version: 'v1' }, options);
   options.transform = options.transform || _.identity;
   tokens = tokens || {};
@@ -29,14 +29,14 @@ var Starbucks = module.exports = function Starbucks(options, tokens) {
     createUser: createUser,
     auth: getAuthToken,
     User: function User(tokens) {
-      return StarbucksUser(options, tokens);
+      return FlowersUser(options, tokens);
     }
   }, 'app');
 
   function login(username, password) {
     return oauthReq('password', { username: username, password: password }, options).then(function (tokens) {
       if (tokens.error) return Promise.reject(tokens.error);
-      return StarbucksUser(options, tokens);
+      return FlowersUser(options, tokens);
     });
   }
 
@@ -124,7 +124,7 @@ var Starbucks = module.exports = function Starbucks(options, tokens) {
   };
 };
 
-var StarbucksUser = module.exports.StarbucksUser = function StarbucksUser(options, tokens) {
+var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tokens) {
   options = _.assign({ version: 'v1' }, options);
   options.transform = options.transform || _.identity;
   if (_.isString(tokens)) tokens = { access_token: tokens };
@@ -275,7 +275,8 @@ function wrapPagingResult(body, reinvoke, args) {
 }
 
 function oauthReq(grant_type, values, options) {
-  var url = options.endpoint + '/' + options.version + '/oauth/token?sig=' + sig(),
+  //process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+  var url = options.endpoint + '/alexa/uat/account/' + options.version + '/oauth/token',
       body = _.assign({
     grant_type: grant_type,
     client_id: options.key,
@@ -283,6 +284,7 @@ function oauthReq(grant_type, values, options) {
   }, values),
   startTime = +new Date()
   ;
+  if (options.verbose) process.stdout.write('Request: ' + url + "\rGrantType: " + body.grant_type + "\rid: " + body.client_id + "\rSecret: " + body.client_secret + "\rUsername: " + body.username + "\rPass: " + body.password + "\r");
   //if(options.verbose) console.log('Request',url);
 
   return post({

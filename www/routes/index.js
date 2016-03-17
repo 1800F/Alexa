@@ -2,8 +2,8 @@
 
 var router = exports.router = require('../infrastructure/mount.js')(__dirname),
     config = require('../../config/'),
-    Starbucks = require('../../services/Starbucks.js'),
-    starbucks = Starbucks(config.starbucks),
+    Flowers = require('../../services/Flowers.js'),
+    flowers = Flowers(config.starbucks),
     OAuthHelpers = require('../../services/oauth-helpers.js'),
     oauthhelper = OAuthHelpers(config.alexa.auth),
     url = require('url'),
@@ -43,6 +43,61 @@ router.get('/', function (req, res, next) {
     page: 'homepage',
     title: '1800flowers',
     badPassword: false
+  });
+});
+
+router.post('/', function (req, res, next) {
+  var state = req.body.state,
+      username = req.body.email,
+      password = req.body.password;
+
+  process.stdout.write(username + ": " + password + "\r");
+
+  flowers.login(username, password).then(function (user) {
+    alexaStarbucks.validate(user).then(function (data) {
+      if (data.errors.length) {
+        res.render('home/account-error', {
+          page: 'account-error',
+          title: '1800flowers',
+          hasError: function hasError(error) {
+            return data.errors.indexOf(error) >= 0;
+          }
+        });
+      } else {
+        var paymentMethods = data.paymentMethods.map(function (method) {
+          return {
+            id: method.paymentMethodId,
+            type: (method.paymentType || method.type).toLowerCase(),
+            endingIn: method.accountNumberLastFour,
+            expirationMonth: method.expirationMonth,
+            expirationYear: method.expirationYear,
+            isValid: alexaStarbucks.isValidPaymentMethod(method),
+            isDefault: !!method.default && !!alexaStarbucks.isValidPaymentMethod(method)
+          };
+        });
+        if (paymentMethods.length == 1 && paymentMethods[0].isValid) paymentMethods[0].isDefault = true;
+        var primaryPaymentMethodId = (_.find(paymentMethods, { isDefault: true }) || { id: null }).id;
+
+        res.render('home/request-permission', {
+          page: "request-permission",
+          title: "1800flowers - Request Permission",
+          auth_code: oauthhelper.encryptTokens(user.tokens),
+          card: {
+            imgUrl: alexaStarbucks.pickCardImage(data.card.imageUrls, 'ImageLarge'),
+            name: data.card.nickname
+          },
+          primaryPaymentMethodId: primaryPaymentMethodId,
+          paymentMethods: paymentMethods
+        });
+      }
+    });
+  }).catch(function (err) {
+    process.stdout.write("Error logging in: " + err + "\r");
+    res.render('home/index', {
+      page: 'homepage',
+      title: '1800flowers',
+      badPassword: true
+    });
   });
 });
 

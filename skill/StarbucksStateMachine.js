@@ -4,8 +4,8 @@ var StateMachine = require('./StateMachine.js'),
     currency = require('./currency.js'),
     Reply = require('./reply.js'),
     alexaStarbucks = require('../services/alexa-starbucks.js'),
-    Starbucks = require('../services/Starbucks.js'),
-    StarbucksUser = Starbucks.StarbucksUser,
+    Flowers = require('../services/Flowers.js'),
+    FlowersUser = Flowers.FlowersUser,
     config = require('../config'),
     StateMachineSkill = require('./StateMachineSkill.js'),
     _ = require('lodash'),
@@ -520,7 +520,7 @@ module.exports = StateMachine({
         return Promise.reject(StateMachineSkill.ERRORS.AUTHORIZATION);
       }
       return Promise.try(function () {
-        starbucks = starbucks || Starbucks(config.starbucks);
+        starbucks = starbucks || Flowers(config.starbucks);
         console.log('Using faked credentials. This should never happen in live!');
         return starbucks.login(config.skill.fakeCredentials.username, config.skill.fakeCredentials.password).then(function (user) {
           self.access = {
@@ -532,9 +532,9 @@ module.exports = StateMachine({
         });
       });
     }
-    starbucks = starbucks || Starbucks(config.starbucks);
+    starbucks = starbucks || Flowers(config.starbucks);
     this.access = {
-      user: StarbucksUser(config.starbucks, request.user.accessToken),
+      user: FlowersUser(config.starbucks, request.user.accessToken),
       starbucks: starbucks,
       analytics: universalAnalytics(config.googleAnalytics.trackingCode, request.session.user.userId, { strictCidFormat: false })
     };
