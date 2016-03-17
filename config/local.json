@@ -7,6 +7,8 @@
     "key": "c4078e06-7f12-442f-ae72-def09015a4f8",
     "secret": "rT6kX2qU3iS3pH5aQ6iV6sQ4pK1yV1aB4dP5yU5jU6nE0bT5iM",
     "endpoint": "https://ecommerce.800-flowers.net",
+    "oAuthScope": "/account/v1",
+    "basicAuth": "YzQwNzhlMDYtN2YxMi00NDJmLWFlNzItZGVmMDkwMTVhNGY4OnJUNmtYMnFVM2lTM3BINWFRNmlWNnNRNHBLMXlWMWFCNGRQNXlVNWpVNm5FMGJUNWlN",
     "verbose": true,
     "logsAreInsensitive": true,
     "callsPerSecond": 50,

@@ -275,22 +275,20 @@ function wrapPagingResult(body, reinvoke, args) {
 }
 
 function oauthReq(grant_type, values, options) {
-  //process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-  var url = options.endpoint + '/alexa/uat/account/' + options.version + '/oauth/token',
+  var url = options.endpoint + '/alexa/uat/account/' + options.version + '/oauth/token?sig=' + sig(),
       body = _.assign({
     grant_type: grant_type,
-    client_id: options.key,
-    client_secret: options.secret
+    scope: options.oAuthScope
   }, values),
   startTime = +new Date()
   ;
-  if (options.verbose) process.stdout.write('Request: ' + url + "\rGrantType: " + body.grant_type + "\rid: " + body.client_id + "\rSecret: " + body.client_secret + "\rUsername: " + body.username + "\rPass: " + body.password + "\r");
+  if (options.verbose) process.stdout.write('Request: ' + url + "\rGrantType: " + body.grant_type + "\rid: " + body.client_id + "\rSecret: " + body.client_secret + "\rUsername: " + body.username + "\rPass: " + body.password + "\rAuth: " + options.basicAuth + "\r");
   //if(options.verbose) console.log('Request',url);
 
   return post({
     url: url,
     headers: {
-      "X-API-KEY": options.key,
+      "Authorization": "Basic " + options.basicAuth,
       "Accept": 'application/json'
     },
     form: body,
