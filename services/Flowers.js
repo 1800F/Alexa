@@ -295,7 +295,7 @@ function oauthReq(grant_type, values, options) {
     },
     form: body,
     proxy: options.proxy,
-    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : true
+    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false
   }).then(function (res) {
     if (options.verbose) console.log('Response', url, res.statusCode,+new Date() - startTime + 'ms');
     try {
