@@ -14,12 +14,18 @@ html { font-size: 62.5%; }
 body {
   font-size: 1.8rem;
   line-height: 1.5;
-  color: @white;
-  background-color: @off-black;
-  .AvenirLTStd-Book;
+  color: @gray;
+  background-color: @white;
   min-height: 100vh;
+  font-family: 'proxima_nova_rgregular';
 
   &.no-overflow { overflow: hidden; }
+}
+
+.wrapper {
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 40px;
 }
 
 iframe {
@@ -29,14 +35,16 @@ iframe {
 
 p {
   margin-bottom: 20px;
+  line-height: 1.3;
 
   &.center { text-align: center; }
   &.note { font-size: 1.4rem; }
   &.gold { color: @gold; }
+  &.red { color: @red; }
   &.gray { color: @darker-gray; }
   &:last-child { margin-bottom: 0; }
 
-  strong { .AvenirLTStd-Heavy; }
+  strong { font-family: 'proxima_novasemibold'; }
   em { font-style: italic; }
 }
 
@@ -46,16 +54,19 @@ h3,
 h4,
 h5,
 h6 {
-  margin-bottom: 30px;
-  .AvenirLTStd-Light;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  font-family: 'proxima_novalight';
 }
 
-h4 { font-size: 2.4rem; }
+h4 { font-size: 1.8rem; }
 
 a {
   color: inherit;
   text-decoration: none;
   display: inline-block;
+
+  &.purple { color: @purple; }
 
   &.center {
     display: block;
@@ -73,13 +84,14 @@ a {
   }
 }
 
+.back { font-size: 1rem; }
+
 img {
   width: auto;
   height: auto;
   display: block;
   max-width: 100%;
 }
-
 
 section {
   position: relative;
@@ -92,7 +104,7 @@ section {
 .container {
   position: relative;
   max-width: 950px;
-  padding: 60px 0;
+  padding: 60px 0 0;
   margin: auto;
   width: @width;
 }
@@ -109,51 +121,45 @@ section {
 .screen-head {
   text-align: center;
 
+  p { margin-bottom: 20px; }
+
   img {
-    width: 169px;
+    width: 225px;
     margin: 0 auto 40px;
   }
 }
 
-.forgotten {
-  text-align: center;
-  margin: 0 0 40px;
-  color: @darker-gray;
-
-  a { text-decoration: underline; }
-}
-
-.legal-container {
-  text-align: center;
-  color: @darker-gray;
-
-  a {
-
-    &:first-child { margin-right: 10px; }
-    &:last-child { margin-left: 10px; }
-  }
-}
-
-.app-store-links {
-  margin: 40px 0;
+.forgotten-create {
+  margin-top: 20px;
 
   &:after { .clear; }
 
   a {
-    float: left;
-    width: 50%;
+    font-size: 1rem;
+    color: @purple;
 
-    img { margin: auto; }
+    &:first-child { float: left; }
+    &:last-child { float: right; }
+  }
+}
 
-    &.app-store {
+.legal-container {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+  color: @med-gray;
 
-      img { max-width: 133px; }
+  a {
+    font-size: 1rem;
+    line-height: 1;
+
+    &:first-child {
+      padding-right: 10px;
+      border-right: 1px solid @med-gray;
     }
 
-    &.play-store {
-
-      img { max-width: 114px; }
-    }
+    &:last-child { padding-left: 10px; }
   }
 }
 
@@ -167,22 +173,36 @@ section {
   }
 }
 
+.copy-link {
+  text-align: center;
+
+  p {
+
+    &.note {
+      margin-bottom: 10px;
+      color: @med-gray;
+    }
+
+    &.link {
+      font-size: 1.4rem;
+      font-family: 'proxima_novasemibold';
+    }
+  }
+}
+
 .error-message {
-  background-color: #303030;
   text-align: center;
   max-height: 0;
   overflow: hidden;
   .transition(1s, max-height);
 
-  .error-message-container { padding: 20px 12.5%; }
+  .error-message-container { padding: 0 0 20px; }
 
   &.has-error { max-height: 500px; }
 
   p {
-    color: #B5B5B5;
 
     &.error {
-      color: @white;
 
       &:before {
         content: '';
@@ -200,51 +220,6 @@ section {
   }
 }
 
-.account-criteria,
-.permissions {
-  background-color: #303030;
-  padding: 40px 12.5%;
-
-  li {
-    margin-bottom: 20px;
-    padding-left: 30px;
-    position: relative;
-    .AvenirLTStd-Heavy;
-
-    &:before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 2px;
-      display: inline-block;
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-
-    &.success {
-      color: @gold;
-
-      &:before {
-        width: 18px;
-        height: 14px;
-        background-image: url(../img/check.png);
-      }
-    }
-
-    &.fail {
-      color: @gray;
-
-      &:before {
-        width: 17px;
-        height: 17px;
-        background-image: url(../img/x.png);
-      }
-    }
-
-    &:last-child { margin-bottom: 0; }
-  }
-}
-
 .forgotten-username,
 .forgotten-password {
 
@@ -258,128 +233,6 @@ section {
       }
     }
   }
-}
-
-.starbucks-card {
-  background-color: #303030;
-  padding: 20px 12.5%;
-
-  &:after { .clear; }
-
-  .card,
-  .card-text {
-    display: inline-block;
-    vertical-align: middle;
-    width: 48%;
-    text-align: center;
-    font-size: 1.4rem;
-
-    p { margin: 0; }
-  }
-
-  .card {
-    margin-right: 4%;
-
-    img { margin: 10px 0; }
-  }
-
-  .card-text {
-    margin-left: -6px;
-    margin-right: 0;
-  }
-}
-
-.payment-method {
-
-  &:after { .clear; }
-
-  li {
-    padding: 20px;
-    margin-bottom: 5px;
-    background-color: #303030;
-
-    &.active { background-color: #525252; }
-    &.invalid { color: @red; }
-    &:last-child { margin-bottom: 0; }
-
-    &.apple-pay {
-
-      i { background-image: url(../img/logo-apple-pay.png); }
-    }
-
-    &.mastercard {
-
-      i { background-image: url(../img/logo-mastercard.png); }
-    }
-
-    &.amex {
-
-      i { background-image: url(../img/logo-amex.png); }
-    }
-
-    &.visa {
-
-      i { background-image: url(../img/logo-visa.png); }
-    }
-
-    &.discover {
-
-      i { background-image: url(../img/logo-discover.png); }
-    }
-
-    &.paypal {
-
-      i { background-image: url(../img/logo-paypal.png); }
-    }
-
-    i,
-    p {
-      font-size: 1.4rem;
-      display: inline-block;
-      vertical-align: middle;
-      width: 33.33%;
-    }
-
-    p {
-      margin-bottom: 0;
-      margin-left: -5px;
-    }
-
-    i {
-      height: 28px;
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-  }
-}
-
-.homepage {
-
-  a.gold { margin-bottom: 40px; }
-}
-
-.permissions {
-  list-style-type: disc;
-
-  li { padding-left: 0; }
-}
-
-.no-account,
-.account-error,
-.request-permission,
-.payment-method {
-
-  .screen-head {
-
-    p { text-align: left; }
-  }
-}
-
-.account-error,
-.payment-method {
-
-  .note { padding: 0; }
-  .screen-footer { margin-top: 0; }
 }
 
 .btn-container {
@@ -410,37 +263,9 @@ section {
     li { margin-bottom: 20px; }
   }
 
-   a {
-    display: inline;
-    word-wrap: break-word;
-    color: @green;
-  }
-
   .btn {
     margin-top: 50px;
     display: inherit;
-  }
-}
-
-.quote {
-  margin: 40px 0;
-  text-align: center;
-
-  p {
-    display: inline-block;
-    line-height: 1;
-    font-size: 3.6rem;
-
-    &:before,
-    &:after {
-      content: '';
-      display: inline-block;
-      font-size: 5rem;
-      color: @gold;
-    }
-
-    &:before { content: '“'; }
-    &:after { content: '”'; }
   }
 }
 
@@ -460,14 +285,13 @@ section {
   line-height: 1;
   cursor: pointer;
   border: none;
-  border-radius: 10px;
   color: @white;
   .transition;
 
-  &.gold {
+  &.green {
     color: @white;
-    background-color: @gold;
-    .AvenirLTStd-Heavy;
+    background-color: @green;
+    font-family: 'proxima_novasemibold';
   }
 
   &.cancel {
@@ -497,6 +321,9 @@ form {
     .form-row {
       position: relative;
       width: 100%;
+      margin-bottom: 10px;
+
+      &:last-child { margin-bottom: 0; }
 
       &.btn-row {
         padding: 40px 0 0;
@@ -509,21 +336,6 @@ form {
           margin-bottom: 20px;
 
           &:last-child { margin-bottom: 0; }
-        }
-      }
-
-      &:not(:first-child) {
-
-        &:before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 1px;
-          width: 95%;
-          margin: auto;
-          background-color: @dark-gray;
         }
       }
 
@@ -557,15 +369,17 @@ form {
   input[type='date'],
   textarea {
     width: 100%;
+    text-align: center;
     margin: 0;
     padding: 20px;
     height: inherit;
     font-size: 1.5rem;
     border: none;
     border-radius: 0;
-    background-color: @white;
+    text-transform: uppercase;
+    background-color: @light-gray;
     color: @gray;
-    .AvenirLTStd-Book;
+    font-family: 'proxima_novalight';
 
     &.error {
       color: @red;
@@ -582,23 +396,27 @@ form {
     &.half-left { margin-right: 5%; }
 
     &::-webkit-input-placeholder {
+      text-align: center;
       color: @gray;
-      .AvenirLTStd-Book;
+      font-family: 'proxima_nova_rgregular';
     }
 
     &:-moz-placeholder {
+      text-align: center;
       color: @gray;
-      .AvenirLTStd-Book;
+      font-family: 'proxima_nova_rgregular';
     }
 
     &::-moz-placeholder {
+      text-align: center;
       color: @gray;
-      .AvenirLTStd-Book;
+      font-family: 'proxima_nova_rgregular';
     }
 
     &:-ms-input-placeholder {
+      text-align: center;
       color: @gray;
-      .AvenirLTStd-Book;
+      font-family: 'proxima_nova_rgregular';
     }
   }
 
@@ -660,7 +478,7 @@ form {
 
 @media only screen and (max-width: @breakpoint) {
 
-  .container { padding: 40px 0; }
+  .container { padding: 40px 0 0; }
 
   .desktop { display: none; }
   .mobile { display: block; }
