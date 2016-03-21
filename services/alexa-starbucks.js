@@ -31,18 +31,17 @@ exports.getPaymentMethodId = function (starbucksUser) {
 /* Returns a promise of an array of errors. An empty array means the users validates for the Alexa.
  * Errors are entries in AlexaStarbucks.ERRORS
  */
-exports.validate = function (starbucksUser) {
-  return Promise.all([starbucksUser.getPrimaryCard(), starbucksUser.getPaymentMethods(), starbucksUser.getOrders() // While this logic is different than the skill, it's get's most cases, and the skill will just bounce you if you don't have valid orders
-  ]).spread(function (primaryCard, paymentMethods, purchaseHistory) {
+exports.validate = function (flowersUser) {
+  return Promise.all([flowersUser.authenticate()]).spread(function (primaryCard) {
     var _ref;
+    process.stdout.write('Validate Reached:\r');
 
     var errors = [];
     if (!primaryCard) errors.push(ERRORS.CARD);
-    if (!_.some(paymentMethods, exports.isValidPaymentMethod)) errors.push(ERRORS.PAYMENTMETHOD);
-    if (!purchaseHistory.orderHistoryItems.length) errors.push(ERRORS.MOPHISTORY);
+    
     return _ref = {
       card: primaryCard,
-      paymentMethods: paymentMethods }, _defineProperty(_ref, 'paymentMethods', paymentMethods), _defineProperty(_ref, 'errors', errors), _ref;
+      }, _defineProperty(_ref, 'errors', errors), _ref;
   });
 };
 

@@ -64,20 +64,6 @@ router.post('/', function (req, res, next) {
           }
         });
       } else {
-        var paymentMethods = data.paymentMethods.map(function (method) {
-          return {
-            id: method.paymentMethodId,
-            type: (method.paymentType || method.type).toLowerCase(),
-            endingIn: method.accountNumberLastFour,
-            expirationMonth: method.expirationMonth,
-            expirationYear: method.expirationYear,
-            isValid: alexaStarbucks.isValidPaymentMethod(method),
-            isDefault: !!method.default && !!alexaStarbucks.isValidPaymentMethod(method)
-          };
-        });
-        if (paymentMethods.length == 1 && paymentMethods[0].isValid) paymentMethods[0].isDefault = true;
-        var primaryPaymentMethodId = (_.find(paymentMethods, { isDefault: true }) || { id: null }).id;
-
         res.render('home/request-permission', {
           page: "request-permission",
           title: "1800flowers - Request Permission",
@@ -85,9 +71,7 @@ router.post('/', function (req, res, next) {
           card: {
             imgUrl: alexaStarbucks.pickCardImage(data.card.imageUrls, 'ImageLarge'),
             name: data.card.nickname
-          },
-          primaryPaymentMethodId: primaryPaymentMethodId,
-          paymentMethods: paymentMethods
+          }
         });
       }
     });

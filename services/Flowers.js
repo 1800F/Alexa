@@ -10,7 +10,7 @@ var Promise = require('bluebird'),
     ;
 
 var Flowers = module.exports = function Flowers(options, tokens) {
-  options = _.assign({ version: 'v1' }, options);
+  options = _.assign({ version: 'alexa/uat/account/v1' }, options);
   options.transform = options.transform || _.identity;
   tokens = tokens || {};
   var qAuthReq = null;
@@ -36,6 +36,8 @@ var Flowers = module.exports = function Flowers(options, tokens) {
   function login(username, password) {
     return oauthReq('password', { username: username, password: password }, options).then(function (tokens) {
       if (tokens.error) return Promise.reject(tokens.error);
+      options = _.assign({ username: username }, options);
+      options = _.assign({ password: password }, options);
       return FlowersUser(options, tokens);
     });
   }
@@ -125,7 +127,7 @@ var Flowers = module.exports = function Flowers(options, tokens) {
 };
 
 var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tokens) {
-  options = _.assign({ version: 'v1' }, options);
+  options = _.assign({ version: 'alexa/uat/account/v1' }, options);
   options.transform = options.transform || _.identity;
   if (_.isString(tokens)) tokens = { access_token: tokens };
 
@@ -133,23 +135,47 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
     get tokens() {
       return tokens;
     },
+    authenticate: authenticate,
     refresh: refresh,
-    getPrimaryCard: getPrimaryCard,
-    getCardBalanceRealTime: getCardBalanceRealTime,
     getPaymentMethods: getPaymentMethods,
-    getPaymentMethod: getPaymentMethod,
-    getOrders: getOrders,
+    getRecipients: getRecipients,
     getProfile: getProfile,
-    setAccountSetting: setAccountSetting,
-    getAccountSetting: getAccountSetting,
-    getAccountSettings: getAccountSettings,
-    getOrderStore: getOrderStore,
-    submitOrder: submitOrder,
-    reloadCard: reloadCard,
-    createAddress: createAddress,
-    registerDigitalCard: registerDigitalCard,
-    createPaymentMethod: createPaymentMethod
+    submitOrder: submitOrder
   }, 'user');
+
+  function authenticate() {
+    var body = {
+      "authenticateCustomer": {
+        "customerDetail": {
+          "customerID": options.username,
+          "password": options.password,
+          "saltId": "",
+          "sourceSystem": "FDWEB"
+        }
+      }
+    };
+    process.stdout.write('Authenticate CustomerID: ' + body.authenticateCustomer.customerID + 'Authenticate Password: ' + body.authenticateCustomer.password +  "\r");
+    return userrequest('POST', '/authenticateUser', {}, body);
+  }
+
+  function refresh() {
+    return oauthReq('refresh_token', { refresh_token: tokens.refresh_token }, options).then(function (toks) {
+      tokens = toks;
+      return toks;
+    });
+  }
+
+  function getPaymentMethods() {
+    return userrequest('GET', '/getSavedCC', {}, null);
+  }
+
+  function getRecipients() {
+    return userrequest('GET', '/getRecipients', {}, null);
+  }
+
+  function getProfile() {
+    return userrequest('GET', '/getCustomerDetails');
+  }
 
   function submitOrder(storeNumber, orderToken, svcId, amount, signature) {
     var body = {
@@ -164,75 +190,6 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
     return userrequest('POST', '/me/stores/' + storeNumber + '/orderToken/' + orderToken + '/submitOrder', {}, body);
   }
 
-  function registerDigitalCard() {
-    return userrequest('POST', '/me/cards/register-digital', {}, null);
-  }
-
-  function createAddress(address) {
-    return userrequest('POST', '/me/addresses', { giveResponse: true }, address).then(function (body) {
-      var res = body.response;
-      delete body.response;
-      var loc = res.headers.location;
-      return loc.substr(loc.lastIndexOf('/') + 1);
-    });
-  }
-
-  function createPaymentMethod(paymentMethod) {
-    return userrequest('POST', '/me/paymentmethods', {}, paymentMethod);
-  }
-
-  function reloadCard(cardId, amount, paymentMethodId) {
-    var body = {
-      amount: amount,
-      paymentMethodId: paymentMethodId
-    };
-    return userrequest('POST', '/me/cards/' + cardId + '/reload', {}, body);
-  }
-
-  function getOrderStore(storeNumber, items) {
-    var body = { cart: { items: items } };
-    return userrequest('POST', '/me/stores/' + storeNumber + '/priceOrder', {}, body);
-  }
-
-  function setAccountSetting(bucket, key, value) {
-    return userrequest('POST', '/me/data/' + bucket, { platform: options.platform }, { key: key, value: value });
-  }
-
-  function getAccountSetting(bucket, key) {
-    return userrequest('GET', '/me/data/' + bucket + '/' + key, { platform: options.platform }, null);
-  }
-
-  function getAccountSettings(bucket) {
-    return userrequest('GET', '/me/data/' + bucket, { platform: options.platform }, null);
-  }
-
-  function getProfile() {
-    return userrequest('GET', '/me/profile');
-  }
-
-  function getPrimaryCard() {
-    return userrequest('GET', '/me/cards/primary', {}).catch(function (res) {
-      if (res.statusCode == 404) return null;
-      return Promise.reject(res);
-    });
-  }
-
-  function getCardBalanceRealTime(cardId) {
-    return userrequest('GET', '/me/cards/' + cardId + '/balance-realtime', {}, null);
-  }
-
-  function getPaymentMethods() {
-    return userrequest('GET', '/me/paymentmethods', {}, null);
-  }
-
-  function getPaymentMethod(id) {
-    return userrequest('GET', '/me/paymentmethods/' + id, {}, null);
-  }
-
-  function getOrders(paging) {
-    return userrequest('GET', '/me/orders', {}, null, paging || true);
-  }
-
   function userrequest(method, path, queryString, body, paging) {
     if (queryString && queryString.giveResponse) {
       var giveResponse = true;
@@ -240,6 +197,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
     }
     return getUserAuthToken()
     .then(function (token) {
+      process.stdout.write("Body UserRequest: " + body + "\rMethod:" + method + "\r");
       return issue(method, token, path, queryString, body, paging, options);
     }).then(function (res) {
       if (res.statusCode < 200 || res.statusCode >= 300) return Promise.reject(res);
@@ -255,12 +213,6 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
     return Promise.resolve(tokens.access_token);
   }
 
-  function refresh() {
-    return oauthReq('refresh_token', { refresh_token: tokens.refresh_token }, options).then(function (toks) {
-      tokens = toks;
-      return toks;
-    });
-  }
 };
 
 function wrapPagingResult(body, reinvoke, args) {
@@ -275,7 +227,7 @@ function wrapPagingResult(body, reinvoke, args) {
 }
 
 function oauthReq(grant_type, values, options) {
-  var url = options.endpoint + '/alexa/uat/account/' + options.version + '/oauth/token?sig=' + sig(),
+  var url = options.endpoint + '/' + options.version + '/oauth/token?sig=' + sig(),
       body = _.assign({
     grant_type: grant_type,
     scope: options.oAuthScope
@@ -314,33 +266,41 @@ function oauthReq(grant_type, values, options) {
 }
 
 function issue(method, token, path, queryString, body, paging, options) {
-  var qs = _.map(_.assign({ access_token: token }, paging, queryString), function (v, k) {
+  var qs = _.map(_.assign({client_id: options.key, client_secret: options.secret}, paging, queryString), function (v, k) {
     return encodeURIComponent(k) + '=' + encodeURIComponent(v);
   }).join('&'),
       op = method == 'POST' ? post : get,
       url = options.endpoint + '/' + options.version + path + '?' + qs,
       startTime = +new Date();
-  //if(options.verbose) console.log('Request',url,body);
+  process.stdout.write("Body Issue: " + body + "\rMethod:" + method + "\r");
   var req = {
     url: url,
     headers: {
-      "X-API-KEY": options.key,
+      "Authorization": "Bearer " + token,
+      "X-IBM-Client-Id": options.key,
+      "X-IBM-Client-Secret": options.secret,
       "Accept": 'application/json'
     },
-    proxy: options.proxy,
-    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : true
+    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false
   };
   if (body && method != 'GET') {
+    process.stdout.write("Body Received: " + body + "\r");
     req.json = true;
     req.body = body;
   }
+  if(options.verbose) {
+    process.stdout.write('Request ' + url + ": " + "\rHeaders: " + req.headers.Authorization + "\rBody: " + req.body + "\r");
+  } 
   return op(req).then(function (res) {
-    if (options.verbose) console.log('Response', url, res.statusCode, +new Date() - startTime + 'ms');
+    if (options.verbose) {
+      process.stdout.write('Response ' + url + ":" + res.statusCode + " - " + (new Date() - startTime) + 'ms'+ "\r");
+      process.stdout.write('Body: ' + res.body + "\r");
+    } 
     if (res.body && _.isString(res.body)) {
       try {
         res.body = JSON.parse(res.body);
       } catch (e) {
-        if (options.verbose) console.log('Failed to parse', url, '"' + res.body + '"');
+        if (options.verbose) process.stdout.write('Failed to parse ' + url + ' - "' + res.body + '"'+ "\r");
         throw e;
       }
     }
@@ -365,4 +325,13 @@ function buildProductTypePredicate(number, name) {
   return ['is' + name.substring(0, 1).toUpperCase() + name.substring(1, name.length), function (query) {
     return query == number || query && query.toLowerCaswe && query.toLowerCase() == name;
   }];
+}
+
+function outputBody(body) {
+  for(var key in body) {
+    var obj = body[key];
+    for (var prop in obj) {
+        process.stdout.write(prop + ":" + body[prop] + "\r");
+    }
+  }
 }
