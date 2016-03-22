@@ -82,7 +82,7 @@ module.exports = StateMachine({
         HelpHowToOrderIntent: 'HelpAboutOrder',
         HelpCheckBalanceIntent: 'HelpBalanceCheck',
         HelpOtherOptions: 'HelpOtherMenu',
-        HelpSVCAdjustIntent: 'HelpAdjustStarbucksCard',
+        HelpSVCAdjustIntent: 'HelpAdjustFlowersCard',
         HelpPaymentChangeIntent: 'HelpAdjustPayment',
         HelpLocationAdjustIntent: 'HelpAdjustLocation',
         HelpOrderAdjustIntent: 'HelpAdjustOrder',
@@ -118,7 +118,7 @@ module.exports = StateMachine({
       }
     },
     "help-menu": SimpleHelpMessage('Help.HelpStartMenu', 'Start Menu'),
-    "HelpAdjustStarbucksCard": SimpleHelpMessage('Help.HelpAdjustStarbucksCard', 'Adjust Starbucks Card'),
+    "HelpAdjustFlowersCard": SimpleHelpMessage('Help.HelpAdjustFlowersCard', 'Adjust Flowers Card'),
     "HelpAboutOrder": SimpleHelpMessage('Help.HelpAboutOrder', 'About Order'),
     "HelpReloadCard": SimpleHelpMessage('Help.HelpReloadCard', 'Reload'),
     "HelpAdjustSettings": SimpleHelpMessage('Help.HelpAdjustSettings', 'Adjust Settings'),
@@ -424,7 +424,7 @@ module.exports = StateMachine({
           return PartialOrder.fromRequest(user, request);
         }).then(function (po) {
           if (request.intent.name == 'YesIntent') {
-            po = PartialOrder.empty({ user: po.user, flowers: po.starbucks });
+            po = PartialOrder.empty({ user: po.user, flowers: po.flowers });
             return replyWith(null, 'launch', request, po);
           }
           else if (request.intent.name == 'ChangeLocationIntent') {

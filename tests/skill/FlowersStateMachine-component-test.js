@@ -1,22 +1,22 @@
 'use strict';
 
 var assert = require('chai').assert,
-    StarbucksStateMachine = require('../../skill/StarbucksStateMachine.js'),
+    FlowersStateMachine = require('../../skill/FlowersStateMachine.js'),
     config = require('../../config'),
     Request = require('../../skill/Request.js'),
     _ = require('lodash'),
     Flowers = require('../../services/Flowers.js'),
-    starbucks = Flowers(config.starbucks),
+    flowers = Flowers(config.flowers),
     access_token = null,
     StateMachineSkill = require('../../skill/StateMachineSkill.js'),
     Promise = require('bluebird');
 
-describe('StarbucksStateMachine', function () {
+describe('FlowersStateMachine', function () {
 
   this.timeout(7000);
   this.slow(3000);
   before(function (done) {
-    starbucks.login('mitchellh@rain.agency', 'Happydave12!').then(function (user) {
+    flowers.login('mitchellh@rain.agency', 'Happydave12!').then(function (user) {
       access_token = user.tokens.access_token;
       done();
     }).catch(done);
@@ -25,7 +25,7 @@ describe('StarbucksStateMachine', function () {
     describe('use case', function () {
       it('gets launch', function (done) {
         testRequest(fakeEvent('LaunchIntent', {})).then(function (ret) {
-          assert.isOk(ret.response.outputSpeech.ssml.match(/Welcome back to starbucks/i));
+          assert.isOk(ret.response.outputSpeech.ssml.match(/Welcome back to flowers/i));
           assert.isNotOk(ret.response.outputSpeech.ssml.match(/I'm sorry/i));
           done();
         }).catch(done);
@@ -57,10 +57,10 @@ describe('StarbucksStateMachine', function () {
 });
 
 function testRequest(event) {
-  return Flowers(config.starbucks).login('mitchellh@rain.agency', 'Happydave12!').then(function (user) {
+  return Flowers(config.flowers).login('mitchellh@rain.agency', 'Happydave12!').then(function (user) {
     event.session.user.accessToken = user.tokens.access_token;
     return new Promise(function (resolve, reject) {
-      var skill = new StateMachineSkill(config.alexa.appId, StarbucksStateMachine);
+      var skill = new StateMachineSkill(config.alexa.appId, FlowersStateMachine);
       skill.execute(event, {
         succeed: resolve,
         fail: reject
