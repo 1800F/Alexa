@@ -1,14 +1,13 @@
 'use strict';
 
-var alexaStarbucks = require('./alexa-starbucks.js'),
-    Starbucks = require('./Flowers.js'),
-    StarbucksUser = Starbucks.StarbucksUser,
+var alexaFlowers = require('./alexa-flowers.js'),
+    Flowers = require('./Flowers.js'),
+    FlowersUser = Flowers.FlowersUser,
     config = require('../config'),
     _ = require('lodash'),
     moment = require('moment'),
     Promise = require('bluebird'),
-    verbose = config.verbose,
-    zipToTZ = require('../services/zip-to-tz.js');
+    verbose = config.verbose;
 
 // Mostly used for testing
 exports.fromData = function (api, data) {
@@ -87,7 +86,7 @@ PartialOrder.prototype.setFlag = function (name, value) {
 PartialOrder.prototype.validateAndEditOrder = function () {
   var user = this.user,
       po = this;
-  return getProductAvailability(po.starbucks, po.store, po.items).then(function (prdAvailability) {
+  return getProductAvailability(po.flowers, po.store, po.items).then(function (prdAvailability) {
     po.items = prdAvailability.availables;
     po.pruned = prdAvailability.unavailables;
     return {
@@ -207,7 +206,7 @@ PartialOrder.prototype.discardLocAdjust = function () {
 PartialOrder.prototype.planReload = function (cardId) {
   var self = this;
   return this.getBalance(cardId).then(function (balance) {
-    self.pricing.reloadAmount = alexaStarbucks.getReloadAmount(balance.balance, self.pricing.totalAmount);
+    self.pricing.reloadAmount = alexaFlowers.getReloadAmount(balance.balance, self.pricing.totalAmount);
   });
 };
 
@@ -215,7 +214,7 @@ PartialOrder.prototype.reloadAndOrder = function () {
   var self = this,
       user = self.user;
   self.analytics.event('Main Flow', 'Reload', 'Reload Amount', self.pricing.reloadAmount).send();
-  return Promise.all([user.getPrimaryCard(), alexaStarbucks.getPaymentMethodId(user)]).spread(function (cardData, paymentId) {
+  return Promise.all([user.getPrimaryCard(), alexaFlowers.getPaymentMethodId(user)]).spread(function (cardData, paymentId) {
     return user.reloadCard(cardData.cardId, self.pricing.reloadAmount, paymentId).then(function () {
       return self.placeOrder(cardData);
     });
@@ -248,7 +247,7 @@ PartialOrder.prototype.placeOrder = function (cardData) {
       });
     }).catch(function (err) {
       if (verbose) console.log('Error placing order', err.body);
-      if (err.statusCode && err.statusCode == 400 && err.body && err.body.code == Starbucks.ERROR_CODES.InsufficientBalance) {
+      if (err.statusCode && err.statusCode == 400 && err.body && err.body.code == Flowers.ERROR_CODES.InsufficientBalance) {
         return po.planReload(cardData.cardId).then(function () {
           return false;
         });
@@ -285,7 +284,7 @@ PartialOrder.prototype.getStoreData = function (storeNumber) {
     var storeData = self.history.seenStores[storeNumber];
     if (storeData && _.isObject(storeData)) return storeData;
     //TODO Cache this
-    return self.starbucks.getStoreByNumber(storeNumber).then(function (data) {
+    return self.flowers.getStoreByNumber(storeNumber).then(function (data) {
       var storeData = {
         name: data.address.streetAddressLine1,
         address: data.address,
@@ -344,7 +343,7 @@ PartialOrder.prototype.getProductNames = function (items) {
     //TODO Cache all of this in a very long term cache
     if (item.name) return Promise.resolve(item.name);
     item.q = item.q || {};
-    return item.q.prodDetails = item.q.prodDetails || self.starbucks.getProductBySku(item.commerce.sku, item.productType).then(function (productDetails) {
+    return item.q.prodDetails = item.q.prodDetails || self.flowers.getProductBySku(item.commerce.sku, item.productType).then(function (productDetails) {
       var name = productDetails.skuName;
       item.name = name;
       return name;
@@ -353,7 +352,7 @@ PartialOrder.prototype.getProductNames = function (items) {
 };
 
 PartialOrder.prototype.serialize = function () {
-  var ret = _.omit(this, 'user', 'q', 'pruned', 'user', 'starbucks', 'analytics');
+  var ret = _.omit(this, 'user', 'q', 'pruned', 'user', 'flowers', 'analytics');
   if (ret.history) delete ret.history.lastPull;
   if (ret.items) _.forEach(ret.items, function (item) {
     delete item.q;
@@ -413,7 +412,7 @@ PartialOrder.prototype.enterFallbackMode = function (firstFoundHistoricalOrder, 
   if (verbose) console.log('Entering fallback mode');
   _.assign(this, order, { mode: 'fallback', fallback: { originalOrder: order } });
   var partialOrder = this,
-      qUnavailableExplanation = explainOrderUnavailability(partialOrder.starbucks, order.items).then(function (explanations) {
+      qUnavailableExplanation = explainOrderUnavailability(partialOrder.flowers, order.items).then(function (explanations) {
     if (verbose) console.log('Unavailable explanations', explanations);
     if (explanations.some(function (x) {
       return x == 'seasonal';
@@ -441,7 +440,7 @@ PartialOrder.prototype.enterFallbackMode = function (firstFoundHistoricalOrder, 
         return scan();
       }
       var order = transHistoricalOrderToOrder(historicalOrder);
-      return getProductAvailability(partialOrder.starbucks, order.store, order.items).then(function (prdAvailability) {
+      return getProductAvailability(partialOrder.flowers, order.store, order.items).then(function (prdAvailability) {
         if (!prdAvailability.anyAvailable) return scan();
         partialOrder.analytics.event('Main Flow', 'Order Started').send();
         _.assign(partialOrder, order);
@@ -486,7 +485,7 @@ PartialOrder.prototype.build = function () {
           return partialOrder.enterDetachedMode(order);
         }
         //TODO: We need a way to cache product availability by store
-        return getProductAvailability(partialOrder.starbucks, order.store, order.items).then(function (prdAvailability) {
+        return getProductAvailability(partialOrder.flowers, order.store, order.items).then(function (prdAvailability) {
           if (!prdAvailability.anyAvailable) return partialOrder.enterFallbackMode(firstFoundHistoricalOrder, order);
           return partialOrder.enterFoundOrderMode(order);
         });
@@ -514,7 +513,7 @@ function getStoreAlternatives(po) {
 
   function considerStores(stores) {
     return Promise.all([
-      Promise.all(stores.map(function (store) {return getProductAvailability(po.starbucks, store, po.items);})),
+      Promise.all(stores.map(function (store) {return getProductAvailability(po.flowers, store, po.items);})),
       Promise.all(stores.map(function (store) {return getStoreAvailability(store,po);})),
     ]).spread(function (prdAvails, storeAvails) {
       return _(prdAvails).zip(storeAvails).map(function (avail, i) {
@@ -550,9 +549,9 @@ function transHistoricalOrderToOrder(hist) {
   }
 }
 
-function getProductAvailability(starbucks, storeNumber, items) {
+function getProductAvailability(flowers, storeNumber, items) {
   //if(verbose) console.log('getProductAvailability',storeNumber,items.length);
-  return starbucks.getProductStatus(storeNumber, items).then(function (status) {
+  return flowers.getProductStatus(storeNumber, items).then(function (status) {
     var partition = _.partition(_.zip(items, status.items), function (zi) {
       return isPurchasable(zi[1]);
     }),
@@ -616,7 +615,7 @@ function isNoMore(historicalOrder) {
 
 function isIgnorableHistoricalOrder(order) {
   var isAllCoffee = !!order.basket.items.every(function (item) {
-    return item.product.productType == Starbucks.PRODUCTTYPES.coffee;
+    return item.product.productType == Flowers.PRODUCTTYPES.coffee;
   });
   return isAllCoffee;
 }
@@ -640,11 +639,11 @@ function parseStoreAvailability(storeData) {
 // Skus can be unavailable b/c they're seasonal, some permanent reason( e.g. withdrawn ),
 // or temporarily (a catch all for none of the above).
 // We know by getting the product details and scanning for it's availability data
-function explainOrderUnavailability(starbucks, items) {
+function explainOrderUnavailability(flowers, items) {
   return Promise.all(_.map(items, explainItemUnavailabilty));
 
   function explainItemUnavailabilty(item) {
-    return starbucks.getProductDetailsBySku(item.commerce.sku, item.productType).then(function (data) {
+    return flowers.getProductDetailsBySku(item.commerce.sku, item.productType).then(function (data) {
       return parseItemAvailbilityExplanation(item.commerce.sku, data);
     });
   }
@@ -664,7 +663,7 @@ function parseItemAvailbilityExplanation(sku, data) {
 
 function getTimeOfDay(zip) {
   if (!zip) return null;
-  var localTime = zipToTZ.getLocalTime(zip);
+  var localTime = null;
   if (!localTime) return null;
   var hoursIntoDay = localTime.get('hours');
   if (hoursIntoDay < 2) return 'night';
@@ -680,7 +679,7 @@ module.exports.parseStoreAvailability = parseStoreAvailability;
 module.exports.parseItemAvailbilityExplanation = parseItemAvailbilityExplanation;
 
 /*
-var sbuser = StarbucksUser(config.starbucks,'2er5gem7djy62pu9xp88aqpc')
+var sbuser = FlowersUser(config.flowers,'2er5gem7djy62pu9xp88aqpc')
 exports.build(sbuser).then(function(po){
   console.log('Built',po.serialize());
 }).catch(err => {

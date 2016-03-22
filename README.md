@@ -1,2 +1,3 @@
-# 1800flowers-alexa-skill
-An Amazon Alexa skill for ordering flowers via 1800Flowers
+# 1-800-Flowers Alexa Skill
+
+An Amazon Alexa skill for ordering flowers via 1-800-Flowers

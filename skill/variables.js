@@ -2,7 +2,6 @@
 
 var _ = require('lodash'),
     Promise = require('bluebird'),
-    zipToTZ = require('../services/zip-to-tz.js'),
     lang = require('./lang.js'),
     currency = require('./currency.js'),
     moment = require('moment'),
