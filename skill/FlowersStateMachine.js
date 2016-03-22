@@ -532,7 +532,9 @@ module.exports = StateMachine({
         });
       });
     }
-    //HERE IS WHERE WE WILL PULL THE USERNAME AND PASSWORD FROM DYNAMODB AND LOGIN WITH THOSE CREDENTIALS TO GET AN ACCESSTOKEN
+    //HERE IS WHERE WE WILL GET AN OAUTH ACCESSTOKEN USING THE DEFAULT CREDENTIALS
+    //THEN WE WILL PULL USER DATA BASED ON SYSTEMID STORED IN THE ALEXA REQUEST IN PartialOrder.build()
+    //FIRST CALL flowers.getProfile, THEN flowers.getRecipients, THEN flowers.getPaymentMethods
     flowers = flowers || Flowers(config.flowers);
     this.access = {
       user: FlowersUser(config.flowers, request.user.accessToken),
