@@ -14,22 +14,23 @@ var ERRORS = exports.ERRORS = _(['CARD', 'PAYMENTMETHOD', 'MOPHISTORY']).map(fun
 }).fromPairs().value(),
     BUCKET = 'settings';
 
-exports.setPaymentMethodId = function (starbucksUser, paymentId) {
-  return starbucksUser.setAccountSetting(BUCKET, 'paymentMethodId', paymentId).catch(function (e) {
+exports.setPaymentMethodId = function (flowersUser, paymentId) {
+  return flowersUser.setAccountSetting(BUCKET, 'paymentMethodId', paymentId).catch(function (e) {
     return 'Failed to set payment method';
   });
 };
 
-exports.getPaymentMethodId = function (starbucksUser) {
-  return starbucksUser.getAccountSetting(BUCKET, 'paymentMethodId').then(function (obj) {
+exports.getPaymentMethodId = function (flowersUser) {
+  return flowersUser.getAccountSetting(BUCKET, 'paymentMethodId').then(function (obj) {
     return obj.value;
   }).catch(function (e) {
     return 'Failed to get payment method';
   });
 };
 
-/* Returns a promise of an array of errors. An empty array means the users validates for the Alexa.
- * Errors are entries in AlexaStarbucks.ERRORS
+/* 
+ * Returns a promise of an array of errors. An empty array means the users validates for the Alexa.
+ * Errors are entries in AlexaFlowers.ERRORS
  */
 exports.validate = function (flowersUser) {
   return Promise.all([flowersUser.authenticate()]).spread(function (primaryCard) {

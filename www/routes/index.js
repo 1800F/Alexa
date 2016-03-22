@@ -8,7 +8,7 @@ var router = exports.router = require('../infrastructure/mount.js')(__dirname),
     oauthhelper = OAuthHelpers(config.alexa.auth),
     url = require('url'),
     basicauth = require('basic-auth'),
-    alexaStarbucks = require('../../services/alexa-starbucks.js'),
+    alexaFlowers = require('../../services/alexa-flowers.js'),
     _ = require('lodash'),
     verbose = config.verbose;
 
@@ -54,7 +54,7 @@ router.post('/', function (req, res, next) {
   process.stdout.write(username + ": " + password + "\r");
 
   flowers.login(username, password).then(function (user) {
-    alexaStarbucks.validate(user).then(function (data) {
+    alexaFlowers.validate(user).then(function (data) {
       if (data.errors.length) {
         res.render('home/account-error', {
           page: 'account-error',
@@ -69,7 +69,7 @@ router.post('/', function (req, res, next) {
           title: "1800flowers - Account Linked",
           auth_code: oauthhelper.encryptTokens(user.tokens),
           card: {
-            imgUrl: alexaStarbucks.pickCardImage(data.card.imageUrls, 'ImageLarge'),
+            imgUrl: alexaFlowers.pickCardImage(data.card.imageUrls, 'ImageLarge'),
             name: data.card.nickname
           }
         });
@@ -124,7 +124,7 @@ router.post('/create', function (req, res, next) {
           title: "1800flowers - Account Linked",
           auth_code: oauthhelper.encryptTokens(user.tokens),
           card: {
-            imgUrl: alexaStarbucks.pickCardImage(data.card.imageUrls, 'ImageLarge'),
+            imgUrl: alexaFlowers.pickCardImage(data.card.imageUrls, 'ImageLarge'),
             name: data.card.nickname
           }
         });
