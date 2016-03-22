@@ -461,6 +461,8 @@ PartialOrder.prototype.enterFoundOrderMode = function (order) {
   return this;
 };
 
+//THIS PULLS ALL INFORMATION INTO THE PARTIAL ORDER
+//FOR 1800 FLOWERS, WE WILL PULL THE CONTACTS LIST AND THE LIST OF CREDIT CARDS
 PartialOrder.prototype.build = function () {
   var partialOrder = this,
       user = partialOrder.user,

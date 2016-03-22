@@ -3,6 +3,7 @@
 var Promise = require('bluebird'),
     post = Promise.promisify(require('request').post),
     get = Promise.promisify(require('request').get),
+    aws = require('aws-sdk'),
     md5 = require('md5'),
     _ = require('lodash'),
     countryCode = 'US',
@@ -10,7 +11,7 @@ var Promise = require('bluebird'),
     ;
 
 var Flowers = module.exports = function Flowers(options, tokens) {
-  options = _.assign({ version: 'alexa/uat/account/v1' }, options);
+  //options = _.assign({ version: 'alexa/uat/account/v1' }, options);
   options.transform = options.transform || _.identity;
   tokens = tokens || {};
   var qAuthReq = null;
@@ -18,22 +19,18 @@ var Flowers = module.exports = function Flowers(options, tokens) {
   return options.transform({
     forgotUsername: forgotUsername,
     resetPassword: resetPassword,
-    getStore: getStore,
-    getStoreByNumber: getStoreByNumber,
-    listStores: listStores,
-    listFood: listFood,
-    getProductStatus: getProductStatus,
-    getProductBySku: getProductBySku,
-    getProductDetailsBySku: getProductDetailsBySku,
     login: login,
-    createUser: createUser,
+    createCustomer: createCustomer,
+    addCustomerDetails:addCustomerDetails,
     auth: getAuthToken,
+    dynamoLogin:dynamoLogin,
     User: function User(tokens) {
       return FlowersUser(options, tokens);
     }
   }, 'app');
 
   function login(username, password) {
+    process.stdout.write('dynamo: ' + options.dynamoID + "\r");
     return oauthReq('password', { username: username, password: password }, options).then(function (tokens) {
       if (tokens.error) return Promise.reject(tokens.error);
       options = _.assign({ username: username }, options);
@@ -42,47 +39,70 @@ var Flowers = module.exports = function Flowers(options, tokens) {
     });
   }
 
-  function createUser(userObj) {
-    return apprequest('POST', '/account/create', { market: countryCode }, userObj);
+  function createCustomer(id, password) {
+    var body = {
+      "registerCustomer": {
+        "customerDetail": {
+          "customerID": id,
+          "password": password,
+          "sourceSystem": "FDWEB"
+        }
+      }
+    };
+    return apprequest('POST', '/registerNewCustomer', {} , body, null, true);
   }
 
-  function getProductBySku(sku) {
-    return apprequest('GET', '/products/' + countryCode + '/' + sku, {}, {});
+  function addCustomerDetails(first, last, email, customerID) {
+    var body = {
+      "AddPerson":{
+        "control":{
+          "requestId":"1400",
+          "requesterName":"GFGB",
+          "requesterLanguage":"-1",
+          "requesterLocale":"en"
+        },
+        "person":{
+          "displayName": first + " " + last,
+          "preferredLanguage":{"@code":"-1"},
+          "identification":{
+            "number": email,
+            "type":{"@code":"A"},
+            "idStatus":{"@code":"1"}
+          },
+          "privPref":{
+            "value":"Y",
+            "type":{"@code":"666"},
+            "privPrefReason":{"@code":"1"},
+            "sourceIdentifier":{"@code":"400"}
+          },
+          "adminContEquiv":{
+            "adminSysPartyId": customerID,
+            "adminSystemType":{"@code":"J"}
+          },
+          "birthDate":"1900-01-01",
+          "name":{
+            "startDate":new Date(),
+            "nameUsage":{
+              "@code":"G",
+              "#text":"Preferred"
+            },
+            "prefix":{"@code":"14"},
+            "prefixDescription":[],
+            "givenNameOne": first,
+            "lastName": last
+          },
+          "XEmployerName":[]
+        }
+      }
+    };
+
+    return apprequest('POST', '/addPerson', {} , body, null, true);
   }
 
-  function getProductDetailsBySku(sku, productType) {
-    if (!productType) return apprequest('GET', '/products/' + countryCode + '/' + sku, {}, {});
-    if (module.exports.ProductTypePredicates.isBeverage(productType)) return apprequest('GET', '/products/' + countryCode + '/beverages/sku/' + sku);
-    if (module.exports.ProductTypePredicates.isFood(productType)) return apprequest('GET', '/products/' + countryCode + '/food/sku/' + sku);
-    if (module.exports.ProductTypePredicates.isCoffee(productType)) return apprequest('GET', '/products/' + countryCode + '/coffee/sku/' + sku);
-    return apprequest('GET', '/products/' + countryCode + '/' + sku, {}, {});
-  }
-
-  function getProductStatus(storeNumber, skus) {
-    if (!_.isString(storeNumber)) throw new Error('Expected storeNumber to be a string, but got ' + JSON.stringify(storeNumber));
-    skus = _.map(skus, function (sku) {
-      if (_.isString(sku)) return { quantity: 1, commerce: { sku: sku } };
-      return sku;
-    });
-    var body = { items: skus };
-    return apprequest('POST', '/products/status/' + storeNumber, {}, body);
-  }
-
-  function getStore(id) {
-    return apprequest('GET', '/stores/' + id, {}, {});
-  }
-
-  function getStoreByNumber(storeNumber) {
-    return apprequest('GET', '/stores/number/' + storeNumber, { xopState: true }, {});
-  }
-
-  function listStores(featureCodes, paging) {
-    featureCodes = featureCodes || {};
-    return apprequest('GET', '/stores', { xopState: true, featureCodes: featureCodes.join(',') }, {}, paging || true);
-  }
-
-  function listFood(paging) {
-    return apprequest('GET', '/products/' + countryCode + '/food', {}, {}, paging || true);
+  function dynamoLogin(alexaUserID) {
+    //Get email and password from DynamoDB
+    aws.config.update({accessKeyId: options.dynamoID, secretAccessKey: options.dynamoSecret});
+    //Login using those credentials and authenticate?
   }
 
   function forgotUsername(email) {
@@ -93,12 +113,12 @@ var Flowers = module.exports = function Flowers(options, tokens) {
     return apprequest('POST', '/login/forgot-password', {}, { userName: username, emailAddress: email });
   }
 
-  function apprequest(method, path, queryString, body, paging) {
+  function apprequest(method, path, queryString, body, paging, isCustomerAPI) {
     var args = arguments,
         self = this;
     return getAuthToken()
     .then(function (token) {
-      return issue(method, token, path, queryString, body, paging, options);
+      return issue(method, token, path, queryString, body, paging, options, isCustomerAPI);
     }).then(function (res) {
       if (res.statusCode == 401) {
         //Our token expired
@@ -127,7 +147,7 @@ var Flowers = module.exports = function Flowers(options, tokens) {
 };
 
 var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tokens) {
-  options = _.assign({ version: 'alexa/uat/account/v1' }, options);
+  //options = _.assign({ version: 'alexa/uat/account/v1' }, options);
   options.transform = options.transform || _.identity;
   if (_.isString(tokens)) tokens = { access_token: tokens };
 
@@ -139,6 +159,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
     refresh: refresh,
     getPaymentMethods: getPaymentMethods,
     getRecipients: getRecipients,
+    getRecipientAddress: getRecipientAddress,
     getProfile: getProfile,
     submitOrder: submitOrder
   }, 'user');
@@ -154,7 +175,6 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
         }
       }
     };
-    process.stdout.write('Authenticate CustomerID: ' + body.authenticateCustomer.customerID + 'Authenticate Password: ' + body.authenticateCustomer.password +  "\r");
     return userrequest('POST', '/authenticateUser', {}, body);
   }
 
@@ -165,16 +185,58 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
     });
   }
 
-  function getPaymentMethods() {
-    return userrequest('GET', '/getSavedCC', {}, null);
+  function getPaymentMethods(customerID) {
+    var body = {
+      "GetSavedCardsForCustomer":{
+        "control":{
+          "requestId":"1400",
+          "requesterName":"GFGB",
+          "requesterLanguage":"-1",
+          "requesterLocale":"en"
+        },
+        "SourceId":"W0091",
+        "AdminSystemType":"3001666",
+        "AdminPartyId":customerID,
+        "InquiryLevel":"4"
+      }
+    };
+    return userrequest('POST', '/getSavedCC', {}, body);
   }
 
-  function getRecipients() {
-    return userrequest('GET', '/getRecipients', {}, null);
+  function getRecipients(customerID) {
+    var body = {
+      "getMDMRecipients":{
+        "contid":"154145799461739490"
+      }
+    };
+    return userrequest('POST', '/getRecipients', {}, body);
   }
 
-  function getProfile() {
-    return userrequest('GET', '/getCustomerDetails');
+  function getRecipientAddress(demographicsID, customerID) {
+    var body = {
+      "getMDMRecipientAddresses":{
+        "demographicsID":demographicsID,
+        "contid":customerID
+      }
+    };
+    return userrequest('POST', '/getRecipientAddress', {}, body);
+  }
+
+  function getProfile(systemID) {
+    var body = {
+      "Get18FCustomerByAdminSysKey":{
+        "control":{
+          "requestId":"1400",
+          "requesterName":"GFGB",
+          "requesterLanguage":"-1",
+          "requesterLocale":"en"
+        },
+        "AdminSystemType":"3001666",
+        "AdminPartyId":systemID,
+        "InquiryLevel":"2"
+      }
+    };
+    return userrequest('POST', '/getCustomerDetails', {}, body);
   }
 
   function submitOrder(storeNumber, orderToken, svcId, amount, signature) {
@@ -190,15 +252,15 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
     return userrequest('POST', '/me/stores/' + storeNumber + '/orderToken/' + orderToken + '/submitOrder', {}, body);
   }
 
-  function userrequest(method, path, queryString, body, paging) {
+  function userrequest(method, path, queryString, body, paging, isCustomerAPI) {
     if (queryString && queryString.giveResponse) {
       var giveResponse = true;
       delete queryString.giveResponse;
     }
+    process.stdout.write('qs: ' + queryString.client_id + "\r");
     return getUserAuthToken()
     .then(function (token) {
-      process.stdout.write("Body UserRequest: " + body + "\rMethod:" + method + "\r");
-      return issue(method, token, path, queryString, body, paging, options);
+      return issue(method, token, path, queryString, body, paging, options, isCustomerAPI);
     }).then(function (res) {
       if (res.statusCode < 200 || res.statusCode >= 300) return Promise.reject(res);
       if (res.statusCode == 201 && !res.body) res.body = {};
@@ -227,7 +289,7 @@ function wrapPagingResult(body, reinvoke, args) {
 }
 
 function oauthReq(grant_type, values, options) {
-  var url = options.endpoint + '/' + options.version + '/oauth/token?sig=' + sig(),
+  var url = options.endpoint + '/' + options.account + '/' + options.version + '/oauth/token?sig=' + sig(),
       body = _.assign({
     grant_type: grant_type,
     scope: options.oAuthScope
@@ -265,24 +327,26 @@ function oauthReq(grant_type, values, options) {
   }
 }
 
-function issue(method, token, path, queryString, body, paging, options) {
-  var qs = _.map(_.assign({client_id: options.key, client_secret: options.secret}, paging, queryString), function (v, k) {
+function issue(method, token, path, queryString, body, paging, options, isCustomerAPI) {
+  var qs = _.map(_.assign({}), function (v, k) {
     return encodeURIComponent(k) + '=' + encodeURIComponent(v);
   }).join('&'),
       op = method == 'POST' ? post : get,
-      url = options.endpoint + '/' + options.version + path + '?' + qs,
+      url = isCustomerAPI ? (options.endpoint + '/' + options.customer + '/' + options.version + path + '?' + qs) : (options.endpoint + '/' + options.account + '/' + options.version + path + '?' + qs),
       startTime = +new Date();
   process.stdout.write("Body Issue: " + body + "\rMethod:" + method + "\r");
   var req = {
     url: url,
     headers: {
-      "Authorization": "Bearer " + token,
       "X-IBM-Client-Id": options.key,
       "X-IBM-Client-Secret": options.secret,
       "Accept": 'application/json'
     },
     strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false
   };
+  if (!isCustomerAPI) {
+     req.headers.Authorization = "Bearer " + token;
+  }
   if (body && method != 'GET') {
     process.stdout.write("Body Received: " + body + "\r");
     req.json = true;
