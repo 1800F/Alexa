@@ -3,7 +3,7 @@
 var router = exports.router = require('../infrastructure/mount.js')(__dirname),
     config = require('../../config/'),
     Flowers = require('../../services/Flowers.js'),
-    flowers = Flowers(config.starbucks),
+    flowers = Flowers(config.flowers),
     OAuthHelpers = require('../../services/oauth-helpers.js'),
     oauthhelper = OAuthHelpers(config.alexa.auth),
     url = require('url'),
@@ -64,30 +64,14 @@ router.post('/', function (req, res, next) {
           }
         });
       } else {
-        var paymentMethods = data.paymentMethods.map(function (method) {
-          return {
-            id: method.paymentMethodId,
-            type: (method.paymentType || method.type).toLowerCase(),
-            endingIn: method.accountNumberLastFour,
-            expirationMonth: method.expirationMonth,
-            expirationYear: method.expirationYear,
-            isValid: alexaStarbucks.isValidPaymentMethod(method),
-            isDefault: !!method.default && !!alexaStarbucks.isValidPaymentMethod(method)
-          };
-        });
-        if (paymentMethods.length == 1 && paymentMethods[0].isValid) paymentMethods[0].isDefault = true;
-        var primaryPaymentMethodId = (_.find(paymentMethods, { isDefault: true }) || { id: null }).id;
-
-        res.render('home/request-permission', {
-          page: "request-permission",
-          title: "1800flowers - Request Permission",
+        res.render('home/success', {
+          page: "success",
+          title: "1800flowers - Account Linked",
           auth_code: oauthhelper.encryptTokens(user.tokens),
           card: {
             imgUrl: alexaStarbucks.pickCardImage(data.card.imageUrls, 'ImageLarge'),
             name: data.card.nickname
-          },
-          primaryPaymentMethodId: primaryPaymentMethodId,
-          paymentMethods: paymentMethods
+          }
         });
       }
     });
@@ -111,9 +95,50 @@ router.get('/no-account', function (req, res, next) {
 router.get('/create', function (req, res, next) {
   res.render('home/create', {
     page: "account-required",
-    title: "1800flowers - Account Required"
+    title: "1800flowers - Account Required",
+    errorCreating: false,
+    errorMessage: ""
   });
 });
+
+router.post('/create', function (req, res, next) {
+  var first = req.body.firstname,
+    lastname = req.body.lastname,
+    email = req.body.email,
+    password = req.body.password,
+    confirm = req.body.confirmpassword,
+    state = req.body.state;
+
+  flowers.createCustomer(email, password).then(function (user) {
+    process.stdout.write('Create User: ' + user.registerNewCustomerResponse.customerData.customerID + "\r");
+      if (user.registerNewCustomerResponse.error) {
+        res.render('home/create', {
+          page: 'account-error',
+          title: '1800flowers',
+          errorCreating: true,
+          errorMessage: user.registerNewCustomerResponse.error.errorDetails
+        });
+      } else {
+        res.render('home/success', {
+          page: "success",
+          title: "1800flowers - Account Linked",
+          auth_code: oauthhelper.encryptTokens(user.tokens),
+          card: {
+            imgUrl: alexaStarbucks.pickCardImage(data.card.imageUrls, 'ImageLarge'),
+            name: data.card.nickname
+          }
+        });
+      }
+  }).catch(function (err) {
+    process.stdout.write("Error Creating User: " + err + "\r");
+    res.render('home/create', {
+      page: 'create',
+      title: '1800flowers',
+      errorCreating: true,
+      errorMessage: err
+    });
+  });
+});  
 
 router.get('/success', function (req, res, next) {
   res.render('home/success', {

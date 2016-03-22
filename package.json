@@ -29,7 +29,8 @@
     "request": "^2.69.0",
     "serve-static": "^1.10.2",
     "string": "^3.3.1",
-    "universal-analytics": "^0.3.10"
+    "universal-analytics": "^0.3.10",
+    "aws-sdk": "^2.2.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",

@@ -12,14 +12,24 @@
 html { font-size: 62.5%; }
 
 body {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   line-height: 1.5;
   color: @gray;
   background-color: @white;
   min-height: 100vh;
-  font-family: 'proxima_nova_rgregular';
+  font-family: 'proxima_novalight';
 
   &.no-overflow { overflow: hidden; }
+
+  &.success {
+
+    h4,
+    p {
+      font-size: 2.4rem;
+
+      &.note { font-size: 1.4rem; }
+    }
+  }
 }
 
 .wrapper {
@@ -38,14 +48,11 @@ p {
   line-height: 1.3;
 
   &.center { text-align: center; }
-  &.note { font-size: 1.4rem; }
-  &.gold { color: @gold; }
   &.red { color: @red; }
-  &.gray { color: @darker-gray; }
   &:last-child { margin-bottom: 0; }
 
   strong { font-family: 'proxima_novasemibold'; }
-  em { font-style: italic; }
+  em { font-family: 'proxima_novalight_italic'; }
 }
 
 h1,
@@ -56,10 +63,9 @@ h5,
 h6 {
   margin-bottom: 20px;
   text-transform: uppercase;
-  font-family: 'proxima_novalight';
 }
 
-h4 { font-size: 1.8rem; }
+h4 { font-size: 1.5rem; }
 
 a {
   color: inherit;
@@ -73,7 +79,6 @@ a {
     text-align: center;
   }
 
-  &.gold { color: @gold; }
   &:hover { text-decoration: none; }
 
   &:focus,
@@ -84,7 +89,7 @@ a {
   }
 }
 
-.back { font-size: 1rem; }
+.back { font-size: 1.1rem; }
 
 img {
   width: auto;
@@ -107,9 +112,12 @@ section {
   padding: 60px 0 0;
   margin: auto;
   width: @width;
-}
 
-.container + .container { padding-top: 0; }
+  &.arrow-container {
+    width: 95%;
+    padding: 10px 0 40px;
+  }
+}
 
 // Fallback if browser isn't supported.
 .browserupgrade {
@@ -148,15 +156,15 @@ section {
   bottom: 20px;
   width: 100%;
   text-align: center;
-  color: @med-gray;
+  color: @dark-gray;
 
   a {
-    font-size: 1rem;
+    font-size: 1.1rem;
     line-height: 1;
 
     &:first-child {
       padding-right: 10px;
-      border-right: 1px solid @med-gray;
+      border-right: 1px solid @dark-gray;
     }
 
     &:last-child { padding-left: 10px; }
@@ -180,11 +188,11 @@ section {
 
     &.note {
       margin-bottom: 10px;
-      color: @med-gray;
+      color: @dark-gray;
     }
 
     &.link {
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       font-family: 'proxima_novasemibold';
     }
   }
@@ -220,30 +228,6 @@ section {
   }
 }
 
-.forgotten-username,
-.forgotten-password {
-
-  form {
-
-    .form-group {
-
-      .form-row {
-
-        &.btn-row { padding: 40px 0; }
-      }
-    }
-  }
-}
-
-.btn-container {
-
-  .btn {
-    margin-bottom: 20px;
-
-    &:last-child { margin-bottom: 0; }
-  }
-}
-
 .terms-of-use,
 .privacy-policy {
 
@@ -269,6 +253,14 @@ section {
   }
 }
 
+.arrow {
+  float: right;
+  width: 21px;
+  height: 28px;
+  background-image: url(../img/arrow.png);
+  background-size: contain;
+}
+
 /**************************************************************************************************
  *
  *  @Section: Button Styles
@@ -276,13 +268,14 @@ section {
 ***************************************************************************************************/
 
 .btn {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   width: 100%;
   padding: 20px;
   vertical-align: middle;
   text-transform: uppercase;
   text-align: center;
   line-height: 1;
+  letter-spacing: 1px;
   cursor: pointer;
   border: none;
   color: @white;
@@ -373,11 +366,11 @@ form {
     margin: 0;
     padding: 20px;
     height: inherit;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     border: none;
     border-radius: 0;
     text-transform: uppercase;
-    background-color: @light-gray;
+    background-color: @off-white;
     color: @gray;
     font-family: 'proxima_novalight';
 
@@ -398,25 +391,25 @@ form {
     &::-webkit-input-placeholder {
       text-align: center;
       color: @gray;
-      font-family: 'proxima_nova_rgregular';
+      font-family: 'proxima_novalight';
     }
 
     &:-moz-placeholder {
       text-align: center;
       color: @gray;
-      font-family: 'proxima_nova_rgregular';
+      font-family: 'proxima_novalight';
     }
 
     &::-moz-placeholder {
       text-align: center;
       color: @gray;
-      font-family: 'proxima_nova_rgregular';
+      font-family: 'proxima_novalight';
     }
 
     &:-ms-input-placeholder {
       text-align: center;
       color: @gray;
-      font-family: 'proxima_nova_rgregular';
+      font-family: 'proxima_novalight';
     }
   }
 
