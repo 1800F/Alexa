@@ -28,6 +28,12 @@
     },
     "appId": "amzn1.echo-sdk-ams.app.00db3f70-5fdd-4f7a-b715-ca49e8d70252"
   },
+  "skill": {
+    "defaultCredentials": {
+      "username": "1stevenh@rain.agency",
+      "password": "1rainPssword"
+    }
+  },
   "googleAnalytics": {
     "trackingCode": "XXX"
   },

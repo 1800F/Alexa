@@ -494,43 +494,9 @@ PartialOrder.prototype.build = function () {
   }
 };
 
-/*
- * Finds a list of stores that it's possible to order at least some of the items at.
- */
-function getStoreAlternatives(po) {
-  // We'll try N stores. That doesn't mean N stores will work
-  var alternativeStores = config.skill.alternativeStores;
-  return pullAnotherStore();
-
-  function pullAnotherStore() {
-    var stores = _.keys(po.history.seenStores);
-    if (stores.length >= alternativeStores) return considerStores(stores);
-    return nextHistoricalOrder(po).then(function (order) {
-      if (isNoMore(order)) return considerStores(stores);
-      return pullAnotherStore();
-    });
-  }
-
-  function considerStores(stores) {
-    return Promise.all([
-      Promise.all(stores.map(function (store) {return getProductAvailability(po.flowers, store, po.items);})),
-      Promise.all(stores.map(function (store) {return getStoreAvailability(store,po);})),
-    ]).spread(function (prdAvails, storeAvails) {
-      return _(prdAvails).zip(storeAvails).map(function (avail, i) {
-        return avail[0].anyAvailable && avail[1].isOpen ? stores[i] : null;
-      }).compact().value();
-    });
-  }
-}
 
 function summarizeOrder(order) {
   return JSON.stringify(order, null, 2);
-}
-
-function getStoreAvailability(storeNumber, po) {
-  return po.getStoreData(storeNumber).then(function (x) {
-    return x.availability;
-  });
 }
 
 function transHistoricalOrderToOrder(hist) {
@@ -571,70 +537,6 @@ function getProductAvailability(flowers, storeNumber, items) {
   }
 }
 
-function nextHistoricalOrder(partialOrder) {
-  if (partialOrder.history.pulledAll) return NoMore();
-  var nextOffset = partialOrder.history.offset + 1,
-      pulledAll = partialOrder.history.pulledAll,
-      lastPull = partialOrder.history.lastPull,
-      needsNewPull = !lastPull || nextOffset >= lastPull.paging.offset + lastPull.paging.returned,
-      hasNextPull = !lastPull || lastPull.paging.hasMore,
-      hasMoreItems = !lastPull || nextOffset < lastPull.paging.total;
-  //if(verbose) console.log(`nextOffset: ${nextOffset}, needsNewPull ${needsNewPull} , paging ${lastPull ? JSON.stringify(lastPull.paging):null}`)
-  partialOrder.history.offset++;
-  if (needsNewPull && hasNextPull) {
-    if (verbose) console.log('Pulling next page of history');
-    return (lastPull ? lastPull.paging.next() : partialOrder.user.getOrders({ offset: nextOffset })).then(function (pull) {
-      partialOrder.history.lastPull = pull;
-      if (!pull.paging.total) return NoMore();
-      var order = pull.orderHistoryItems[0],
-          storeNumber = order.inStoreOrder.storeNumber;
-      partialOrder.seeStore(storeNumber);
-      return order;
-    });
-  } else if (!hasMoreItems) {
-    if (verbose) console.log('Out of historical orders');
-    return NoMore();
-  } else {
-    if (verbose) console.log('Moving to next in-page history item');
-    var index = nextOffset - lastPull.paging.offset,
-        order = lastPull.orderHistoryItems[index],
-        storeNumber = order.inStoreOrder.storeNumber;
-    partialOrder.seeStore(storeNumber);
-    return Promise.resolve(order);
-  }
-
-  function NoMore() {
-    partialOrder.history.pulledAll = true;
-    return Promise.resolve(null);
-  }
-}
-
-function isNoMore(historicalOrder) {
-  return !historicalOrder;
-}
-
-function isIgnorableHistoricalOrder(order) {
-  var isAllCoffee = !!order.basket.items.every(function (item) {
-    return item.product.productType == Flowers.PRODUCTTYPES.coffee;
-  });
-  return isAllCoffee;
-}
-
-function parseStoreAvailability(storeData) {
-  if (storeData.xopState != 'available') return { isOpen: false, localTime: null, nextOpen: null, closedDueTo: 'inactive' };
-  var today = storeData.today || { open: false, localTime: null };
-  var isOpen = today.open === true,
-      nextOpen = today.open ? null : !storeData.hoursNext7Days ? null : storeData.hoursNext7Days.reduce(function (memo, day) {
-    return memo || (day.open ? moment(day.date).add(moment.duration(day.openTime)).format('YYYY-MM-DDTHH:mm:ss.SSS') : null);
-  }, null),
-      closedDueTo = isOpen ? null : nextOpen == null ? 'inactive' : storeData.operatingStatus.operating && storeData.operatingStatus.status == 'ACTIVE' ? 'hours' : 'inactive';
-  return {
-    isOpen: today.open === true,
-    closedDueTo: closedDueTo,
-    localTime: today.localTime,
-    nextOpen: nextOpen
-  };
-}
 
 // Skus can be unavailable b/c they're seasonal, some permanent reason( e.g. withdrawn ),
 // or temporarily (a catch all for none of the above).
@@ -649,17 +551,6 @@ function explainOrderUnavailability(flowers, items) {
   }
 }
 
-function parseItemAvailbilityExplanation(sku, data) {
-  sku = '' + sku;
-  var form = data.forms.filter(function (form) {
-    return _.map(form.sizes, 'commerce.sku').indexOf(sku) >= 0;
-  });
-  if (!form || !form.length) return 'temporary';
-  form = form[0];
-  if (form.availability.status == 'SeasonallyUnavailable') return 'seasonal';
-  if (form.availability.status == 'Purchasable') return 'temporary'; //The product thinks it's available, but POS says you can't buy it. So we say it's a temporary issue
-  return 'permanent';
-}
 
 function getTimeOfDay(zip) {
   if (!zip) return null;
@@ -674,9 +565,7 @@ function getTimeOfDay(zip) {
   return 'night';
 }
 
-module.exports.isIgnorableHistoricalOrder = isIgnorableHistoricalOrder;
-module.exports.parseStoreAvailability = parseStoreAvailability;
-module.exports.parseItemAvailbilityExplanation = parseItemAvailbilityExplanation;
+//module.exports.parseItemAvailbilityExplanation = parseItemAvailbilityExplanation;
 
 /*
 var sbuser = FlowersUser(config.flowers,'2er5gem7djy62pu9xp88aqpc')
