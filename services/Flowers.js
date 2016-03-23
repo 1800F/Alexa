@@ -185,7 +185,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
     });
   }
 
-  function getPaymentMethods(customerID) {
+  function getPaymentMethods(systemID) {
     var body = {
       "GetSavedCardsForCustomer":{
         "control":{
@@ -196,7 +196,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
         },
         "SourceId":"W0091",
         "AdminSystemType":"3001666",
-        "AdminPartyId":customerID,
+        "AdminPartyId":systemID,
         "InquiryLevel":"4"
       }
     };

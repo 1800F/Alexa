@@ -64,14 +64,16 @@ router.post('/', function (req, res, next) {
           }
         });
       } else {
+        var authCode = oauthhelper.encryptTokens({"systemID":data.systemID, "customerID":data.customerID});
+        process.stdout.write('auth_code: ' + authCode + "\r");
         res.render('home/success', {
           page: "success",
           title: "1800flowers - Account Linked",
-          auth_code: oauthhelper.encryptTokens(user.tokens),
-          card: {
-            imgUrl: alexaFlowers.pickCardImage(data.card.imageUrls, 'ImageLarge'),
-            name: data.card.nickname
-          }
+          auth_code: authCode,
+          // card: {
+          //   imgUrl: alexaFlowers.pickCardImage(data.card.imageUrls, 'ImageLarge'),
+          //   name: data.card.nickname
+          // }
         });
       }
     });

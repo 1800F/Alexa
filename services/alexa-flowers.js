@@ -33,17 +33,32 @@ exports.getPaymentMethodId = function (flowersUser) {
  * Errors are entries in AlexaFlowers.ERRORS
  */
 exports.validate = function (flowersUser) {
-  return Promise.all([flowersUser.authenticate()]).spread(function (primaryCard) {
-    var _ref;
-    process.stdout.write('Validate Reached:\r');
+  return flowersUser.authenticate().then( function (authenticateUser) {
+    var systemID = authenticateUser.authenticateCustomerResponse.customerData.systemID;
+    process.stdout.write('authenticateError: ' + authenticateUser.authenticateCustomerResponse.error + "\rauthenticateSystemID: " + systemID + "\r");
+    return flowersUser.getProfile(systemID).then( function (userProfile) {
+      var customerID = userProfile.Get18FCustomerByAdminSysKeyResponse.result.response.idPK;
+      process.stdout.write("customerID: " + customerID + "\r");
+      return Promise.all([flowersUser.getPaymentMethods(systemID), flowersUser.getRecipients(customerID)
+      ]).spread(function (paymentMethods, recipients) {
+        var _ref;
+        process.stdout.write('Validate Reached:\r');
 
-    var errors = [];
-    if (!primaryCard) errors.push(ERRORS.CARD);
+        var errors = [];
+        //Check to see if there are valid payment methods
+        if (!paymentMethods) errors.push(ERRORS.CARD);
+        //Check to see if there are recipients
+        if (!recipients) errors.push(ERRORS.CARD);
+        
+        return _ref = {
+          systemID: systemID,
+          customerID: customerID
+          }, _defineProperty(_ref, 'errors', errors), _ref;
+      });
+    });
     
-    return _ref = {
-      card: primaryCard,
-      }, _defineProperty(_ref, 'errors', errors), _ref;
   });
+  
 };
 
 exports.pickCardImage = function (cardImages, type) {

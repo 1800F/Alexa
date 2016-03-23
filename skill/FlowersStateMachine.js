@@ -514,6 +514,7 @@ module.exports = StateMachine({
     var self = this;
     if (this.access) return Promise.resolve(this.access);
     if (!request || !request.user || !request.user.accessToken) {
+      //Allow logging in with fake credentials for debugging
       if (!config.skill.fakeCredentials) {
         var analytics = universalAnalytics(config.googleAnalytics.trackingCode, request.session.user.userId, { strictCidFormat: false });
         analytics.event('Main Flow', 'Exit from not authorized').send();
@@ -535,13 +536,21 @@ module.exports = StateMachine({
     //HERE IS WHERE WE WILL GET AN OAUTH ACCESSTOKEN USING THE DEFAULT CREDENTIALS
     //THEN WE WILL PULL USER DATA BASED ON SYSTEMID STORED IN THE ALEXA REQUEST IN PartialOrder.build()
     //FIRST CALL flowers.getProfile, THEN flowers.getRecipients, THEN flowers.getPaymentMethods
-    flowers = flowers || Flowers(config.flowers);
-    this.access = {
-      user: FlowersUser(config.flowers, request.user.accessToken),
-      flowers: flowers,
-      analytics: universalAnalytics(config.googleAnalytics.trackingCode, request.session.user.userId, { strictCidFormat: false })
-    };
-    return Promise.resolve(this.access);
+    return Promise.try(function () {
+      flowers = flowers || Flowers(config.flowers);
+      console.log('Logging in using default credentials.');
+      return flowers.login(config.skill.defaultCredentials.username, config.skill.defaultCredentials.password).then(function (user) {
+        //Store the systemID and customerID that should be in the request.user.accessToken to the user object
+        user.systemID = 'asdfasdf';
+        user.customerID = 'asdf';
+        self.access = {
+          user: user,
+          flowers: flowers,
+          analytics: universalAnalytics(config.googleAnalytics.trackingCode, request.session.user.userId, { strictCidFormat: false })
+        };
+        return self.access;
+      });
+    });
   }
 });
 
