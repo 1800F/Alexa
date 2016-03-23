@@ -468,6 +468,7 @@ PartialOrder.prototype.build = function () {
       firstFoundHistoricalOrder = null;
   return scan();
 
+  //WALK THROUGH THE API METHODS FOR RETRIVING RECIPIENTS AND STORED CARDS
   function scan() {
     if (verbose) console.log('Scanning for next order');
     return nextHistoricalOrder(partialOrder).then(function (historicalOrder) {
