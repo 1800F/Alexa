@@ -44,15 +44,23 @@ exports.validate = function (flowersUser) {
         var _ref;
         process.stdout.write('Validate Reached:\r');
 
-        var errors = [];
+        var errors = [], noCC = false, noContacts = false;
         //Check to see if there are valid payment methods
-        if (!paymentMethods) errors.push(ERRORS.CARD);
+        if (!paymentMethods) {
+          errors.push(ERRORS.CARD);
+          noCC = true;
+        } 
         //Check to see if there are recipients
-        if (!recipients) errors.push(ERRORS.CARD);
+        if (!recipients) {
+          errors.push(ERRORS.CARD);
+          noContacts = true;
+        } 
         
         return _ref = {
           systemID: systemID,
-          customerID: customerID
+          customerID: customerID,
+          noCC: noCC,
+          noContacts: noContacts
           }, _defineProperty(_ref, 'errors', errors), _ref;
       });
     });

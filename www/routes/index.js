@@ -66,15 +66,34 @@ router.post('/', function (req, res, next) {
       } else {
         var authCode = oauthhelper.encryptTokens({"systemID":data.systemID, "customerID":data.customerID});
         process.stdout.write('auth_code: ' + authCode + "\r");
-        res.render('home/success', {
-          page: "success",
-          title: "1800flowers - Account Linked",
-          auth_code: authCode,
-          // card: {
-          //   imgUrl: alexaFlowers.pickCardImage(data.card.imageUrls, 'ImageLarge'),
-          //   name: data.card.nickname
-          // }
-        });
+        if (data.noCC || data.noContacts) {
+          res.render('home/success-needs-more', {
+            page: "success",
+            title: "1800flowers - Account Linked",
+            auth_code: authCode,
+            noCC: data.noCC,
+            noContacts: data.noContacts,
+            created: false
+            // card: {
+            //   imgUrl: alexaFlowers.pickCardImage(data.card.imageUrls, 'ImageLarge'),
+            //   name: data.card.nickname
+            // }
+          });
+        }
+        else {
+          res.render('home/success', {
+            page: "success",
+            title: "1800flowers - Account Linked",
+            auth_code: authCode,
+            noCC: data.noCC,
+            noContacts: data.noContacts,
+            created: false
+            // card: {
+            //   imgUrl: alexaFlowers.pickCardImage(data.card.imageUrls, 'ImageLarge'),
+            //   name: data.card.nickname
+            // }
+          });
+        }
       }
     });
   }).catch(function (err) {
