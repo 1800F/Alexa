@@ -95,7 +95,15 @@ router.post('/', function (req, res, next) {
           });
         }
       }
-    });
+    }).catch(function (err) {
+      console.log("ERROR AUTHENTICATING----------------------------------------******************************----------------------:");
+      console.log(err);
+      res.render('home/index', {
+        page: 'homepage',
+        title: '1800flowers',
+        badPassword: true
+      });
+    })
   }).catch(function (err) {
     process.stdout.write("Error logging in: " + err + "\r");
     res.render('home/index', {
@@ -132,7 +140,8 @@ router.post('/create', function (req, res, next) {
 
   flowers.createCustomer(email, password).then(function (user) {
     process.stdout.write('Create User: ' + user.registerNewCustomerResponse.customerData.customerID + "\r");
-      if (user.registerNewCustomerResponse.error) {
+      if (user.registerNewCustomerResponse.error.errorCode) {
+        console.log("ERROR CODE EXISTS: " + user.registerNewCustomerResponse.error.errorCode);
         res.render('home/create', {
           page: 'account-error',
           title: '1800flowers',
@@ -140,15 +149,39 @@ router.post('/create', function (req, res, next) {
           errorMessage: user.registerNewCustomerResponse.error.errorDetails
         });
       } else {
-        res.render('home/success', {
-          page: "success",
-          title: "1800flowers - Account Linked",
-          auth_code: oauthhelper.encryptTokens(user.tokens),
-          card: {
-            imgUrl: alexaFlowers.pickCardImage(data.card.imageUrls, 'ImageLarge'),
-            name: data.card.nickname
-          }
+        console.log("ERROR CODE DOESN'T EXIST");
+        var authCode = oauthhelper.encryptTokens({"systemID": user.registerNewCustomerResponse.customerData.systemID});
+        res.render('home/success-needs-more', {
+            page: "success",
+            title: "1800flowers - Account Created",
+            auth_code: authCode,
+            noCC: true,
+            noContacts: true,
+            created: true
         });
+        // flowers.login(email, password).then(function (flowersUser) {
+        //   flowersUser.getProfile(user.registerNewCustomerResponse.customerData.systemID).then( function (userProfile) {
+        //     console.log("System ID: " + user.registerNewCustomerResponse.customerData.systemID);
+        //     console.log("Customer ID: " + userProfile.Get18FCustomerByAdminSysKeyResponse.result.response.idPK);
+        //     var authCode = oauthhelper.encryptTokens({"systemID":user.registerNewCustomerResponse.customerData.systemID, "customerID":userProfile.Get18FCustomerByAdminSysKeyResponse.result.response.idPK});
+        //     res.render('home/success-needs-more', {
+        //         page: "success",
+        //         title: "1800flowers - Account Created",
+        //         auth_code: authCode,
+        //         noCC: true,
+        //         noContacts: true,
+        //         created: true
+        //     });
+        //   }).catch(function (profileError) {
+        //     console.log("PROFILE ERROR: ", profileError);
+        //       res.render('home/create', {
+        //       page: 'create',
+        //       title: '1800flowers',
+        //       errorCreating: true,
+        //       errorMessage: profileError
+        //     });
+        //   });
+        // });
       }
   }).catch(function (err) {
     process.stdout.write("Error Creating User: " + err + "\r");
@@ -176,6 +209,15 @@ router.get('/account-required', function (req, res, next) {
 });
 
 router.get('/privacy-policy', function (req, res, next) {
+  //TEST ORDER
+  flowers.login('1stevenh@rain.agency', '1rainPssword').then(function (user) {
+    console.log(user);
+    user.submitOrder().then(function(order) {
+      console.log(order);
+    })
+  });
+
+
   res.render('home/privacy-policy', {
     page: "privacy-policy",
     title: "1800flowers - Privacy Policy"
