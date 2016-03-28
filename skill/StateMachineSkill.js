@@ -60,6 +60,7 @@ StateMachineSkill.prototype.eventHandlers.onIntent = function (request, session,
       stateMachine = this._StateMachine(fromState),
       request = new Request(request, session),
       qTransition = stateMachine.transition(request);
+  console.log(fromState + " " + JSON.stringify(stateMachine) + " " + JSON.stringify(request) + " " + JSON.stringify(qTransition));
   return qTransition.then(function (trans) {
     return transitionEndingInterceptor.call(self, trans, stateMachine, request);
   }).then(function (trans) {
