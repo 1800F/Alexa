@@ -80,22 +80,10 @@ module.exports = StateMachine({
   states: {
     "entry": {
       to: {
-        HelpIntent: 'help-menu',
-        HelpHowToOrderIntent: 'HelpAboutOrder',
-        HelpCheckBalanceIntent: 'HelpBalanceCheck',
-        HelpOtherOptions: 'HelpOtherMenu',
-        HelpSVCAdjustIntent: 'HelpAdjustFlowersCard',
-        HelpPaymentChangeIntent: 'HelpAdjustPayment',
-        HelpLocationAdjustIntent: 'HelpAdjustLocation',
-        HelpOrderAdjustIntent: 'HelpAdjustOrder',
-        HelpSettingsAdjustIntent: 'HelpAdjustSettings',
-        HelpReloadIntent: 'HelpReloadCard',
         LaunchIntent: 'launch',
-        OrderSpecificRedirectIntent: 'order-specific-redirect',
-        ItemAdjustmentRedirectIntent: 'adjustment-specific-redirect',
-        LocationSpecificRedirectIntent: 'location-specific-redirect',
-        ChangeLocationIntent: 'change-store',
-        ExitIntent: 'exit'
+        ExitIntent: 'exit',
+        RecipientSelectionIntent: 'recipient-selection',
+        ArrangementSelectionIntent: 'arrangement-selection'
       }
     },
     'exit': {
@@ -119,7 +107,20 @@ module.exports = StateMachine({
           if (recipients.length == 0) {
             return replyWith('Errors.NoRecipientsInAddressBook', 'die', request);
           }
+
+          // We go to choose the arrange type
+          return replyWith('Options.ArrangementList', 'arrangement-selection', request);
         });
+      }
+    },
+    "recipient-selection": {
+      enter: function enter(request) {
+
+      }
+    },
+    "arrangement-selection": {
+      enter: function enter(request) {
+        
       }
     }
   },

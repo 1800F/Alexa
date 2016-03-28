@@ -4,6 +4,25 @@
       "intent": "LaunchIntent"
     },
     {
+      "intent": "RecipientSelectionIntent",
+      "slots": [
+        {
+          "name": "Name",
+          "type": "AMAZON.US_FIRST_NAME"
+        }
+      ]
+    },
+    {
+      "intent": "ArrangementSelectionIntent",
+      "slots": [
+        {
+          "name": "arrangementType",
+          "type": "ARRANGEMENT_TYPES"
+        }
+      ]
+    }
+    /*
+    {
       "intent": "YesIntent"
     },
     {
@@ -155,5 +174,6 @@
     {
       "intent": "HelpOtherOptions"
     }
+    */
   ]
 }
