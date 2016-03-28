@@ -3,7 +3,6 @@
 var Promise = require('bluebird'),
     post = Promise.promisify(require('request').post),
     get = Promise.promisify(require('request').get),
-    soap = require('soap'),
     parseString = require('xml2js').parseString,
     js2xmlparser = require("js2xmlparser"),
     path = require('path'),
