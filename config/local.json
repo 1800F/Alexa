@@ -15,9 +15,7 @@
     "verbose": true,
     "logsAreInsensitive": true,
     "callsPerSecond": 50,
-    "platform": "echo",
-    "dynamoID": "akid",
-    "dynamoSecret": "secret"
+    "platform": "echo"
   },
   "alexa": {
     "auth": {
