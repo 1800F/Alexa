@@ -131,12 +131,14 @@ router.post('/oauth', function (req, res, next) {
   if (req.body.grant_type == 'authorization_code') {
     var tokens = oauthhelper.decryptCode(req.body.code);
     // if (token_expiration) tokens.expires_in = token_expiration;
-    res.json(tokens);
+    //res.json(tokens);
+    res.json({"access_token":req.body.code, "token_type": "bearer", "state": req.body.state });
   } else if (req.body.grant_type == 'refresh_token') {
     //starbucks.User({ refresh_token: req.body.refresh_token }).refresh().then(function (tokens) {
       // if (token_expiration) tokens.expires_in = token_expiration;
       var tokens = oauthhelper.decryptCode(req.body.code);
-      res.json(tokens);
+      //res.json(tokens);
+      res.json({"access_token":req.body.code, "token_type": "bearer", "state": req.body.state });
   } else res.sendStatus(404);
 });
 
