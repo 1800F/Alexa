@@ -14,7 +14,9 @@ var StateMachine = require('./StateMachine.js'),
     messageRenderer = require('./message-renderer.js')(responses, require('./variables.js')),
     verbose = config.verbose,
     Promise = require('bluebird'),
-    universalAnalytics = require('universal-analytics');
+    universalAnalytics = require('universal-analytics'),
+    OAuthHelpers = require('../services/oauth-helpers.js'),
+    oauthhelper = OAuthHelpers(config.alexa.auth);
 
 var flowers = null;
 
@@ -111,12 +113,12 @@ module.exports = StateMachine({
     'die': { isTerminal: true },
     "launch": {
       enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return user.getRecipients();
-        }).then(function (a) {
-          console.log(JSON.stringify(a));
-          console.log("----")
-          return replyWith('ItemIssues.NoItemsNoOtherOrder', 'die', request, po);
+        return this.Access(request).then(function (flowersUser) {
+          return flowersUser.user.getRecipients(flowersUser.user.customerID);
+        }).then(function (recipients) {
+          if (recipients.length == 0) {
+            return replyWith('Errors.NoRecipientsInAddressBook', 'die', request);
+          }
         });
       }
     }
@@ -152,8 +154,9 @@ module.exports = StateMachine({
       console.log('Logging in using default credentials.');
       return flowers.login(config.skill.defaultCredentials.username, config.skill.defaultCredentials.password).then(function (user) {
         //Store the systemID and customerID that should be in the request.user.accessToken to the user object
-        user.systemID = 'asdfasdf';
-        user.customerID = 'asdf';
+        var tokens = oauthhelper.decryptCode(request.user.accessToken);
+        user.systemID = tokens.systemID;
+        user.customerID = tokens.customerID;
         self.access = {
           user: user,
           flowers: flowers,
