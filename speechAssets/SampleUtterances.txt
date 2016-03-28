@@ -1,0 +1,21 @@
+LaunchIntent to order flowers
+
+ArrangementSelectionIntent {arrangementType}
+ArrangementSelectionIntent A {arrangementType} {bouquet}.
+ArrangementSelectionIntent I would like a {arrangementType} {bouquet}
+ArrangementSelectionIntent How about {arrangementType} {bouquet}.
+ArrangementSelectionIntent I’d like a {arrangementType} {bouquet}.
+ArrangementSelectionIntent Oh, {arrangementType} {bouquet}.
+ArrangementSelectionIntent Let’s go with {arrangementType} {bouquet}.
+ArrangementSelectionIntent Let’s do a {arrangementType} {bouquet}.
+ArrangementSelectionIntent I want a {arrangementType} {bouquet}.
+ArrangementSelectionIntent Let’s make it a {arrangementType} {bouquet}.
+ArrangementSelectionIntent Order a {arrangementType} {bouquet}.
+ArrangementSelectionIntent Send a {arrangementType} {bouquet}.
+ArrangementSelectionIntent Get a {arrangementType} {bouquet}.
+ArrangementSelectionIntent I choose a {arrangementType} {bouquet}.
+ArrangementSelectionIntent I have to get a {arrangementType} {bouquet}.
+ArrangementSelectionIntent I must to get a {arrangementType} {bouquet}.
+ArrangementSelectionIntent I need to get a {arrangementType} {bouquet}.
+ArrangementSelectionIntent It must be a {arrangementType} {bouquet}.
+ArrangementSelectionIntent I have to have a {arrangementType} {bouquet}.

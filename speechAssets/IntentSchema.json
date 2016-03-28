@@ -18,6 +18,10 @@
         {
           "name": "arrangementType",
           "type": "ARRANGEMENT_TYPES"
+        },
+        {
+          "name": "bouquet",
+          "type": "BOUQUET"
         }
       ]
     }
