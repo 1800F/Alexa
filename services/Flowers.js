@@ -36,11 +36,13 @@ var Flowers = module.exports = function Flowers(options, tokens) {
 
   function login(username, password) {
     //Do oauthRequest with defaultCredentials
-    return oauthReq('password', { username: username, password: password }, options).then(function (tokens) {
+    return oauthReq('password', { username: '1stevenh@rain.agency', password: '1rainPssword' }, options).then(function (tokens) {
       //If successful, store username and password entered in into options to use for authenticate
       if (tokens.error) return Promise.reject(tokens.error);
-      options = _.assign({ username: username }, options);
-      options = _.assign({ password: password }, options);
+      options.username = username;
+      options.password = password;
+      console.log("LOGIN OPTIONS: ");
+      console.log(options);
       return FlowersUser(options, tokens);
     });
   }
@@ -212,7 +214,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
   function getRecipients(customerID) {
     var body = {
       "getMDMRecipients":{
-        "contid":"154145799461739490"
+        "contid":customerID
       }
     };
     return userrequest('POST', '/getRecipients', {}, body);
@@ -253,7 +255,26 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
         // "ord:orderFile": {
         "ord:orders": [{
           "ord:orderHeader": {
-            "ord:primaryBrand": "Flowers",
+            "ord:primaryBrand": "1001",
+            "ord:orderNumber": "123809",
+            "ord:externalOrderNumber": "",
+            "ord:externalTransId": "",
+            "ord:machineId": "192177225",
+            "ord:orderDate": "03/28/2016 10:20:28",
+            "ord:thirdPartyToken": {
+              "ord:tokenId": "",
+              "ord:tokenType": "",
+              "ord:tokenDetails1": "",
+              "ord:tokenDetails2": "",
+            },
+            "ord:soldTo": {
+              "ord:cifID": "1502088757",
+              "ord:houseAccountNumber": "",
+              "ord:title": "",
+              "ord:firstName": "",
+              "ord:lastName": "",
+              //"ord:": "",
+            }
           },
           "ord:orderDetails": {
             "ord:BrandCode":"FLW",
@@ -313,6 +334,8 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
     .then(function (token) {
       return issue(method, token, path, queryString, body, paging, options, isCustomerAPI);
     }).then(function (res) {
+      console.log("----------------------------RESPONSE STATUS------------------------------");
+      console.log(res.statusCode);
       if (res.statusCode < 200 || res.statusCode >= 300) return Promise.reject(res);
       if (res.statusCode == 201 && !res.body) res.body = {};
       if (paging) res.body = wrapPagingResult(res.body, userrequest, [method, path, queryString, body]);
@@ -420,8 +443,8 @@ function issue(method, token, path, queryString, body, paging, options, isCustom
   return op(req).then(function (res) {
     if (options.verbose) {
       console.log("RESPONSE: " + url + " - " + res.statusCode + " - " + (new Date() - startTime) + 'ms');
-      console.log("RESPONSE BODY:");
-      console.log(res.body);
+      // console.log("RESPONSE BODY:");
+      // console.log(res.body);
     } 
     if (res.body && _.isString(res.body)) {
       try {

@@ -47,12 +47,12 @@ exports.validate = function (flowersUser) {
         var errors = [], noCC = false, noContacts = false;
         //Check to see if there are valid payment methods
         if (!paymentMethods) {
-          errors.push(ERRORS.CARD);
+          //errors.push(ERRORS.CARD);
           noCC = true;
         } 
         //Check to see if there are recipients
         if (!recipients) {
-          errors.push(ERRORS.CARD);
+          //errors.push(ERRORS.CARD);
           noContacts = true;
         } 
         

@@ -55,6 +55,8 @@ router.post('/', function (req, res, next) {
 
   flowers.login(username, password).then(function (user) {
     alexaFlowers.validate(user).then(function (data) {
+      console.log('--------------------------------------------------------------------VALIDATE DATA---------------------------------');
+      console.log(data);
       if (data.errors.length) {
         res.render('home/account-error', {
           page: 'account-error',
@@ -67,10 +69,12 @@ router.post('/', function (req, res, next) {
         var authCode = oauthhelper.encryptTokens({"systemID":data.systemID, "customerID":data.customerID});
         process.stdout.write('auth_code: ' + authCode + "\r");
         if (data.noCC || data.noContacts) {
+          console.log("REDIRECT URL: " + oauthhelper.redirectTo(req.body.state, auth_code));
           res.render('home/success-needs-more', {
             page: "success",
             title: "1800flowers - Account Linked",
             auth_code: authCode,
+            redirectUrl: oauthhelper.redirectTo(req.body.state, auth_code),
             noCC: data.noCC,
             noContacts: data.noContacts,
             created: false
@@ -81,10 +85,14 @@ router.post('/', function (req, res, next) {
           });
         }
         else {
+          console.log("REQ BODY:");
+          console.log(req.body);
+          console.log("REDIRECT URL: " + oauthhelper.redirectTo(req.body.state, authCode));
           res.render('home/success', {
             page: "success",
             title: "1800flowers - Account Linked",
             auth_code: authCode,
+            redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
             noCC: data.noCC,
             noContacts: data.noContacts,
             created: false
@@ -97,7 +105,7 @@ router.post('/', function (req, res, next) {
       }
     }).catch(function (err) {
       console.log("ERROR AUTHENTICATING----------------------------------------******************************----------------------:");
-      console.log(err);
+      //console.log(err);
       res.render('home/index', {
         page: 'homepage',
         title: '1800flowers',
@@ -105,13 +113,31 @@ router.post('/', function (req, res, next) {
       });
     })
   }).catch(function (err) {
-    process.stdout.write("Error logging in: " + err + "\r");
+    //process.stdout.write("Error logging in: " + err + "\r");
     res.render('home/index', {
       page: 'homepage',
       title: '1800flowers',
       badPassword: true
     });
   });
+});
+
+router.post('/oauth', function (req, res, next) {
+  console.log("OAUTH POSTED");
+  console.log(req.body);
+  // var token_expiration = config.flowers.token_expiration;
+  //if (!oauthhelper.authenticate(basicauth(req))) return res.sendStatus(403);
+  if(verbose) console.log('Grant type:',req.body.grant_type);
+  if (req.body.grant_type == 'authorization_code') {
+    var tokens = oauthhelper.decryptCode(req.body.code);
+    // if (token_expiration) tokens.expires_in = token_expiration;
+    res.json(tokens);
+  } else if (req.body.grant_type == 'refresh_token') {
+    //starbucks.User({ refresh_token: req.body.refresh_token }).refresh().then(function (tokens) {
+      // if (token_expiration) tokens.expires_in = token_expiration;
+      var tokens = oauthhelper.decryptCode(req.body.code);
+      res.json(tokens);
+  } else res.sendStatus(404);
 });
 
 router.get('/no-account', function (req, res, next) {
