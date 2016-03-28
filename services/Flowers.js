@@ -3,9 +3,14 @@
 var Promise = require('bluebird'),
     post = Promise.promisify(require('request').post),
     get = Promise.promisify(require('request').get),
-    aws = require('aws-sdk'),
+    soap = require('soap'),
+    parseString = require('xml2js').parseString,
+    js2xmlparser = require("js2xmlparser"),
+    path = require('path'),
+    config = require('../config/'),
     md5 = require('md5'),
     _ = require('lodash'),
+    wsdl = path.resolve('./www/public/submitOrder/BTOPOrderFileService.wsdl'),
     countryCode = 'US',
     localeCode = 'en-us'
     ;
@@ -30,11 +35,14 @@ var Flowers = module.exports = function Flowers(options, tokens) {
   }, 'app');
 
   function login(username, password) {
-    process.stdout.write('dynamo: ' + options.dynamoID + "\r");
-    return oauthReq('password', { username: username, password: password }, options).then(function (tokens) {
+    //Do oauthRequest with defaultCredentials
+    return oauthReq('password', { username: '1stevenh@rain.agency', password: '1rainPssword' }, options).then(function (tokens) {
+      //If successful, store username and password entered in into options to use for authenticate
       if (tokens.error) return Promise.reject(tokens.error);
-      options = _.assign({ username: username }, options);
-      options = _.assign({ password: password }, options);
+      options.username = username;
+      options.password = password;
+      console.log("LOGIN OPTIONS: ");
+      console.log(options);
       return FlowersUser(options, tokens);
     });
   }
@@ -206,7 +214,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
   function getRecipients(customerID) {
     var body = {
       "getMDMRecipients":{
-        "contid":"154145799461739490"
+        "contid":customerID
       }
     };
     return userrequest('POST', '/getRecipients', {}, body);
@@ -239,17 +247,82 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
     return userrequest('POST', '/getCustomerDetails', {}, body);
   }
 
-  function submitOrder(storeNumber, orderToken, svcId, amount, signature) {
-    var body = {
-      tenders: [{
-        type: 'SVC',
-        id: svcId,
-        amountToCharge: amount
-      }],
-      signature: signature
+  function submitOrder() {
+    var testOrder = {
+        '@': {
+          "xmlns:ord": "http://1800flowers.com/BTOP/OrderFile"
+        },
+        // "ord:orderFile": {
+        "ord:orders": [{
+          "ord:orderHeader": {
+            "ord:primaryBrand": "1001",
+            "ord:orderNumber": "123809",
+            "ord:externalOrderNumber": "",
+            "ord:externalTransId": "",
+            "ord:machineId": "192177225",
+            "ord:orderDate": "03/28/2016 10:20:28",
+            "ord:thirdPartyToken": {
+              "ord:tokenId": "",
+              "ord:tokenType": "",
+              "ord:tokenDetails1": "",
+              "ord:tokenDetails2": "",
+            },
+            "ord:soldTo": {
+              "ord:cifID": "1502088757",
+              "ord:houseAccountNumber": "",
+              "ord:title": "",
+              "ord:firstName": "",
+              "ord:lastName": "",
+              //"ord:": "",
+            }
+          },
+          "ord:orderDetails": {
+            "ord:BrandCode":"FLW",
+          },
+          "ord:errorFlag": "false"
+        }]
+        //}
     };
+
+    // var js2XMLParseOptions = {declaration: {'include': false},prettyPrinting: {'enabled': true}};
+    // var myxml = js2xmlparser('ord:orderFile', testOrder, js2XMLParseOptions);
+    // console.log("TESTORDER XML:");
+    // console.log(myxml);
+
+    return getUserAuthToken().then(function (token) {
+      return soapRequest(token, 'https://ecommerce.800-flowers.net/alexa/uat/submitOrder/v1', testOrder, options);
+    });    
+
+    // soap.createClient(wsdl, function(err, client) {
+    //   if (err) {
+    //     console.log("ERROR CREATING CLIENT: " + err);
+    //     return err;
+    //   }
+    //   else {
+    //     getUserAuthToken().then(function (token) {
+    //       client.setSecurity(new soap.BearerSecurity(token));
+    //       console.log("CLIENT FOLLOWS:");
+    //       console.log(client);
+    //       client.submitOrderFile(testOrder, function(err, result, body) {
+    //           if (err) {
+    //             console.log('Error Submitting: ' + err);
+    //             return err;
+    //           }
+    //           else {
+    //             parseString(body, function (err, result){
+    //               var requestResult = result['SOAP-ENV:Envelope']['SOAP-ENV:Body'][0].orderFileResponse[0];
+    //               console.log("BODY PARSED:");
+    //               console.log(requestResult);
+    //               return requestResult;
+    //             })
+    //           }
+    //       });
+    //     });
+    //   }
+    // });
+
     // console.log('Submit order body',JSON.stringify(body,null,2));
-    return userrequest('POST', '/me/stores/' + storeNumber + '/orderToken/' + orderToken + '/submitOrder', {}, body);
+    //return userrequest('POST', '/me/stores/' + storeNumber + '/orderToken/' + orderToken + '/submitOrder', {}, body);
   }
 
   function userrequest(method, path, queryString, body, paging, isCustomerAPI) {
@@ -257,11 +330,12 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
       var giveResponse = true;
       delete queryString.giveResponse;
     }
-    process.stdout.write('qs: ' + queryString.client_id + "\r");
     return getUserAuthToken()
     .then(function (token) {
       return issue(method, token, path, queryString, body, paging, options, isCustomerAPI);
     }).then(function (res) {
+      console.log("----------------------------RESPONSE STATUS------------------------------");
+      console.log(res.statusCode);
       if (res.statusCode < 200 || res.statusCode >= 300) return Promise.reject(res);
       if (res.statusCode == 201 && !res.body) res.body = {};
       if (paging) res.body = wrapPagingResult(res.body, userrequest, [method, path, queryString, body]);
@@ -292,19 +366,24 @@ function oauthReq(grant_type, values, options) {
   var url = options.endpoint + '/' + options.account + '/' + options.version + '/oauth/token?sig=' + sig(),
       body = _.assign({
     grant_type: grant_type,
-    scope: options.oAuthScope
+    scope: options.oAuthScope,
   }, values),
-  startTime = +new Date()
+  startTime = +new Date(),
+  headers = {
+      "Authorization": "Basic " + options.basicAuth,
+      "Accept": 'application/json'
+    }
   ;
-  if (options.verbose) process.stdout.write('Request: ' + url + "\rGrantType: " + body.grant_type + "\rid: " + body.client_id + "\rSecret: " + body.client_secret + "\rUsername: " + body.username + "\rPass: " + body.password + "\rAuth: " + options.basicAuth + "\r");
+  if (options.verbose) {
+    console.log('OAUTH Request: ', url);
+    console.log('OAUTH Body: ', body);
+    console.log('OAUTH Headers: ', headers);
+  }
   //if(options.verbose) console.log('Request',url);
 
   return post({
     url: url,
-    headers: {
-      "Authorization": "Basic " + options.basicAuth,
-      "Accept": 'application/json'
-    },
+    headers: headers,
     form: body,
     proxy: options.proxy,
     strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false
@@ -334,7 +413,8 @@ function issue(method, token, path, queryString, body, paging, options, isCustom
       op = method == 'POST' ? post : get,
       url = isCustomerAPI ? (options.endpoint + '/' + options.customer + '/' + options.version + path + '?' + qs) : (options.endpoint + '/' + options.account + '/' + options.version + path + '?' + qs),
       startTime = +new Date();
-  process.stdout.write("Body Issue: " + body + "\rMethod:" + method + "\r");
+  console.log("ISSUE BODY:");
+  console.log(body);
   var req = {
     url: url,
     headers: {
@@ -348,27 +428,92 @@ function issue(method, token, path, queryString, body, paging, options, isCustom
      req.headers.Authorization = "Bearer " + token;
   }
   if (body && method != 'GET') {
-    process.stdout.write("Body Received: " + body + "\r");
+    console.log("BODY RECEIVED:");
+    console.log(body);
     req.json = true;
     req.body = body;
   }
   if(options.verbose) {
-    process.stdout.write('Request ' + url + ": " + "\rHeaders: " + req.headers.Authorization + "\rBody: " + req.body + "\r");
+    console.log("REQUEST: " + url);
+    console.log("HEADERS:");
+    console.log(req.headers);
+    console.log("BODY:");
+    console.log(req.body);
   } 
   return op(req).then(function (res) {
     if (options.verbose) {
-      process.stdout.write('Response ' + url + ":" + res.statusCode + " - " + (new Date() - startTime) + 'ms'+ "\r");
-      process.stdout.write('Body: ' + res.body + "\r");
+      console.log("RESPONSE: " + url + " - " + res.statusCode + " - " + (new Date() - startTime) + 'ms');
+      // console.log("RESPONSE BODY:");
+      // console.log(res.body);
     } 
     if (res.body && _.isString(res.body)) {
       try {
         res.body = JSON.parse(res.body);
       } catch (e) {
-        if (options.verbose) process.stdout.write('Failed to parse ' + url + ' - "' + res.body + '"'+ "\r");
+        if (options.verbose) {
+          console.log("FAILED TO PARSE:");
+          console.log(res.body);
+        }
         throw e;
       }
     }
     return res;
+  });
+}
+
+function soapRequest(token, uri, sendObject, options) {
+  var method = 'POST',
+      op = method == 'POST' ? post : get,
+      url = uri,
+      js2XMLParseOptions = {declaration: {'include': false},prettyPrinting: {'enabled': true}},
+      myxml = js2xmlparser('ord:orderFile', sendObject, js2XMLParseOptions),
+      startTime = +new Date(),
+      body = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header></soapenv:Header><soapenv:Body>';
+
+  body += myxml += "</soapenv:Body></soapenv:Envelope>";
+  var req = {
+    url: url,
+    headers: {
+      "X-IBM-Client-Id": options.key,
+      "X-IBM-Client-Secret": options.secret,
+      "Content-Type": 'application/xml',
+      "Authorization": "Bearer " + token,
+      "SOAPAction": "submitOrderFile"
+    },
+    body: body,
+    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false
+  };
+  if(options.verbose) {
+    console.log("REQUEST: " + url);
+    console.log("HEADERS:");
+    console.log(req.headers);
+    console.log("BODY:");
+    console.log(req.body);
+  } 
+  return op(req).then(function (res) {
+    if (options.verbose) {
+      console.log("RESPONSE: " + url + " - " + res.statusCode + " - " + (new Date() - startTime) + 'ms');
+      console.log("RESPONSE BODY:");
+      console.log(res.body);
+    } 
+    if (res.body && _.isString(res.body)) {
+        parseString(res.body, function (err, result){
+          var requestResult = result['SOAP-ENV:Envelope']['SOAP-ENV:Body'][0].orderFileResponse[0];
+          console.log("BODY PARSED:");
+          console.log(requestResult);
+          res.body = requestResult;
+          try {
+            res.body = JSON.parse(res.body);
+          } catch (e) {
+            if (options.verbose) {
+              console.log("FAILED TO PARSE:");
+              console.log(res.body);
+            }
+            throw e;
+          }
+          return res;
+        });
+    }
   });
 }
 
@@ -389,13 +534,4 @@ function buildProductTypePredicate(number, name) {
   return ['is' + name.substring(0, 1).toUpperCase() + name.substring(1, name.length), function (query) {
     return query == number || query && query.toLowerCaswe && query.toLowerCase() == name;
   }];
-}
-
-function outputBody(body) {
-  for(var key in body) {
-    var obj = body[key];
-    for (var prop in obj) {
-        process.stdout.write(prop + ":" + body[prop] + "\r");
-    }
-  }
 }
