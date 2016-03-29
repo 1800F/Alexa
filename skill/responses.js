@@ -46,8 +46,8 @@ var responses = function () {
         reprompt: "You can send flowers to {recipientOne}, {recipientTwo}, {recipientThree}, or {numberOfRecipientsLeft} others. Who would you like to send flowers to?"
       },
       ArrangementList: {
-        ask: "What type of arrangement would you like?  I have arrangements for Mother’s Day, Birthday, Love and Romance, and “Thank you”.",
-        reprompt: "Did you want a Mother’s Day, Birthday, Love and Romance, or “Thank you” arrangment?"
+        ask: "What type of arrangement would you like?  I have arrangements for Mother's Day, Birthday, Love and Romance, and 'Thank you'.",
+        reprompt: "Did you want a Mother's Day, Birthday, Love and Romance, or 'Thank you' arrangment?"
       },
       SizeList: {
         ask: "What arrangement size would you like? Large for {largePrice}, medium for {mediumPrice}, or small for {smallPrice}.",
@@ -55,7 +55,7 @@ var responses = function () {
       },
       DateSelection: {
         ask: "When would you like the flowers delivered?",
-        reprompt: "To select a date just say “tomorrow” or “next Wednesday” or the month and day, like “March 6th”."
+        reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
       },
       OrderReview: {
         ask: "For review, I have a {arrangementSize} {arrangementType} arrangement to be delivered to {Recipient} on {deliveryDate}. Is that correct?",
@@ -91,7 +91,7 @@ var responses = function () {
         reprompt: "Is {address} the correct address for {recipient}?"
       },
       NotInAddressBook: {
-        say: "I don’t see {recipient} in your address book. Go to 1-800-Flowers.com to add contacts.",
+        say: "I don't see {recipient} in your address book. Go to 1-800-Flowers.com to add contacts.",
       },
       SendToSomeoneElse: {
         ask: "Would you like to send flowers to someone else?",
@@ -126,7 +126,7 @@ var responses = function () {
         say: "{okay}, flowers for {recipient}?",
       },
       AddressNotDeliverable: {
-        say: "That address is outside 1 800 Flowers’ delivery area.",
+        say: "That address is outside 1 800 Flowers' delivery area.",
       },
       NextAddress: {
         ask: "How about flowers for {Recipient} at {Address}?",
@@ -147,7 +147,7 @@ var responses = function () {
         reprompt: "Would you like to send a {arrangmentType} arrangement?"
       },
       ArrangementListAgain: {
-        say: "{okay}, I have arrangements for Mother’s Day, Birthday, Love and Romance, and “Thank you”.",
+        say: "{okay}, I have arrangements for Mother's Day, Birthday, Love and Romance, and “Thank you”.",
         reprompt: ""
       },
       MoreArrangmentsOnline: {
@@ -250,7 +250,7 @@ var responses = function () {
 
     QueryBuyConfirmation: {
       PurchaseValidation: {
-        say: "I’ve sent your order. There is a review card in the alexa app and you will receive an email confirmation shortly.",
+        say: "I've sent your order. There is a review card in the alexa app and you will receive an email confirmation shortly.",
       },
       CancelOrder: {
         ask: "Would you liket o cancel your order?",

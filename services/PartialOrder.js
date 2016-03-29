@@ -470,27 +470,11 @@ PartialOrder.prototype.build = function () {
 
   //WALK THROUGH THE API METHODS FOR RETRIVING RECIPIENTS AND STORED CARDS
   function scan() {
-    if (verbose) console.log('Scanning for next order');
-    return nextHistoricalOrder(partialOrder).then(function (historicalOrder) {
-      firstFoundHistoricalOrder = firstFoundHistoricalOrder || historicalOrder;
-      if (isNoMore(historicalOrder)) return partialOrder.enterNoneFoundMode(transHistoricalOrderToOrder(firstFoundHistoricalOrder));
-      if (isIgnorableHistoricalOrder(historicalOrder)) {
-        if (verbose) console.log('Order is ignorable', summarizeOrder(transHistoricalOrderToOrder(historicalOrder)));
-        return scan();
-      }
+    if (verbose) console.log('Scanning for recipients');
+    return getRecipients(partialOrder).then(function(recipients) {
+      partialOrder.noRecipientsInAddressBook = (recipients.length == 0);
 
-      var order = transHistoricalOrderToOrder(historicalOrder);
-      return getStoreAvailability(historicalOrder.inStoreOrder.storeNumber, partialOrder).then(function (strAvailablility) {
-        if (verbose) console.log('Store availbility: ', strAvailablility);
-        if (!strAvailablility.isOpen) {
-          return partialOrder.enterDetachedMode(order);
-        }
-        //TODO: We need a way to cache product availability by store
-        return getProductAvailability(partialOrder.flowers, order.store, order.items).then(function (prdAvailability) {
-          if (!prdAvailability.anyAvailable) return partialOrder.enterFallbackMode(firstFoundHistoricalOrder, order);
-          return partialOrder.enterFoundOrderMode(order);
-        });
-      });
+      return partialOrder
     });
   }
 };
@@ -564,6 +548,12 @@ function getTimeOfDay(zip) {
   if (hoursIntoDay < 16) return 'afternoon';
   if (hoursIntoDay < 18) return 'evening';
   return 'night';
+}
+
+
+function getRecipients(partialOrder) {
+  var user = partialOrder.user;
+  return user.getRecipients(user.customerID);
 }
 
 //module.exports.parseItemAvailbilityExplanation = parseItemAvailbilityExplanation;

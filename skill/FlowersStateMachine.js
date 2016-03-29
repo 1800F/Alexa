@@ -101,16 +101,17 @@ module.exports = StateMachine({
     'die': { isTerminal: true },
     "launch": {
       enter: function enter(request) {
-        return this.Access(request).then(function (flowersUser) {
-          return flowersUser.user.getRecipients(flowersUser.user.customerID);
-        }).then(function (recipients) {
-          if (recipients.length == 0) {
-            return replyWith('Errors.NoRecipientsInAddressBook', 'die', request);
-          }
+        return this.Access(request)
+          .then(PartialOrder.build)
+          .then(function (po) {
+            console.log("No Recipient " + JSON.stringify(po));
+            // if (po.noRecipientsInAddressBook) {
+            // return replyWith('Errors.NoRecipientsInAddressBook', 'die', request, po);
+            // }
 
-          // We go to choose the arrange type
-          return replyWith('Options.ArrangementList', 'arrangement-selection', request);
-        });
+            // We go to choose the arrange type
+            return replyWith('Options.NoRecipient', 'recipient-selection', request);
+          });
       }
     },
     "recipient-selection": {
