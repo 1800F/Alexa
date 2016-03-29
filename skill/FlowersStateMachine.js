@@ -14,7 +14,9 @@ var StateMachine = require('./StateMachine.js'),
     messageRenderer = require('./message-renderer.js')(responses, require('./variables.js')),
     verbose = config.verbose,
     Promise = require('bluebird'),
-    universalAnalytics = require('universal-analytics');
+    universalAnalytics = require('universal-analytics'),
+    OAuthHelpers = require('../services/oauth-helpers.js'),
+    oauthhelper = OAuthHelpers(config.alexa.auth);
 
 var flowers = null;
 
@@ -39,7 +41,7 @@ module.exports = StateMachine({
 
   },
   onAuthError: function onAuthError() {
-    return new Reply(_.at(responses, 'Errors.UserNotAuthorized')[0]);
+    return new Reply(_.at(responses, 'Errors.NotConnectedToAccount')[0]);
   },
   onError: function onError(request, error) {
     var _this = this;
@@ -78,27 +80,17 @@ module.exports = StateMachine({
   states: {
     "entry": {
       to: {
-        HelpIntent: 'help-menu',
-        HelpHowToOrderIntent: 'HelpAboutOrder',
-        HelpCheckBalanceIntent: 'HelpBalanceCheck',
-        HelpOtherOptions: 'HelpOtherMenu',
-        HelpSVCAdjustIntent: 'HelpAdjustFlowersCard',
-        HelpPaymentChangeIntent: 'HelpAdjustPayment',
-        HelpLocationAdjustIntent: 'HelpAdjustLocation',
-        HelpOrderAdjustIntent: 'HelpAdjustOrder',
-        HelpSettingsAdjustIntent: 'HelpAdjustSettings',
-        HelpReloadIntent: 'HelpReloadCard',
         LaunchIntent: 'launch',
-        OrderSpecificRedirectIntent: 'order-specific-redirect',
-        ItemAdjustmentRedirectIntent: 'adjustment-specific-redirect',
-        LocationSpecificRedirectIntent: 'location-specific-redirect',
-        ChangeLocationIntent: 'change-store',
-        ExitIntent: 'exit'
+        ExitIntent: 'exit',
+        RecipientSelectionIntent: 'recipient-selection',
+        ArrangementSelectionIntent: 'arrangement-selection',
+        SizeSelectionIntent: 'size-selection',
+        DateSelectionIntent: 'date-selection',
+        OrderReviewIntent: 'order-review'
       }
     },
     'exit': {
       enter: function enter(request) {
-
         return this.Access(request).then(function (user) {
           return PartialOrder.fromRequest(user, request);
         }).then(function (po) {
@@ -109,404 +101,47 @@ module.exports = StateMachine({
         });
       }
     },
-    'more-help-query': {
-      enter: function enter(request) {
-        if (request.intent.name == 'HelpIntent' || request.intent.name == 'YesIntent') return replyWith('Help.HelpMenuRestart', 'more-help-query', request, null);
-        if (request.intent.name == 'NoIntent') return replyWith(null, 'launch', request, null);
-        if (request.intent.name == 'ExitIntent') return replyWith(null, 'exit', request, null);
-        return replyWith(null,'launch',request,null);
-      }
-    },
-    "help-menu": SimpleHelpMessage('Help.HelpStartMenu', 'Start Menu'),
-    "HelpAdjustFlowersCard": SimpleHelpMessage('Help.HelpAdjustFlowersCard', 'Adjust Flowers Card'),
-    "HelpAboutOrder": SimpleHelpMessage('Help.HelpAboutOrder', 'About Order'),
-    "HelpReloadCard": SimpleHelpMessage('Help.HelpReloadCard', 'Reload'),
-    "HelpAdjustSettings": SimpleHelpMessage('Help.HelpAdjustSettings', 'Adjust Settings'),
-    "HelpAdjustOrder": SimpleHelpMessage('Help.HelpAdjustOrder', 'Adjust Order'),
-    "HelpAdjustLocation": SimpleHelpMessage('Help.HelpAdjustLocation', 'Adjust Location'),
-    "HelpOtherMenu": SimpleHelpMessage('Help.HelpOtherMenu', 'Other Menu'),
-    "HelpBalanceCheck": {
-      enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          po.getBalance(); //Kick off now for responses to pick up
-          po.analytics.event('Help Flow', 'Balance Check').send();
-          return replyWith('Help.HelpBalanceCheck', 'more-help-query', request, po);
-        });
-      }
-    },
-    "HelpAdjustPayment": SimpleHelpMessage('Help.HelpAdjustPayment', 'Adjust Payment', 'new-payment-method-query'),
-    "new-payment-method-query": {
-      enter: function enter(request) {
-        if (request.intent.name == 'YesIntent') {
-          return replyWith('Help.HelpNewPayment', 'more-help-query', request, null);
-        } else if (request.intent.name == 'NoIntent') {
-          return replyWith(null, 'more-help-query', request, null);
-        }
-      }
-    },
-    "change-store": {
-      enter: function enter(request) {
-        if (request.session.attributes.partialOrder) {
-          return this.Access(request).then(function (user) {
-            return PartialOrder.fromRequest(user, request);
-          }).then(function (po) {
-            return replyWith(null, 'loc-adjust', request, po);
-          });
-        }
-        else return replyWith(null,'launch',request,null);
-      }
-    },
-    "location-specific-redirect": {
-      enter: function enter(request) {
-        if (request.session.attributes.partialOrder) {
-          return this.Access(request).then(function (user) {
-            return PartialOrder.fromRequest(user, request);
-          }).then(function (po) {
-            return replyWith('LocationIssues.LocationSpecificRedirect', 'loc-adjust-or-die-query', request, po);
-          });
-        } else return replyWith(null, 'launch', request, null);
-      }
-    },
-    "order-specific-redirect": {
-      enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          return replyWith('ItemIssues.ItemSpecificRedirect', 'launch-or-die-query', request, po);
-        });
-      }
-    },
-    "adjustment-specific-redirect": {
-      enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          return replyWith('ItemIssues.AdjustmentSpecificRedirect', 'launch-or-die-query', request, po);
-        });
-      }
-    },
-    "loc-adjust-or-die-query": {
-      enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          if (request.intent.name == 'YesIntent') {
-            return replyWith(null, 'loc-adjust', request, po);
-          } else if (request.intent.name == 'NoIntent') {
-            po.analytics.event('Main Flow', 'Exit From Location Adjust').send();
-            return replyWith('Exit.NoFromLocation', 'die', request, po);
-          }
-        });
-      }
-    },
-    "launch-or-die-query": {
-      enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          if (request.intent.name == 'YesIntent') {
-            return replyWith(null, 'launch', request, po);
-          } else if (request.intent.name == 'NoIntent') {
-            return replyWith('Exit.NoFromItemRedirect', 'die', request, po);
-          }
-        });
-      }
-    },
+    'die': { isTerminal: true },
     "launch": {
       enter: function enter(request) {
-        // The enter function will yield back a new state, and may also supply responses
-        return this.Access(request).then(PartialOrder.build).then(function (po) {
-          if (po.hasNoItems()) {
-            return replyWith('ItemIssues.NoItemsNoOtherOrder', 'die', request, po);
-          } else if (po.fallback) {
-            po.setFlag('exit-style', 'other order');
-            if (po.fallback.explanation == 'seasonal') return replyWith('ItemIssues.NoItemsAnotherOrderSeasonal', 'accept-order-or-exit', request, po);
-            if (po.fallback.explanation == 'permanent') return replyWith('ItemIssues.NoItemsAnotherOrderPermanent', 'accept-order-or-exit', request, po);
-            return replyWith('ItemIssues.NoItemsAnotherOrderTempGen', 'accept-order-or-exit', request, po);
-          } else if (po.mode == 'detached') {
-            if (po.noStoreAvailableExplanation) {
-              if (po.noStoreAvailableExplanation.reason == 'closed') return replyWith('LocationIssues.PrevLocIssueAllHours', 'die', request, po);else if (po.noStoreAvailableExplanation.reason == 'inactive') return replyWith('LocationIssues.PrevLocIssueAllGeneral', 'die', request, po);else return replyWith('ItemIssues.NoItemsNoOtherOrder', 'die', request, po);
-            } else {
-              if (po.hasMultipleItems()) return replyWith('LocationIssues.PrevLocIssueLastMultItems', 'accept-loc-or-next', request, po);else return replyWith('LocationIssues.PrevLocIssueLastOneItem', 'accept-loc-or-next', request, po);
-            }
-          } else if (isHelpState(request.from)) {
-            if (po.hasMultipleItems()) return replyWith('Greeting.ReturnFromHelpMenuMultiple', 'list-or-loc-adjust', request, po)
-              ;else return replyWith('Greeting.ReturnFromHelpMenuOne', 'greeting-accept-query', request, po);
-          } else {
-            if (po.hasMultipleItems()) return replyWith('Greeting.MultipleItems', 'list-or-loc-adjust', request, po);
-            else return replyWith('Greeting.OneItem', 'greeting-accept-query', request, po);
-          }
-        });
-      }
-    },
-    "list-or-loc-adjust": {
-      to: {
-        ListItemsIntent: 'order-adjust',
-        ChangeLocationIntent: 'loc-adjust'
-      }
-    },
-    "order-adjust": {
-      enter: function enter(request) {
-        var self = this;
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          return po.getProductNames().then(function () {
-            return po;
+        return this.Access(request)
+          .then(PartialOrder.build)
+          .then(function (po) {
+            // if (po.noRecipientsInAddressBook) {
+            // return replyWith('Errors.NoRecipientsInAddressBook', 'die', request, po);
+            // }
+
+            // We go to choose the arrange type
+            return replyWith('Options.NoRecipient', 'recipient-selection', request);
           });
-        }) //We're going to need names for everything to move forward
-        .then(function (po) {
-          return po.validateAndEditOrder().then(function (edits) {
-            if (edits.anyRemoved) {
-              if (po.hasMultipleItems()) return replyWith('ItemIssues.ItemsNotAvailable', 'remove-or-accept', request, po);
-              if (po.getFlag('has-done-loc-adjust')) {
-                return po.getPricing().then(function (pricing) {
-                  return replyWith('ItemIssues.ItemsNotAvailableAndOneLeftConfirmNext', 'confirm-query', request, po);
-                });
-              }
-              return replyWith('ItemIssues.ItemsNotAvailableAndOneLeft', 'accept-or-loc-adjust', request, po);
-            } else return replyWith('ListAdjustOrder.ItemListStart', 'remove-or-accept', request, po);
-          });
-        });
       }
     },
-    "remove-or-accept": {
+    "recipient-selection": {
       enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          if (request.intent.name == 'YesIntent') {
-            po.startOrderAdjust();
-            return replyWith(null, 'order-item-check', request, po);
-          } else if (request.intent.name == 'NoIntent') {
-            if (po.getFlag('has-done-loc-adjust')) return replyWith(null, 'confirm', request, po);
-            return replyWith('ListAdjustLocation.LocationConfirm', 'accept-or-loc-adjust', request, po);
-          }
-        });
+        // request.intent.params.Name
+        return replyWith('Options.ArrangementList', 'arrangement-selection', request);
       }
     },
-    "order-item-check": {
+    "arrangement-selection": {
       enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          return po.getProductNames().then(function () {
-            return po;
-          });
-        }) //We're going to need names for everything to move forward
-        .then(function (po) {
-          if (po.hasMoreOrderAdjustItem()) {
-            return replyWith('ListAdjustOrder.IndividualItemCheck', 'remove-query', request, po);
-          } else {
-            if (po.hasOrderChangedInOrderAdjust()) return replyWith('ListAdjustOrder.AdjustedOrderRepeat', 'is-order-correct-query', request, po);
-            return replyWith('ListAdjustOrder.NonAdjustedOrderRepeat', 'is-order-correct-query', request, po);
-          }
-        });
+        // request.intent.params.ArrangementType
+        return replyWith('Options.SizeList', 'size-selection', request);
       }
     },
-    "remove-query": {
+    "size-selection": {
       enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          if (request.intent.name == 'YesIntent') {
-            po.removeAndNextOrderAdjustItem();
-            if (po.currentOrderAdjustItemIsForced()) return replyWith('ListAdjustOrder.RemovedItemOnlyOneLeft', 'is-order-correct-query', request, po);
-            return replyWith('ListAdjustOrder.RemovedItemConfirmMore', 'order-item-check', request, po);
-          } else if (request.intent.name == 'NoIntent' || request.intent.name == 'NextIntent') {
-            po.nextOrderAdjustItem();
-            return replyWith(null, 'order-item-check', request, po);
-          }
-        });
+        // request.intent.params.ArrangementSize
+        return replyWith('Options.DateSelection', 'size-selection', request);
       }
     },
-    "is-order-correct-query": {
+    "date-selection": {
       enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          if (request.intent.name == 'YesIntent') {
-            po.commitOrderAdjust();
-            if (po.getFlag('has-done-loc-adjust')) return replyWith(null, 'confirm', request, po);
-            return replyWith('ListAdjustLocation.LocationConfirm', 'accept-or-loc-adjust', request, po);
-          } else if (request.intent.name == 'NoIntent' || request.intent.name == 'NextIntent') {
-            po.revertOrderAdjust();
-            return replyWith('ListAdjustOrder.ListRevertBeginning', 'remove-or-accept', request, po);
-          }
-        });
+        return replyWith('Options.OrderReview', 'order-review', request);
       }
     },
-    "accept-or-loc-adjust": {
-      to: {
-        YesIntent: 'confirm',
-        NoIntent: 'loc-adjust'
-      }
-    },
-    'accept-order-or-exit': {
+    "order-review": {
       enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          if (request.intent.name == 'YesIntent') {
-            if (po.hasMultipleItems()) return replyWith(null, 'order-adjust', request, po);
-            return replyWith(null, 'confirm', request, po);
-          } else if (request.intent.name == 'NoIntent') {
-            if ('other order' == po.getFlag('exit-style')) {
-              po.analytics.event('Main Flow', 'Exit From Fallback').send();
-              return replyWith('Exit.NoFromNoItemOtherOrder', 'die', request, po);
-            }
-            po.analytics.event('Main Flow', 'Exit From Location Adjust').send();
-            return replyWith('Exit.NoFromLocation', 'die', request, po);
-          }
-        });
-      }
-    },
-    'greeting-accept-query': {
-      enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          if (request.intent.name == 'YesIntent') {
-            return replyWith(null, 'confirm', request, po);
-          } else if (request.intent.name == 'NoIntent') {
-            return replyWith('ItemIssues.OneItemUserSaysNoAtGreeting', 'change-store-query', request, po);
-          }
-        });
-      }
-    },
-    'change-store-query': {
-      enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          if (request.intent.name == 'YesIntent' || request.intent.name == 'ChangeLocationIntent') {
-            return replyWith(null, 'loc-adjust', request, po);
-          } else if (request.intent.name == 'NoIntent') {
-            po.analytics.event('Main Flow', 'Exit From Confirmation').send();
-            return replyWith('Exit.NoFromConfirmation', 'die', request, po);
-          }
-        });
-      }
-    },
-    'confirm': {
-      enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          return po.getPricing().then(function (pricing) {
-            return replyWith('FinalConfirmation.ItemsLocPrice', 'confirm-query', request, po);
-          });
-        });
-      }
-    },
-    'success': { isTerminal: true },
-    'die': { isTerminal: true },
-    'confirm-query': {
-      enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          if (request.intent.name == 'YesIntent') {
-            return po.placeOrder().then(function (success) {
-              if (success) return replyWith('OrderSuccess.GeneralThanksOrderDetails', 'die', request, po);else return replyWith('PaymentIssues.NeedsToReload', 'reload-query', request, po);
-            });
-          } else if (request.intent.name == 'NoIntent') {
-            return replyWith('FinalConfirmation.AskOrderRevert', 'start-over-query', request, po);
-          }
-        });
-      }
-    },
-    'start-over-query': {
-      enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          if (request.intent.name == 'YesIntent') {
-            po = PartialOrder.empty({ user: po.user, flowers: po.flowers });
-            return replyWith(null, 'launch', request, po);
-          }
-          else if (request.intent.name == 'ChangeLocationIntent') {
-            return replyWith(null, 'loc-adjust', request, po);
-          } else if (request.intent.name == 'NoIntent') {
-            po.analytics.event('Main Flow', 'Exit From Confirmation').send();
-            return replyWith('Exit.NoFromConfirmation', 'die', request, po);
-          }
-        });
-      }
-    },
-    'reload-query': {
-      enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          if (request.intent.name == 'YesIntent' || request.intent.name == 'ReloadIntent') {
-            return po.reloadAndOrder().then(function () {
-              return replyWith('OrderSuccess.FromReloadThanksOrderDetails', 'success', request, po);
-            }).catch(function (err) {
-              if (verbose) console.log('Failed to reload card due to ', err.stack || err.body);
-              po.analytics.event('Main Flow', 'Exit From Payment Issue').send();
-              return replyWith('PaymentIssues.CreditCardIssue', 'die', request, po);
-            });
-          } else if (request.intent.name == 'NoIntent') {
-            po.analytics.event('Main Flow', 'Exit From Reload Prompt').send();
-            return replyWith('Exit.NoFromConfirmation', 'die', request, po);
-          }
-        });
-      }
-    },
-    'loc-adjust': {
-      enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          po.setFlag('has-done-loc-adjust', true);
-          return po.startLocAdjust().then(function (stores) {
-            if (stores.length <= 1) {
-              po.setFlag('exit-style', 'location');
-              return replyWith("ListAdjustLocation.LocationOnlyOne", 'accept-order-or-exit', request, po);
-            } else {
-              return replyWith('ListAdjustLocation.LocationListStart', 'accept-loc-or-next', request, po);
-            }
-          });
-        });
-      }
-    },
-    'accept-loc-or-next': {
-      enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          if (request.intent.name == 'YesIntent') {
-            po.acceptLocAdjust();
-            if (po.hasMultipleItems()) return replyWith('ListAdjustLocation.UserChangesLocationFirst', 'order-adjust', request, po);
-            return replyWith(null, 'confirm', request, po);
-          } else if (request.intent.name == 'NoIntent' || request.intent.name == 'NextIntent') {
-            po.nextLocAdjustLoc();
-            if (!po.hasMoreLocAdjustLocs()) {
-              po.discardLocAdjust();
-              return replyWith('ListAdjustLocation.LocationListEnd', 'repeat-loc-adjust-or-exit', request, po);
-            } else if (po.isOnLastLocAdjustLoc()) {
-              return replyWith('ListAdjustLocation.LocationListLast', 'accept-loc-or-next', request, po);
-            }
-            return replyWith('ListAdjustLocation.LocationListMiddle', 'accept-loc-or-next', request, po);
-          }
-        });
-      }
-    },
-    'repeat-loc-adjust-or-exit': {
-      enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          if (request.intent.name == 'YesIntent') {
-            return replyWith(null, 'loc-adjust', request, po);
-          } else if (request.intent.name == 'NoIntent') {
-            po.analytics.event('Main Flow', 'Exit From Location Adjust').send();
-            return replyWith('Exit.NoFromLocation', 'die', request, po);
-          }
-        });
+        return replyWith('ExitIntent.RepeatLastAskReprompt', 'die', request);
       }
     }
   },
@@ -541,8 +176,9 @@ module.exports = StateMachine({
       console.log('Logging in using default credentials.');
       return flowers.login(config.skill.defaultCredentials.username, config.skill.defaultCredentials.password).then(function (user) {
         //Store the systemID and customerID that should be in the request.user.accessToken to the user object
-        user.systemID = 'asdfasdf';
-        user.customerID = 'asdf';
+        var tokens = oauthhelper.decryptCode(request.user.accessToken);
+        user.systemID = tokens.systemID;
+        user.customerID = tokens.customerID;
         self.access = {
           user: user,
           flowers: flowers,

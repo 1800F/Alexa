@@ -4,6 +4,42 @@
       "intent": "LaunchIntent"
     },
     {
+      "intent": "RecipientSelectionIntent",
+      "slots": [
+        {
+          "name": "Name",
+          "type": "AMAZON.US_FIRST_NAME"
+        }
+      ]
+    },
+    {
+      "intent": "ArrangementSelectionIntent",
+      "slots": [
+        {
+          "name": "ArrangementType",
+          "type": "ARRANGEMENT_TYPES"
+        },
+        {
+          "name": "Bouquet",
+          "type": "BOUQUET"
+        }
+      ]
+    },
+    {
+      "intent": "SizeSelectionIntent",
+      "slots": [
+        {
+          "name": "ArrangementSize",
+          "type": "ARRANGEMENT_SIZES"
+        },
+        {
+          "name": "Bouquet",
+          "type": "BOUQUET"
+        }
+      ]
+    }
+    /*
+    {
       "intent": "YesIntent"
     },
     {
@@ -155,5 +191,6 @@
     {
       "intent": "HelpOtherOptions"
     }
+    */
   ]
 }
