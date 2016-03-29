@@ -12,3 +12,16 @@ An Amazon Alexa skill for ordering flowers via 1-800-Flowers
 2. Development
 
 * To run nodejs server and watch for changes run `npm run watch` or `gulp watch`
+
+3. Directory Structure
+
+`config/` -> Environment variables or configuration
+`services/` -> API clients, Authentications and Extras
+`skill/` -> Amazon Echo Skill login
+`speechAssets/` -> Amazon Echo Utterances, Intent Schema and Custom Slots.
+`tests/` -> Unit Tests
+`www/` -> Public site, expose for authentication.
+`deploy.sh`
+`gulpfile.js` -> Gulp tasks
+`package.json` -> Dependencies
+`README.md`

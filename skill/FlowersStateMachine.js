@@ -112,7 +112,7 @@ module.exports = StateMachine({
             // }
 
             // We go to choose the arrange type
-            return replyWith('Options.NoRecipient', 'recipient-selection', request);
+            return replyWith('Options.NoRecipient', 'recipient-selection', request, po);
           });
       }
     },
