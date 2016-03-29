@@ -216,7 +216,9 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
         "contid":customerID
       }
     };
-    return userrequest('POST', '/getRecipients', {}, body);
+    return userrequest('POST', '/getRecipients', {}, body).then(function (body) {
+      return body.MDMRecipientsResponse.MDMRecipients.MDMRecipient
+    });
   }
 
   function getRecipientAddress(demographicsID, customerID) {
