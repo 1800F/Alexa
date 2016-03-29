@@ -70,3 +70,128 @@ SizeSelectionIntent I must to get a {ArrangementSize}.
 SizeSelectionIntent I need to get a {ArrangementSize}.
 SizeSelectionIntent It  must be a {ArrangementSize}.
 SizeSelectionIntent I have to have a {ArrangementSize}.
+
+HelpIntent about this skill
+HelpIntent about this skill please
+HelpIntent explain this skill
+HelpIntent explain this skill please
+HelpIntent explain yourself
+HelpIntent explain yourself please
+HelpIntent get help
+HelpIntent get help please
+HelpIntent help
+HelpIntent help me
+HelpIntent help me please
+HelpIntent help menu
+HelpIntent help menu please
+HelpIntent help options
+HelpIntent help options please
+HelpIntent help please
+HelpIntent how can i use you
+HelpIntent how do i do this
+HelpIntent how do i do this skill
+HelpIntent how do i navigate
+HelpIntent how do i use this
+HelpIntent how do i use this skill
+HelpIntent how do i use you
+HelpIntent how do you do this
+HelpIntent how do you do this skill
+HelpIntent how do you use this
+HelpIntent how do you use this skill
+HelpIntent how do you work
+HelpIntent how does it work
+HelpIntent how does this skill work
+HelpIntent how does this work
+HelpIntent i don't understand
+HelpIntent i'm confused
+HelpIntent open the help menu
+HelpIntent open the help menu please
+HelpIntent please get help
+HelpIntent please help
+HelpIntent please help me
+HelpIntent please offer help options
+HelpIntent please open the help menu
+HelpIntent please take me to the help menu 
+HelpIntent please tell me about this skill
+HelpIntent please tell me about this skill 
+HelpIntent please tell me help options
+HelpIntent please tell me how can i use you
+HelpIntent please tell me how do i do this
+HelpIntent please tell me how do i do this skill
+HelpIntent please tell me how do i navigate
+HelpIntent please tell me how do i use this
+HelpIntent please tell me how do i use this skill
+HelpIntent please tell me how do i use you
+HelpIntent please tell me how do you do this
+HelpIntent please tell me how do you do this skill
+HelpIntent please tell me how do you use this
+HelpIntent please tell me how do you use this skill
+HelpIntent please tell me how do you work
+HelpIntent please tell me how does it work
+HelpIntent please tell me how does this skill work
+HelpIntent please tell me how does this work
+HelpIntent please tell me more about this skill
+HelpIntent please tell me what am i supposed to do now
+HelpIntent please tell me what can i ask
+HelpIntent please tell me what can i ask you
+HelpIntent please tell me what can i do
+HelpIntent please tell me what can i say
+HelpIntent please tell me what can i use this for
+HelpIntent please tell me what can you do
+HelpIntent please tell me what can you tell me
+HelpIntent please tell me what commands can i ask
+HelpIntent please tell me what commands can i say
+HelpIntent please tell me what do i do
+HelpIntent please tell me what do you do
+HelpIntent please tell me what questions can i ask
+HelpIntent please tell more more about what I can do
+HelpIntent tell me about this skill 
+HelpIntent tell me about this skill please
+HelpIntent tell me how can i use you
+HelpIntent tell me how can i use you please
+HelpIntent tell me how do i do this
+HelpIntent tell me how do i do this please
+HelpIntent tell me how do i do this skill
+HelpIntent tell me how do i do this skill please
+HelpIntent tell me how do i navigate
+HelpIntent tell me how do i navigate please
+HelpIntent tell me how do i use this
+HelpIntent tell me how do i use this please
+HelpIntent tell me how do i use this skill
+HelpIntent tell me how do i use this skill please
+HelpIntent tell me how do i use you
+HelpIntent tell me how do i use you please
+HelpIntent tell me how do you do this
+HelpIntent tell me how do you do this please
+HelpIntent tell me how do you do this skill
+HelpIntent tell me how do you do this skill please
+HelpIntent tell me how do you use this
+HelpIntent tell me how do you use this please
+HelpIntent tell me how do you use this skill
+HelpIntent tell me how do you use this skill please
+HelpIntent tell me how do you work
+HelpIntent tell me how do you work please
+HelpIntent tell me how does it work
+HelpIntent tell me how does it work please
+HelpIntent tell me how does this skill work
+HelpIntent tell me how does this skill work please
+HelpIntent tell me how does this work
+HelpIntent tell me how does this work please
+HelpIntent tell me more about this skill
+HelpIntent tell me more about this skill please
+HelpIntent tell more more about what I can do
+HelpIntent tell more more about what I can do please
+HelpIntent what am i supposed to do now
+HelpIntent what can i ask
+HelpIntent what can i ask you
+HelpIntent what can i do
+HelpIntent what can i say
+HelpIntent what can i use this for
+HelpIntent what can you do
+HelpIntent what can you tell me
+HelpIntent what commands can i ask
+HelpIntent what commands can i say
+HelpIntent what do i do
+HelpIntent what do i do next
+HelpIntent what do you do
+HelpIntent what questions can i ask
