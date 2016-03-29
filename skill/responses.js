@@ -5,7 +5,7 @@
  *
  * An object to place responses
  *
- * Written by Christijan Draper <christijand@rain.agency>, March 2016
+ * Written by Christijan Draper <christijand@rain.agency> & Matthew Parkin <matthewp@rain.agency>, March 2016
  * Reviewed by Christian Torres <christiant@rain.agency>, March 2016
  */
 'use strict';
