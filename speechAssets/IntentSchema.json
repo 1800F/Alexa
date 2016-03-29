@@ -1,13 +1,34 @@
 {
   "intents": [
     {
-      "intent": "LaunchIntent"
+      "intent": "LaunchIntent",
+      "slots": [
+        {
+          "name": "recipientSlot",
+          "type": "AMAZON.US_FIRST_NAME"
+        },
+        {
+          "name": "deliveryDateSlot",
+          "type": "AMAZON.DATE"
+        },
+        {
+          "name": "arrangementSlot",
+          "type": "ARRANGEMENT_TYPES"
+        },
+        {
+          "name": "sizeSlot",
+          "type": "ARRANGEMENT_SIZES"
+        }{
+          "name": "bouquet",
+          "type": "BOUQUET"
+        }
+      ]
     },
     {
       "intent": "RecipientSelectionIntent",
       "slots": [
         {
-          "name": "Name",
+          "name": "recipientSlot",
           "type": "AMAZON.US_FIRST_NAME"
         }
       ]
@@ -16,7 +37,7 @@
       "intent": "ArrangementSelectionIntent",
       "slots": [
         {
-          "name": "ArrangementType",
+          "name": "arrangementSlot",
           "type": "ARRANGEMENT_TYPES"
         },
         {
@@ -29,7 +50,7 @@
       "intent": "SizeSelectionIntent",
       "slots": [
         {
-          "name": "ArrangementSize",
+          "name": "sizeSlot",
           "type": "ARRANGEMENT_SIZES"
         },
         {
@@ -38,159 +59,5 @@
         }
       ]
     }
-    /*
-    {
-      "intent": "YesIntent"
-    },
-    {
-      "intent": "NoIntent"
-    },
-    {
-      "intent": "RepeatIntent",
-      "slots": [
-        {
-          "name": "repeatType",
-          "type": "LIST_OF_REPEAT_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "RecipientSelection",
-      "slots": [
-        {
-          "name": "Name",
-          "type": "AMAZON.US_FIRST_NAME"
-        }
-      ]
-    },
-    {
-      "intent": "ListItemsIntent",
-      "slots": [
-        {
-          "name": "orderType",
-          "type": "LIST_OF_ORDER_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "OrderSpecificRedirectIntent",
-      "slots": [
-        {
-          "name": "specificItem",
-          "type": "LIST_OF_SPECIFIC_ITEMS"
-        }
-      ]
-    },
-    {
-      "intent": "ItemAdjustmentRedirectIntent",
-      "slots": [
-        {
-          "name": "adjustment",
-          "type": "LIST_OF_ADJUSTMENTS"
-        }
-      ]
-    },
-    {
-      "intent": "LocationSpecificRedirectIntent",
-      "slots": [
-        {
-          "name": "specificLocation",
-          "type": "LIST_OF_LOCATIONS"
-        },
-        {
-          "name": "locationType",
-          "type": "LIST_OF_LOCATION_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "ReloadIntent",
-      "slots": [
-        {
-          "name": "reloadPaymentType",
-          "type": "LIST_OF_RELOAD_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "ExitIntent"
-    },
-    {
-      "intent": "HelpIntent"
-    },
-    {
-      "intent": "HelpHowToOrderIntent"
-    },
-    {
-      "intent": "HelpReloadIntent",
-      "slots": [
-        {
-          "name": "reloadPaymentType",
-          "type": "LIST_OF_RELOAD_TYPES"
-        },
-        {
-          "name": "reloadAction",
-          "type": "LIST_OF_RELOAD_ACTION"
-        }
-      ]
-    },
-    {
-      "intent": "HelpSVCAdjustIntent",
-      "slots": [
-        {
-          "name": "reloadPaymentType",
-          "type": "LIST_OF_RELOAD_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "HelpPaymentChangeIntent",
-      "slots": [
-        {
-          "name": "allPaymentType",
-          "type": "LIST_OF_ALL_PAYMENTS"
-        }
-      ]
-    },
-    {
-      "intent": "HelpCheckBalanceIntent",
-      "slots": [
-        {
-          "name": "reloadPaymentType",
-          "type": "LIST_OF_RELOAD_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "HelpLocationAdjustIntent",
-      "slots": [
-        {
-          "name": "locationType",
-          "type": "LIST_OF_LOCATION_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "HelpOrderAdjustIntent",
-      "slots": [
-        {
-          "name": "orderType",
-          "type": "LIST_OF_ORDER_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "HelpSettingsAdjustIntent",
-      "slots": [
-        {
-          "name": "settingType",
-          "type": "LIST_OF_SETTING_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "HelpOtherOptions"
-    }
-    */
   ]
 }
