@@ -1,14 +1,13 @@
 'use strict';
 
-var alexaStarbucks = require('./alexa-starbucks.js'),
-    Starbucks = require('./Starbucks.js'),
-    StarbucksUser = Starbucks.StarbucksUser,
+var alexaFlowers = require('./alexa-flowers.js'),
+    Flowers = require('./Flowers.js'),
+    FlowersUser = Flowers.FlowersUser,
     config = require('../config'),
     _ = require('lodash'),
     moment = require('moment'),
     Promise = require('bluebird'),
-    verbose = config.verbose,
-    zipToTZ = require('../services/zip-to-tz.js');
+    verbose = config.verbose;
 
 // Mostly used for testing
 exports.fromData = function (api, data) {
@@ -87,7 +86,7 @@ PartialOrder.prototype.setFlag = function (name, value) {
 PartialOrder.prototype.validateAndEditOrder = function () {
   var user = this.user,
       po = this;
-  return getProductAvailability(po.starbucks, po.store, po.items).then(function (prdAvailability) {
+  return getProductAvailability(po.flowers, po.store, po.items).then(function (prdAvailability) {
     po.items = prdAvailability.availables;
     po.pruned = prdAvailability.unavailables;
     return {
@@ -207,7 +206,7 @@ PartialOrder.prototype.discardLocAdjust = function () {
 PartialOrder.prototype.planReload = function (cardId) {
   var self = this;
   return this.getBalance(cardId).then(function (balance) {
-    self.pricing.reloadAmount = alexaStarbucks.getReloadAmount(balance.balance, self.pricing.totalAmount);
+    self.pricing.reloadAmount = alexaFlowers.getReloadAmount(balance.balance, self.pricing.totalAmount);
   });
 };
 
@@ -215,7 +214,7 @@ PartialOrder.prototype.reloadAndOrder = function () {
   var self = this,
       user = self.user;
   self.analytics.event('Main Flow', 'Reload', 'Reload Amount', self.pricing.reloadAmount).send();
-  return Promise.all([user.getPrimaryCard(), alexaStarbucks.getPaymentMethodId(user)]).spread(function (cardData, paymentId) {
+  return Promise.all([user.getPrimaryCard(), alexaFlowers.getPaymentMethodId(user)]).spread(function (cardData, paymentId) {
     return user.reloadCard(cardData.cardId, self.pricing.reloadAmount, paymentId).then(function () {
       return self.placeOrder(cardData);
     });
@@ -248,7 +247,7 @@ PartialOrder.prototype.placeOrder = function (cardData) {
       });
     }).catch(function (err) {
       if (verbose) console.log('Error placing order', err.body);
-      if (err.statusCode && err.statusCode == 400 && err.body && err.body.code == Starbucks.ERROR_CODES.InsufficientBalance) {
+      if (err.statusCode && err.statusCode == 400 && err.body && err.body.code == Flowers.ERROR_CODES.InsufficientBalance) {
         return po.planReload(cardData.cardId).then(function () {
           return false;
         });
@@ -285,7 +284,7 @@ PartialOrder.prototype.getStoreData = function (storeNumber) {
     var storeData = self.history.seenStores[storeNumber];
     if (storeData && _.isObject(storeData)) return storeData;
     //TODO Cache this
-    return self.starbucks.getStoreByNumber(storeNumber).then(function (data) {
+    return self.flowers.getStoreByNumber(storeNumber).then(function (data) {
       var storeData = {
         name: data.address.streetAddressLine1,
         address: data.address,
@@ -344,7 +343,7 @@ PartialOrder.prototype.getProductNames = function (items) {
     //TODO Cache all of this in a very long term cache
     if (item.name) return Promise.resolve(item.name);
     item.q = item.q || {};
-    return item.q.prodDetails = item.q.prodDetails || self.starbucks.getProductBySku(item.commerce.sku, item.productType).then(function (productDetails) {
+    return item.q.prodDetails = item.q.prodDetails || self.flowers.getProductBySku(item.commerce.sku, item.productType).then(function (productDetails) {
       var name = productDetails.skuName;
       item.name = name;
       return name;
@@ -353,7 +352,7 @@ PartialOrder.prototype.getProductNames = function (items) {
 };
 
 PartialOrder.prototype.serialize = function () {
-  var ret = _.omit(this, 'user', 'q', 'pruned', 'user', 'starbucks', 'analytics');
+  var ret = _.omit(this, 'user', 'q', 'pruned', 'user', 'flowers', 'analytics');
   if (ret.history) delete ret.history.lastPull;
   if (ret.items) _.forEach(ret.items, function (item) {
     delete item.q;
@@ -413,7 +412,7 @@ PartialOrder.prototype.enterFallbackMode = function (firstFoundHistoricalOrder, 
   if (verbose) console.log('Entering fallback mode');
   _.assign(this, order, { mode: 'fallback', fallback: { originalOrder: order } });
   var partialOrder = this,
-      qUnavailableExplanation = explainOrderUnavailability(partialOrder.starbucks, order.items).then(function (explanations) {
+      qUnavailableExplanation = explainOrderUnavailability(partialOrder.flowers, order.items).then(function (explanations) {
     if (verbose) console.log('Unavailable explanations', explanations);
     if (explanations.some(function (x) {
       return x == 'seasonal';
@@ -441,7 +440,7 @@ PartialOrder.prototype.enterFallbackMode = function (firstFoundHistoricalOrder, 
         return scan();
       }
       var order = transHistoricalOrderToOrder(historicalOrder);
-      return getProductAvailability(partialOrder.starbucks, order.store, order.items).then(function (prdAvailability) {
+      return getProductAvailability(partialOrder.flowers, order.store, order.items).then(function (prdAvailability) {
         if (!prdAvailability.anyAvailable) return scan();
         partialOrder.analytics.event('Main Flow', 'Order Started').send();
         _.assign(partialOrder, order);
@@ -461,75 +460,28 @@ PartialOrder.prototype.enterFoundOrderMode = function (order) {
   return this;
 };
 
+//THIS PULLS ALL INFORMATION INTO THE PARTIAL ORDER
+//FOR 1800 FLOWERS, WE WILL PULL THE CONTACTS LIST AND THE LIST OF CREDIT CARDS
 PartialOrder.prototype.build = function () {
   var partialOrder = this,
       user = partialOrder.user,
       firstFoundHistoricalOrder = null;
   return scan();
 
+  //WALK THROUGH THE API METHODS FOR RETRIVING RECIPIENTS AND STORED CARDS
   function scan() {
-    if (verbose) console.log('Scanning for next order');
-    return nextHistoricalOrder(partialOrder).then(function (historicalOrder) {
-      firstFoundHistoricalOrder = firstFoundHistoricalOrder || historicalOrder;
-      if (isNoMore(historicalOrder)) return partialOrder.enterNoneFoundMode(transHistoricalOrderToOrder(firstFoundHistoricalOrder));
-      if (isIgnorableHistoricalOrder(historicalOrder)) {
-        if (verbose) console.log('Order is ignorable', summarizeOrder(transHistoricalOrderToOrder(historicalOrder)));
-        return scan();
-      }
+    if (verbose) console.log('Scanning for recipients');
+    return getRecipients(partialOrder).then(function(recipients) {
+      partialOrder.noRecipientsInAddressBook = (recipients.length == 0);
 
-      var order = transHistoricalOrderToOrder(historicalOrder);
-      return getStoreAvailability(historicalOrder.inStoreOrder.storeNumber, partialOrder).then(function (strAvailablility) {
-        if (verbose) console.log('Store availbility: ', strAvailablility);
-        if (!strAvailablility.isOpen) {
-          return partialOrder.enterDetachedMode(order);
-        }
-        //TODO: We need a way to cache product availability by store
-        return getProductAvailability(partialOrder.starbucks, order.store, order.items).then(function (prdAvailability) {
-          if (!prdAvailability.anyAvailable) return partialOrder.enterFallbackMode(firstFoundHistoricalOrder, order);
-          return partialOrder.enterFoundOrderMode(order);
-        });
-      });
+      return partialOrder
     });
   }
 };
 
-/*
- * Finds a list of stores that it's possible to order at least some of the items at.
- */
-function getStoreAlternatives(po) {
-  // We'll try N stores. That doesn't mean N stores will work
-  var alternativeStores = config.skill.alternativeStores;
-  return pullAnotherStore();
-
-  function pullAnotherStore() {
-    var stores = _.keys(po.history.seenStores);
-    if (stores.length >= alternativeStores) return considerStores(stores);
-    return nextHistoricalOrder(po).then(function (order) {
-      if (isNoMore(order)) return considerStores(stores);
-      return pullAnotherStore();
-    });
-  }
-
-  function considerStores(stores) {
-    return Promise.all([
-      Promise.all(stores.map(function (store) {return getProductAvailability(po.starbucks, store, po.items);})),
-      Promise.all(stores.map(function (store) {return getStoreAvailability(store,po);})),
-    ]).spread(function (prdAvails, storeAvails) {
-      return _(prdAvails).zip(storeAvails).map(function (avail, i) {
-        return avail[0].anyAvailable && avail[1].isOpen ? stores[i] : null;
-      }).compact().value();
-    });
-  }
-}
 
 function summarizeOrder(order) {
   return JSON.stringify(order, null, 2);
-}
-
-function getStoreAvailability(storeNumber, po) {
-  return po.getStoreData(storeNumber).then(function (x) {
-    return x.availability;
-  });
 }
 
 function transHistoricalOrderToOrder(hist) {
@@ -548,9 +500,9 @@ function transHistoricalOrderToOrder(hist) {
   }
 }
 
-function getProductAvailability(starbucks, storeNumber, items) {
+function getProductAvailability(flowers, storeNumber, items) {
   //if(verbose) console.log('getProductAvailability',storeNumber,items.length);
-  return starbucks.getProductStatus(storeNumber, items).then(function (status) {
+  return flowers.getProductStatus(storeNumber, items).then(function (status) {
     var partition = _.partition(_.zip(items, status.items), function (zi) {
       return isPurchasable(zi[1]);
     }),
@@ -570,99 +522,24 @@ function getProductAvailability(starbucks, storeNumber, items) {
   }
 }
 
-function nextHistoricalOrder(partialOrder) {
-  if (partialOrder.history.pulledAll) return NoMore();
-  var nextOffset = partialOrder.history.offset + 1,
-      pulledAll = partialOrder.history.pulledAll,
-      lastPull = partialOrder.history.lastPull,
-      needsNewPull = !lastPull || nextOffset >= lastPull.paging.offset + lastPull.paging.returned,
-      hasNextPull = !lastPull || lastPull.paging.hasMore,
-      hasMoreItems = !lastPull || nextOffset < lastPull.paging.total;
-  //if(verbose) console.log(`nextOffset: ${nextOffset}, needsNewPull ${needsNewPull} , paging ${lastPull ? JSON.stringify(lastPull.paging):null}`)
-  partialOrder.history.offset++;
-  if (needsNewPull && hasNextPull) {
-    if (verbose) console.log('Pulling next page of history');
-    return (lastPull ? lastPull.paging.next() : partialOrder.user.getOrders({ offset: nextOffset })).then(function (pull) {
-      partialOrder.history.lastPull = pull;
-      if (!pull.paging.total) return NoMore();
-      var order = pull.orderHistoryItems[0],
-          storeNumber = order.inStoreOrder.storeNumber;
-      partialOrder.seeStore(storeNumber);
-      return order;
-    });
-  } else if (!hasMoreItems) {
-    if (verbose) console.log('Out of historical orders');
-    return NoMore();
-  } else {
-    if (verbose) console.log('Moving to next in-page history item');
-    var index = nextOffset - lastPull.paging.offset,
-        order = lastPull.orderHistoryItems[index],
-        storeNumber = order.inStoreOrder.storeNumber;
-    partialOrder.seeStore(storeNumber);
-    return Promise.resolve(order);
-  }
-
-  function NoMore() {
-    partialOrder.history.pulledAll = true;
-    return Promise.resolve(null);
-  }
-}
-
-function isNoMore(historicalOrder) {
-  return !historicalOrder;
-}
-
-function isIgnorableHistoricalOrder(order) {
-  var isAllCoffee = !!order.basket.items.every(function (item) {
-    return item.product.productType == Starbucks.PRODUCTTYPES.coffee;
-  });
-  return isAllCoffee;
-}
-
-function parseStoreAvailability(storeData) {
-  if (storeData.xopState != 'available') return { isOpen: false, localTime: null, nextOpen: null, closedDueTo: 'inactive' };
-  var today = storeData.today || { open: false, localTime: null };
-  var isOpen = today.open === true,
-      nextOpen = today.open ? null : !storeData.hoursNext7Days ? null : storeData.hoursNext7Days.reduce(function (memo, day) {
-    return memo || (day.open ? moment(day.date).add(moment.duration(day.openTime)).format('YYYY-MM-DDTHH:mm:ss.SSS') : null);
-  }, null),
-      closedDueTo = isOpen ? null : nextOpen == null ? 'inactive' : storeData.operatingStatus.operating && storeData.operatingStatus.status == 'ACTIVE' ? 'hours' : 'inactive';
-  return {
-    isOpen: today.open === true,
-    closedDueTo: closedDueTo,
-    localTime: today.localTime,
-    nextOpen: nextOpen
-  };
-}
 
 // Skus can be unavailable b/c they're seasonal, some permanent reason( e.g. withdrawn ),
 // or temporarily (a catch all for none of the above).
 // We know by getting the product details and scanning for it's availability data
-function explainOrderUnavailability(starbucks, items) {
+function explainOrderUnavailability(flowers, items) {
   return Promise.all(_.map(items, explainItemUnavailabilty));
 
   function explainItemUnavailabilty(item) {
-    return starbucks.getProductDetailsBySku(item.commerce.sku, item.productType).then(function (data) {
+    return flowers.getProductDetailsBySku(item.commerce.sku, item.productType).then(function (data) {
       return parseItemAvailbilityExplanation(item.commerce.sku, data);
     });
   }
 }
 
-function parseItemAvailbilityExplanation(sku, data) {
-  sku = '' + sku;
-  var form = data.forms.filter(function (form) {
-    return _.map(form.sizes, 'commerce.sku').indexOf(sku) >= 0;
-  });
-  if (!form || !form.length) return 'temporary';
-  form = form[0];
-  if (form.availability.status == 'SeasonallyUnavailable') return 'seasonal';
-  if (form.availability.status == 'Purchasable') return 'temporary'; //The product thinks it's available, but POS says you can't buy it. So we say it's a temporary issue
-  return 'permanent';
-}
 
 function getTimeOfDay(zip) {
   if (!zip) return null;
-  var localTime = zipToTZ.getLocalTime(zip);
+  var localTime = null;
   if (!localTime) return null;
   var hoursIntoDay = localTime.get('hours');
   if (hoursIntoDay < 2) return 'night';
@@ -673,12 +550,16 @@ function getTimeOfDay(zip) {
   return 'night';
 }
 
-module.exports.isIgnorableHistoricalOrder = isIgnorableHistoricalOrder;
-module.exports.parseStoreAvailability = parseStoreAvailability;
-module.exports.parseItemAvailbilityExplanation = parseItemAvailbilityExplanation;
+
+function getRecipients(partialOrder) {
+  var user = partialOrder.user;
+  return user.getRecipients(user.customerID);
+}
+
+//module.exports.parseItemAvailbilityExplanation = parseItemAvailbilityExplanation;
 
 /*
-var sbuser = StarbucksUser(config.starbucks,'2er5gem7djy62pu9xp88aqpc')
+var sbuser = FlowersUser(config.flowers,'2er5gem7djy62pu9xp88aqpc')
 exports.build(sbuser).then(function(po){
   console.log('Built',po.serialize());
 }).catch(err => {

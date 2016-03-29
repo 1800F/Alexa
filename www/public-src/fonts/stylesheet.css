@@ -1,61 +1,43 @@
-/**
- * @license
- * MyFonts Webfont Build ID 3160358, 2016-01-26T11:55:13-0500
- * 
- * The fonts listed in this notice are subject to the End User License
- * Agreement(s) entered into by the website owner. All other parties are 
- * explicitly restricted from using the Licensed Webfonts(s).
- * 
- * You may obtain a valid license at the URLs below.
- * 
- * Webfont: AvenirLTStd-Heavy by Linotype
- * URL: http://www.myfonts.com/fonts/linotype/avenir/85-heavy/
- * 
- * Webfont: AvenirLTStd-Light by Linotype
- * URL: http://www.myfonts.com/fonts/linotype/avenir/35-light/
- * 
- * Webfont: AvenirLTStd-Book by Linotype
- * URL: http://www.myfonts.com/fonts/linotype/avenir/45-book/
- * 
- * 
- * License: http://www.myfonts.com/viewlicense?type=web&buildid=3160358
- * Licensed pageviews: 250,000
- * Webfonts copyright: Copyright &#x00A9; 1989, 1995, 2002 Adobe Systems Incorporated.  All Rights Reserved. &#x00A9; 1981, 1995, 2002 Heidelberger Druckmaschinen AG. All rights reserved.
- * 
- * © 2016 MyFonts Inc
-*/
-
-
-/* @import must be at top of file, otherwise CSS will not work */
-@import url("//hello.myfonts.net/count/303926");
-
-  
 @font-face {
-  font-family: 'AvenirLTStd-Heavy';
-  src: url('303926_0_0.eot');
-  src: url('303926_0_0.eot?#iefix') format('embedded-opentype'),
-       url('303926_0_0.woff2') format('woff2'),
-       url('303926_0_0.woff') format('woff'),
-       url('303926_0_0.ttf') format('truetype');
+    font-family: 'proxima_novalight';
+    src: url('proximanova-light-webfont.eot');
+    src: url('proximanova-light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('proximanova-light-webfont.woff') format('woff'),
+         url('proximanova-light-webfont.ttf') format('truetype'),
+         url('proximanova-light-webfont.svg#proxima_novalight') format('svg');
+    font-weight: normal;
+    font-style: normal;
 }
- 
-  
+
 @font-face {
-  font-family: 'AvenirLTStd-Light';
-  src: url('303926_1_0.eot');
-  src: url('303926_1_0.eot?#iefix') format('embedded-opentype'),
-       url('303926_1_0.woff2') format('woff2'),
-       url('303926_1_0.woff') format('woff'),
-       url('303926_1_0.ttf') format('truetype');
+    font-family: 'proxima_novalight_italic';
+    src: url('proximanova-lightitalic-webfont.eot');
+    src: url('proximanova-lightitalic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('proximanova-lightitalic-webfont.woff') format('woff'),
+         url('proximanova-lightitalic-webfont.ttf') format('truetype'),
+         url('proximanova-lightitalic-webfont.svg#proxima_novalight_italic') format('svg');
+    font-weight: normal;
+    font-style: normal;
 }
- 
-  
+
 @font-face {
-  font-family: 'AvenirLTStd-Book';
-  src: url('303926_2_0.eot');
-  src: url('303926_2_0.eot?#iefix') format('embedded-opentype'),
-       url('303926_2_0.woff2') format('woff2'),
-       url('303926_2_0.woff') format('woff'),
-       url('303926_2_0.ttf') format('truetype');
+    font-family: 'proxima_novasemibold';
+    src: url('proximanova-semibold-webfont.eot');
+    src: url('proximanova-semibold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('proximanova-semibold-webfont.woff') format('woff'),
+         url('proximanova-semibold-webfont.ttf') format('truetype'),
+         url('proximanova-semibold-webfont.svg#proxima_novasemibold') format('svg');
+    font-weight: normal;
+    font-style: normal;
 }
- 
+
+@font-face {
+    font-family: 'proxima_novasemibold_italic';
+    src: url('proximanova-semibolditalic-webfont.eot');
+    src: url('proximanova-semibolditalic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('proximanova-semibolditalic-webfont.woff') format('woff'),
+         url('proximanova-semibolditalic-webfont.ttf') format('truetype'),
+         url('proximanova-semibolditalic-webfont.svg#proxima_novasemibold_italic') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}

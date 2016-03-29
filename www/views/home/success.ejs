@@ -1,20 +1,24 @@
 <% include ../partials/header %>
-
+  <div class="arrow-container container">
+    <div class="arrow"></div>
+  </div>
   <section class="screen">
     <div class="container">
       <div class="screen-head">
-        <img src="/img/logo-starbucks.png" alt="Starbucks Logo"/>
-        <h4>Congratulations!</h4>
-        <p>Your Starbucks account has been authenticated and connected to your Amazon Echo. You can now place orders with the Starbucks skill by saying,</p>
+        <h4>Success!</h4>
+        <p>Your account has been successfully linked to the 1-800-Flowers Alexa Skill</p>
+        <p>Tap the "X" to return to the Alexa companion app.
       </div>
-      <div class="quote">
-        <p>Alexa, order my Starbucks.</p>
+      <div class="screen-head screen-footer">
+        <img src="/img/logo-1800flowers.png" alt="1800flowers Logo"/>
       </div>
-      <a href="javascript:window.close()" class="btn gold close">Close</a>
     </div>
 
     <iframe src="<%- redirectUrl %>"></iframe>
-
+    
   </section>
+  <div class="legal-container">
+    <p><a href="<%= url('/terms-of-use')%>">Terms of Use</a><a href="<%= url('/privacy-policy')%>">Privacy Policy</a></p>
+  </div>
 
 <% include ../partials/footer %>

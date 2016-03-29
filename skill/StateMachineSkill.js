@@ -9,7 +9,7 @@ var _ = require('lodash'),
     Promise = require('bluebird');
 
 /**
- * Starbucks is a child of AlexaSkill.
+ * 1-800-Flowers is a child of AlexaSkill.
  */
 var StateMachineSkill = module.exports = function (appId, StateMachine) {
   this._StateMachine = StateMachine;
@@ -26,13 +26,13 @@ var ERRORS = module.exports.ERRORS = {
 };
 
 StateMachineSkill.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
-  console.log("Starbucks onSessionStarted requestId: " + sessionStartedRequest.requestId + ", sessionId: " + session.sessionId);
+  console.log("1-800-Flowers onSessionStarted requestId: " + sessionStartedRequest.requestId + ", sessionId: " + session.sessionId);
   var handler = this._StateMachine.onSessionStart;
   if (handler) handler(new Request(sessionStartedRequest, session));
 };
 
 StateMachineSkill.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
-  console.log("Starbucks onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
+  console.log("1-800-Flowers onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
   var intent = this._StateMachine.openIntent;
   this.eventHandlers.onIntent.call(this,{
     "type": "IntentRequest",
@@ -47,7 +47,7 @@ StateMachineSkill.prototype.eventHandlers.onLaunch = function (launchRequest, se
 };
 
 StateMachineSkill.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
-  console.log("Starbucks onSessionEnded requestId: " + sessionEndedRequest.requestId + ", sessionId: " + session.sessionId);
+  console.log("1-800-Flowers onSessionEnded requestId: " + sessionEndedRequest.requestId + ", sessionId: " + session.sessionId);
   var handler = this._StateMachine.onSessionEnd;
   if (handler) handler(new Request(sessionEndedRequest, session));
 };
@@ -60,6 +60,7 @@ StateMachineSkill.prototype.eventHandlers.onIntent = function (request, session,
       stateMachine = this._StateMachine(fromState),
       request = new Request(request, session),
       qTransition = stateMachine.transition(request);
+  console.log(fromState + " " + JSON.stringify(stateMachine) + " " + JSON.stringify(request) + " " + JSON.stringify(qTransition));
   return qTransition.then(function (trans) {
     return transitionEndingInterceptor.call(self, trans, stateMachine, request);
   }).then(function (trans) {

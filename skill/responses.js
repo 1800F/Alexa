@@ -1,7 +1,12 @@
-/* Copyright (C) Crossborders LLC - All Rights Reserved
+/**
+ * Copyright (C) Crossborders LLC - All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
- * Written by Matthew Parkin <matthewp@rain.agency> & Christijan Draper <christijand@rain.agency>, March 2016
+ *
+ * An object to place responses
+ *
+ * Written by Christijan Draper <christijand@rain.agency>, March 2016
+ * Reviewed by Christian Torres <christiant@rain.agency>, March 2016
  */
 'use strict';
 
@@ -10,7 +15,8 @@ var responses = function () {
   var authCard = { type: "LinkAccount" };
 
   return {
-    "Errors": {
+    Errors: {
+
       NotConnectedToAccount: {
         tell: "Before I can help you place an order, you'll need to connect to your 1-800-Flowers account.\n        To help you get started, I've added a link to the authorization process in the Home screen of the Alexa app.\n        <break time=\"1s\"/>\n        When you're ready, come back and I'll be happy to help you place your order!",
         card: authCard
@@ -21,26 +27,19 @@ var responses = function () {
       ErrorAtLaunch: {
         tell: "I'm really sorry, but I can't take floral orders right now.\n          <break time=\"1s\"/>\n          Please check back soon and thank you for visiting 1-800-Flowers."
       },
-
       ErrorGeneral: {
         tell: "Hello, and welcome back to 1-800-Flowers. I'm sorry, I've encountered an issue and I'm unable to take orders at this time.\n          <break time=\"1s\"/>\n          Please check back soon, and thank you for visiting 1-800-Flowers."
       },
-
       ErrorAtOrder: {
-        /*Note for developer, {userName} is the user's first name, e.g. Greg or Leigh Anne.
-         */
+        // {userName} is the user's first name, e.g. Greg or Leigh Anne.
         tell: "I'm sorry {userName}, but there was an error in processing your order and I'm unable to continue at this time.\n          <break time=\"1s\"/>\n          Please check back soon to try your order again, and thank you for visiting 1-800-Flowers."
       },
-
-    ErrorNonPlannedAtLaunch: {
+      ErrorNonPlannedAtLaunch: {
         tell: "I'm sorry, I couldn't understand you. To launch this skill you can say, Alexa ask 1-800-Flowers to order flowers or simply say Alexa open 1-800-Flowers."
-      }
+      },
     },
 
-
-    Options Review{
-      /*Note for developer
-       */
+    Options: {
       NoRecipient: {
         ask: "Hi there. Who would you like to send flowers to?",
         reprompt: "You can send flowers to {recipientOne}, {recipientTwo}, {recipientThree}, or {recipientFour}. Who would you like to send flowers to?"
@@ -50,8 +49,8 @@ var responses = function () {
         reprompt: "You can send flowers to {recipientOne}, {recipientTwo}, {recipientThree}, or {numberOfRecipientsLeft} others. Who would you like to send flowers to?"
       },
       ArrangementList: {
-        ask: "What type of arrangement would you like?  I have arrangements for Mother’s Day, Birthday, Love and Romance, and “Thank you”.",
-        reprompt: "Did you want a Mother’s Day, Birthday, Love and Romance, or “Thank you” arrangment?"
+        ask: "What type of arrangement would you like?  I have arrangements for Mother's Day, Birthday, Love and Romance, and 'Thank you'.",
+        reprompt: "Did you want a Mother's Day, Birthday, Love and Romance, or 'Thank you' arrangment?"
       },
       SizeList: {
         ask: "What arrangement size would you like? Large for {largePrice}, medium for {mediumPrice}, or small for {smallPrice}.",
@@ -59,19 +58,15 @@ var responses = function () {
       },
       DateSelection: {
         ask: "When would you like the flowers delivered?",
-        reprompt: "To select a date just say “tomorrow” or “next Wednesday” or the month and day, like “March 6th”."
+        reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
       },
       OrderReview: {
-        ask: "For review, I have a {arrangementSize} {arrangementType} arrangement to be delivered to {Recipient} on {deliveryDate}. Is that correct?",
+        ask: "For review, I have a {arrangementSize} {arrangementType} arrangement to be delivered to {recipient} on {deliveryDate}. Is that correct?",
         reprompt: "Say, “repeat” to hear your order again or exit to cancel your order. Or, say, “yes” to place your order."
       },
-
     },
 
-
     QueryRecipient: {
-      /*Note for developer
-       */
       RecipientList: {
         ask: "You can send flower to  {recipientOne}, {recipientTwo}, {recipientThree}, or {recipientFour}. Who would you like to send flowers to?",
         reprompt: "To send flowers to someone else just add them to your address book on 1-800-Flowers.com?"
@@ -82,10 +77,7 @@ var responses = function () {
       },
     },
 
-
     QueryOptionsAgain: {
-      /*Note for developer
-       */
       Validation: {
         say: "{okay}.",
       },
@@ -94,16 +86,15 @@ var responses = function () {
       },
     },
 
-
     ValidatePossibleRecipient: {
-      /*Note for developer, The {okay} variable consists of the terms, (Okay, Great, Excellent) that are randomly selected to fill the slot.
-       */
+      // The {okay} variable consists of the terms, (Okay, Great, Excellent)
+      // that are randomly selected to fill the slot.
       FirstAddress: {
         ask: "{okay}, is that {recipient} at {address}?",
         reprompt: "Is {address} the correct address for {recipient}?"
       },
       NotInAddressBook: {
-        say: "I don’t see {recipient} in your address book. Go to 1-800-Flowers.com to add contacts.",
+        say: "I don't see {recipient} in your address book. Go to 1-800-Flowers.com to add contacts.",
       },
       SendToSomeoneElse: {
         ask: "Would you like to send flowers to someone else?",
@@ -111,10 +102,7 @@ var responses = function () {
       },
     },
 
-
     QueryRecipientList: {
-      /*Note for developer
-       */
       OkayWho: {
         ask: "{okay}, Who?",
         reprompt: "Who would you like to send flowers to?"
@@ -136,21 +124,18 @@ var responses = function () {
       },
     },
 
-
     QueryAddress: {
-      /*Note for developer
-       */
       RecipientValidation: {
         say: "{okay}, flowers for {recipient}?",
       },
       AddressNotDeliverable: {
-        say: "That address is outside 1 800 Flowers’ delivery area.",
+        say: "That address is outside 1 800 Flowers' delivery area.",
       },
       NextAddress: {
-        ask: "How about flowers for {Recipient} at {Address}?",
+        ask: "How about flowers for {recipient} at {address}?",
         reprompt: "Is {address} the correct address for {recipient}?"
       },
-      Add/UpdateAddressesOnline: {
+      AddOrUpdateAddressesOnline: {
         say: "You can only send flowers to contacts in your 1 800 Flowers address book. Go to 1-800-Flowers.com to add more contacts.",
       },
       SendToSomeoneElse: {
@@ -159,16 +144,13 @@ var responses = function () {
       },
     },
 
-
     QueryArrangementType: {
-      /*Note for developer
-       */
       FirstArrangmentDesctiption: {
-        ask: "{arrangementDiscription} Would you like a {arrangementType} arrangement?",
-        reprompt: "Would you like to send a {arrangmentType} arrangement?"
+        ask: "{arrangementDescription} Would you like a {arrangement} arrangement?",
+        reprompt: "Would you like to send a {arrangement} arrangement?"
       },
       ArrangementListAgain: {
-        say: "{okay}, I have arrangements for Mother’s Day, Birthday, Love and Romance, and “Thank you”.",
+        say: "{okay}, I have arrangements for Mother's Day, Birthday, Love and Romance, and 'Thank you'.",
         reprompt: ""
       },
       MoreArrangmentsOnline: {
@@ -180,13 +162,10 @@ var responses = function () {
       },
     },
 
-
     ArrangementDescriptions: {
-      /*Note for developer
-       */
       NextArrangmentDesctiption: {
-        ask: "{arrangementDiscription} Would you like a {arrangementType} arrangement?",
-        reprompt: "Would you like to send a {arrangmentType} arrangement?"
+        ask: "{arrangementDescription} Would you like a {arrangement} arrangement?",
+        reprompt: "Would you like to send a {arrangement} arrangement?"
       },
       MoreArrangmentsOnline: {
         say: "For more arrangement options go to 1-800-Flowers.com.",
@@ -197,20 +176,15 @@ var responses = function () {
       },
     },
 
-
     ArrangementSelectionIntent: {
-      /*Note for developer
-       */
       ArrangementValidation: {
-        say: "{okay}, a {arrangement} arrangement.",
+        say: "{okay}, a {arrangementType} arrangement.",
       },
     },
 
     QuerySize: {
-      /*Note for developer
-       */
       FirstSizeDesctiption: {
-        ask: "{sizeDiscription} Would you like to buy a {size} arrangement for {price}?",
+        ask: "{sizeDescription} Would you like to buy a {size} arrangement for {price}?",
         reprompt: "Would you like to buy a {size} arrangement for {price}?"
       },
       ContinueWithOrder: {
@@ -219,13 +193,10 @@ var responses = function () {
       },
     },
 
-
     SizeDescriptions: {
-      /*Note for developer
-       */
       NextSizeDesctiption: {
-        ask: "{sizeDiscription} Would you like a {arrangementType} arrangement?",
-        reprompt: "Would you like to send a {arrangmentType} arrangement?"
+        ask: "{sizeDescription} Would you like a {size} arrangement?",
+        reprompt: "Would you like to send a {size} arrangement?"
       },
       ContinueWithOrder: {
         ask: "Would you like to continue with your order?",
@@ -233,104 +204,85 @@ var responses = function () {
       },
     },
 
-
     SizeSelectionIntent: {
-      /*Note for developer
-       */
       SizeValidation: {
-        say: "{okay}, a {size} arrangement.",
+        say: "{okay}, a {arrangementSize} arrangement.",
       },
     },
 
-
     QueryDate: {
-      /*Note for developer
-       */
-       DateValidation: {
-         say: "{okay}, {date}?",
-       },
-       DateSelectionAgain: {
-         ask: "To select a date just say “tomorrow” or “next Wednesday” or the month and day, like “March 6th”.",
-         reprompt: "When would you likethe flowers delivered.",
-       },
-       ContinueWithOrder: {
-         ask: "Would you like to continue with your order?",
-         reprompt: "Did you want to continue with your order?",
-       },
+      DateValidation: {
+        say: "{okay}, {date}?",
+      },
+      DateSelectionAgain: {
+        ask: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'.",
+        reprompt: "When would you like the flowers delivered?",
+      },
+      ContinueWithOrder: {
+        ask: "Would you like to continue with your order?",
+        reprompt: "Did you want to continue with your order?",
+      },
     },
 
-
     ValidatePossibleDeliveryDate: {
-      /*Note for developer, The {okay} variable consists of the terms, (Okay, Great, Excellent) that are randomly selected to fill the slot.
-       */
+      // The {okay} variable consists of the terms, (Okay, Great, Excellent)
+      // that are randomly selected to fill the slot.
       DateValidation: {
         say: "{okay}, {date}?",
       },
       NotAValidDate: {
         say: "{date} is not available for delivery. Would you like to deliver on {dateMinusOne} or {datePlusOne}?",
-        reprompt: "To select a date just say “tomorrow” or “next Wednesday” or the month and day, like “March 6th”."
+        reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
       },
       NotAValidDateOfferNext: {
         say: "{date} is not available for delivery. Would you like to deliver on {nextDate}?",
-        reprompt: "To select a date just say “tomorrow” or “next Wednesday” or the month and day, like “March 6th”."
+        reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
       },
     },
 
-
     QueryOrderConfirmation: {
-      /*Note for developer
-       */
-       CancelOrder: {
-         ask: "Your order total is {price} to be billed to your {paymentType}. Should I place the order?",
-         reprompt: "Should I place your order for {price}?"
-       },
-       CancelOrder: {
-         ask: "Would you like to cancel your order?",
-         reprompt: "Did you want to cancel your order?",
-       },
+      ConfirmOrder: {
+        ask: "Your order total is {price} to be billed to your {paymentType}. Should I place the order?",
+        reprompt: "Should I place your order for {price}?"
+      },
+      CancelOrder: {
+        ask: "Would you like to cancel your order?",
+        reprompt: "Did you want to cancel your order?",
+      },
     },
-
 
     QueryBuyConfirmation: {
-      /*Note for developer
-       */
-       PurchaseValidation: {
-         say: "I’ve sent your order. There is a review card in the alexa app and you will receive an email confirmation shortly.",
-       },
-       CancelOrder: {
-         ask: "Would you liket o cancel your order?",
-         reprompt: "Did you want to cancel your order?",
-       },
-       SendToSomeoneElse: {
-         ask: "Would you like to send flowers to someone else?",
-         reprompt: "To send flowers to someone just say their name."
-       },
+      PurchaseValidation: {
+        say: "I've sent your order. There is a review card in the alexa app and you will receive an email confirmation shortly.",
+      },
+      CancelOrder: {
+        ask: "Would you like to cancel your order?",
+        reprompt: "Did you want to cancel your order?",
+      },
+      SendToSomeoneElse: {
+        ask: "Would you like to send flowers to someone else?",
+        reprompt: "To send flowers to someone just say their name."
+      },
     },
-
 
     CancelOrderConfirmation: {
-      /*Note for developer
-       */
-       canceled: {
-         tell: "Okay, our order has been canceled.",
-       },
-       OrderReviewReprompt: {
-         ask: "Your order total is {price} to be billed to your {paymentType}. Should I place the order?",
-         reprompt: "Should I place your order for {price}?"
-       },
+      canceled: {
+        tell: "Okay, our order has been canceled.",
+      },
+      OrderReviewReprompt: {
+        ask: "Your order total is {price} to be billed to your {paymentType}. Should I place the order?",
+        reprompt: "Should I place your order for {price}?"
+      },
     },
 
-
     BadInput: {
-      /*Note for developer, this should replay the reprompt associated with the last ask the user received.
-       */
-       RepeatLastAskReprompt: {
-         say: "",
-       },
-
+      // This should replay the reprompt associated with the last ask the user received.
+      RepeatLastAskReprompt: {
+        say: "",
+      },
+    },
 
     Help: {
-
       HelpStartMenu: {
         ask: "Okay, I'd be happy to help.    <break time=\"1s\"/>\n "
           + "You can send flowers to you contacts in your 1-800 Flowers account."
@@ -341,16 +293,14 @@ var responses = function () {
           + "Lastly, tell me what day you would like the flowers delivered and I will make sure they get their.",
         reprompt: "For more arrangement types and sizes or to update your contacts go to 1-800 Flowers.com."
       },
+    },
 
-
-      ExitIntent: {
-        /*Note for developer, this should replay the reprompt associated with the last ask the user received.
-         */
-         RepeatLastAskReprompt: {
-           tell: "Okay, for more floral needs visit 1-800-Flowers.com?",
-         },
-
-
+    ExitIntent: {
+      // This should replay the reprompt associated with the last ask the user received.
+      RepeatLastAskReprompt: {
+        tell: "Okay, for more floral needs visit 1-800-Flowers.com?",
+      },
+    },
   };
 }();
 module.exports = responses;

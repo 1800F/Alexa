@@ -5,6 +5,7 @@
   "main": "gulpfile.js",
   "scripts": {
     "compile": "node node_modules/gulp/bin/gulp.js compile",
+    "watch": "node node_modules/gulp/bin/gulp.js watch",
     "start": "node node_modules/gulp/bin/gulp.js",
     "test": "mocha --harmony tests/**/*-test.js"
   },
@@ -29,7 +30,9 @@
     "request": "^2.69.0",
     "serve-static": "^1.10.2",
     "string": "^3.3.1",
-    "universal-analytics": "^0.3.10"
+    "universal-analytics": "^0.3.10",
+    "js2xmlparser": "^1.0.0",
+    "xml2js": "^0.4.15"
   },
   "devDependencies": {
     "chai": "^3.5.0",

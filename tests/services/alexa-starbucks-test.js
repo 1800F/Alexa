@@ -1,9 +1,9 @@
 'use strict';
 
 var assert = require('chai').assert,
-    alexaStarbucks = require('../../services/alexa-starbucks.js');
+    alexaFlowers = require('../../services/alexa-flowers.js');
 
-describe('alexa-starbucks', function () {
+describe('alexa-flowers', function () {
   describe('getReloadAmount', function () {
     itIs(1, 2, 10);
     itIs(1, 8, 10);
@@ -16,7 +16,7 @@ describe('alexa-starbucks', function () {
 
     function itIs(currentBalance, charge, expected) {
       it('Charging ' + charge + ' when you\'ve got ' + currentBalance + ' recharges for ' + expected, function () {
-        var actual = alexaStarbucks.getReloadAmount(currentBalance, charge);
+        var actual = alexaFlowers.getReloadAmount(currentBalance, charge);
         assert.equal(actual, expected);
       });
     }

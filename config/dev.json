@@ -25,7 +25,7 @@
       "clientSecret": "ihaveasecret",
       "codeKey": "used-to-mangle-codes"
     },
-    "appId": "amzn1.echo-sdk-ams.app.66b300a7-3747-4713-85af-fb67a6fe7a30"
+    "appId": "amzn1.echo-sdk-ams.app.f3046058-e528-4531-b6ed-31448206b503"
   },
   "skill": {
     "defaultCredentials": {
