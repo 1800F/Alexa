@@ -83,7 +83,10 @@ module.exports = StateMachine({
         LaunchIntent: 'launch',
         ExitIntent: 'exit',
         RecipientSelectionIntent: 'recipient-selection',
-        ArrangementSelectionIntent: 'arrangement-selection'
+        ArrangementSelectionIntent: 'arrangement-selection',
+        SizeSelectionIntent: 'size-selection',
+        DateSelectionIntent: 'date-selection',
+        OrderReviewIntent: 'order-review'
       }
     },
     'exit': {
@@ -104,7 +107,6 @@ module.exports = StateMachine({
         return this.Access(request)
           .then(PartialOrder.build)
           .then(function (po) {
-            console.log("No Recipient " + JSON.stringify(po));
             // if (po.noRecipientsInAddressBook) {
             // return replyWith('Errors.NoRecipientsInAddressBook', 'die', request, po);
             // }
@@ -116,12 +118,30 @@ module.exports = StateMachine({
     },
     "recipient-selection": {
       enter: function enter(request) {
-
+        // request.intent.params.Name
+        return replyWith('Options.ArrangementList', 'arrangement-selection', request);
       }
     },
     "arrangement-selection": {
       enter: function enter(request) {
-        
+        // request.intent.params.ArrangementType
+        return replyWith('Options.SizeList', 'size-selection', request);
+      }
+    },
+    "size-selection": {
+      enter: function enter(request) {
+        // request.intent.params.ArrangementSize
+        return replyWith('Options.DateSelection', 'size-selection', request);
+      }
+    },
+    "date-selection": {
+      enter: function enter(request) {
+        return replyWith('Options.OrderReview', 'order-review', request);
+      }
+    },
+    "order-review": {
+      enter: function enter(request) {
+        return replyWith('ExitIntent.RepeatLastAskReprompt', 'die', request);
       }
     }
   },
