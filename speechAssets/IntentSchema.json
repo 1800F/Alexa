@@ -1,13 +1,35 @@
 {
   "intents": [
     {
-      "intent": "LaunchIntent"
+      "intent": "LaunchIntent",
+      "slots": [
+        {
+          "name": "recipientSlot",
+          "type": "AMAZON.US_FIRST_NAME"
+        },
+        {
+          "name": "deliveryDateSlot",
+          "type": "AMAZON.DATE"
+        },
+        {
+          "name": "arrangementSlot",
+          "type": "ARRANGEMENT_TYPES"
+        },
+        {
+          "name": "sizeSlot",
+          "type": "ARRANGEMENT_SIZES"
+        },
+        {
+          "name": "bouquet",
+          "type": "BOUQUET"
+        }
+      ]
     },
     {
       "intent": "RecipientSelectionIntent",
       "slots": [
         {
-          "name": "Name",
+          "name": "recipientSlot",
           "type": "AMAZON.US_FIRST_NAME"
         }
       ]
@@ -16,7 +38,7 @@
       "intent": "ArrangementSelectionIntent",
       "slots": [
         {
-          "name": "ArrangementType",
+          "name": "arrangementSlot",
           "type": "ARRANGEMENT_TYPES"
         },
         {
@@ -29,7 +51,7 @@
       "intent": "SizeSelectionIntent",
       "slots": [
         {
-          "name": "ArrangementSize",
+          "name": "sizeSlot",
           "type": "ARRANGEMENT_SIZES"
         },
         {

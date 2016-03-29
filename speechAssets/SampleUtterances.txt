@@ -1,197 +1,197 @@
 LaunchIntent to order flowers
 
-RecipientSelectionIntent {recipient}
-RecipientSelectionIntent For {recipient}
-RecipientSelectionIntent Send flowers to {recipient}
-RecipientSelectionIntent Send to {recipient}
-RecipientSelectionIntent I want {recipient}
-RecipientSelectionIntent I would like to send to {recipient}
-RecipientSelectionIntent Should go to {recipient}
-RecipientSelectionIntent I want to send to {recipient}
-RecipientSelectionIntent These are for {recipient}
-RecipientSelectionIntent Please send them to {recipient}
-RecipientSelectionIntent Can I send flowers to {recipient}?
+RecipientSelectionIntent {recipientSlot}
+RecipientSelectionIntent For {recipientSlot}
+RecipientSelectionIntent Send flowers to {recipientSlot}
+RecipientSelectionIntent Send to {recipientSlot}
+RecipientSelectionIntent I want {recipientSlot}
+RecipientSelectionIntent I would like to send to {recipientSlot}
+RecipientSelectionIntent Should go to {recipientSlot}
+RecipientSelectionIntent I want to send to {recipientSlot}
+RecipientSelectionIntent These are for {recipientSlot}
+RecipientSelectionIntent Please send them to {recipientSlot}
+RecipientSelectionIntent Can I send flowers to {recipientSlot}
 
-ArrangementSelectionIntent {ArrangementType}
-ArrangementSelectionIntent {ArrangementType} {Bouquet}
-ArrangementSelectionIntent A {ArrangementType}
-ArrangementSelectionIntent A {ArrangementType} {Bouquet}
-ArrangementSelectionIntent I would like a {ArrangementType}
-ArrangementSelectionIntent I would like a {ArrangementType} {Bouquet}
-ArrangementSelectionIntent How about {ArrangementType}
-ArrangementSelectionIntent How about {ArrangementType} {Bouquet}
-ArrangementSelectionIntent I'd like a {ArrangementType}
-ArrangementSelectionIntent I'd like a {ArrangementType} {Bouquet}
-ArrangementSelectionIntent Oh. {ArrangementType}
-ArrangementSelectionIntent Oh. {ArrangementType} {Bouquet}
-ArrangementSelectionIntent Let's go with {ArrangementType}
-ArrangementSelectionIntent Let's go with {ArrangementType} {Bouquet}
-ArrangementSelectionIntent Let's do a {ArrangementType}
-ArrangementSelectionIntent Let's do a {ArrangementType} {Bouquet}
-ArrangementSelectionIntent I want a {ArrangementType}
-ArrangementSelectionIntent I want a {ArrangementType} {Bouquet}
-ArrangementSelectionIntent Let's make it a {ArrangementType}
-ArrangementSelectionIntent Let's make it a {ArrangementType} {Bouquet}
-ArrangementSelectionIntent Order a {ArrangementType}
-ArrangementSelectionIntent Order a {ArrangementType} {Bouquet}
-ArrangementSelectionIntent Send a {ArrangementType}
-ArrangementSelectionIntent Send a {ArrangementType} {Bouquet}
-ArrangementSelectionIntent Get a {ArrangementType}
-ArrangementSelectionIntent Get a {ArrangementType} {Bouquet}
-ArrangementSelectionIntent I choose a {ArrangementType}
-ArrangementSelectionIntent I choose a {ArrangementType} {Bouquet}
-ArrangementSelectionIntent I have to get a {ArrangementType}
-ArrangementSelectionIntent I have to get a {ArrangementType} {Bouquet}
-ArrangementSelectionIntent I must to get a {ArrangementType}
-ArrangementSelectionIntent I must to get a {ArrangementType} {Bouquet}
-ArrangementSelectionIntent I need to get a {ArrangementType}
-ArrangementSelectionIntent I need to get a {ArrangementType} {Bouquet}
-ArrangementSelectionIntent It must be a {ArrangementType}
-ArrangementSelectionIntent It must be a {ArrangementType} {Bouquet}
-ArrangementSelectionIntent I have to have a {ArrangementType}
-ArrangementSelectionIntent I have to have a {ArrangementType} {Bouquet}
+ArrangementSelectionIntent {arrangementSlot}
+ArrangementSelectionIntent {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent A {arrangementSlot}
+ArrangementSelectionIntent A {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I would like a {arrangementSlot}
+ArrangementSelectionIntent I would like a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent How about {arrangementSlot}
+ArrangementSelectionIntent How about {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I'd like a {arrangementSlot}
+ArrangementSelectionIntent I'd like a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent Oh. {arrangementSlot}
+ArrangementSelectionIntent Oh. {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent Let's go with {arrangementSlot}
+ArrangementSelectionIntent Let's go with {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent Let's do a {arrangementSlot}
+ArrangementSelectionIntent Let's do a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I want a {arrangementSlot}
+ArrangementSelectionIntent I want a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent Let's make it a {arrangementSlot}
+ArrangementSelectionIntent Let's make it a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent Order a {arrangementSlot}
+ArrangementSelectionIntent Order a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent Send a {arrangementSlot}
+ArrangementSelectionIntent Send a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent Get a {arrangementSlot}
+ArrangementSelectionIntent Get a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I choose a {arrangementSlot}
+ArrangementSelectionIntent I choose a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I have to get a {arrangementSlot}
+ArrangementSelectionIntent I have to get a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I must to get a {arrangementSlot}
+ArrangementSelectionIntent I must to get a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I need to get a {arrangementSlot}
+ArrangementSelectionIntent I need to get a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent It must be a {arrangementSlot}
+ArrangementSelectionIntent It must be a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I have to have a {arrangementSlot}
+ArrangementSelectionIntent I have to have a {arrangementSlot} {Bouquet}
 
-SizeSelectionIntent {ArrangementSize}
-SizeSelectionIntent A {ArrangementSize} {Bouquet}.
-SizeSelectionIntent A {ArrangementSize}
-SizeSelectionIntent I would like a {ArrangementSize}
-SizeSelectionIntent How about {ArrangementSize}.
-SizeSelectionIntent I'd like a {ArrangementSize}.
-SizeSelectionIntent Oh. {ArrangementSize}.
-SizeSelectionIntent Let's go with {ArrangementSize}.
-SizeSelectionIntent Let's do with {ArrangementSize}.
-SizeSelectionIntent I want a {ArrangementSize}.
-SizeSelectionIntent Order a {ArrangementSize}.
-SizeSelectionIntent Send a {ArrangementSize}.
-SizeSelectionIntent Get a {ArrangementSize}.
-SizeSelectionIntent I choose a {ArrangementSize}.
-SizeSelectionIntent I have to get a {ArrangementSize}.
-SizeSelectionIntent I must to get a {ArrangementSize}.
-SizeSelectionIntent I need to get a {ArrangementSize}.
-SizeSelectionIntent It  must be a {ArrangementSize}.
-SizeSelectionIntent I have to have a {ArrangementSize}.
+SizeSelectionIntent {sizeSlot}
+SizeSelectionIntent A {sizeSlot} {Bouquet}
+SizeSelectionIntent A {sizeSlot}
+SizeSelectionIntent I would like a {sizeSlot}
+SizeSelectionIntent How about {sizeSlot}
+SizeSelectionIntent I'd like a {sizeSlot}
+SizeSelectionIntent Oh. {sizeSlot}
+SizeSelectionIntent Let's go with {sizeSlot}
+SizeSelectionIntent Let's do with {sizeSlot}
+SizeSelectionIntent I want a {sizeSlot}
+SizeSelectionIntent Order a {sizeSlot}
+SizeSelectionIntent Send a {sizeSlot}
+SizeSelectionIntent Get a {sizeSlot}
+SizeSelectionIntent I choose a {sizeSlot}
+SizeSelectionIntent I have to get a {sizeSlot}
+SizeSelectionIntent I must to get a {sizeSlot}
+SizeSelectionIntent I need to get a {sizeSlot}
+SizeSelectionIntent It  must be a {sizeSlot}
+SizeSelectionIntent I have to have a {sizeSlot}
 
-HelpIntent about this skill
-HelpIntent about this skill please
-HelpIntent explain this skill
-HelpIntent explain this skill please
-HelpIntent explain yourself
-HelpIntent explain yourself please
-HelpIntent get help
-HelpIntent get help please
-HelpIntent help
-HelpIntent help me
-HelpIntent help me please
-HelpIntent help menu
-HelpIntent help menu please
-HelpIntent help options
-HelpIntent help options please
-HelpIntent help please
-HelpIntent how can i use you
-HelpIntent how do i do this
-HelpIntent how do i do this skill
-HelpIntent how do i navigate
-HelpIntent how do i use this
-HelpIntent how do i use this skill
-HelpIntent how do i use you
-HelpIntent how do you do this
-HelpIntent how do you do this skill
-HelpIntent how do you use this
-HelpIntent how do you use this skill
-HelpIntent how do you work
-HelpIntent how does it work
-HelpIntent how does this skill work
-HelpIntent how does this work
-HelpIntent i don't understand
-HelpIntent i'm confused
-HelpIntent open the help menu
-HelpIntent open the help menu please
-HelpIntent please get help
-HelpIntent please help
-HelpIntent please help me
-HelpIntent please offer help options
-HelpIntent please open the help menu
-HelpIntent please take me to the help menu 
-HelpIntent please tell me about this skill
-HelpIntent please tell me about this skill 
-HelpIntent please tell me help options
-HelpIntent please tell me how can i use you
-HelpIntent please tell me how do i do this
-HelpIntent please tell me how do i do this skill
-HelpIntent please tell me how do i navigate
-HelpIntent please tell me how do i use this
-HelpIntent please tell me how do i use this skill
-HelpIntent please tell me how do i use you
-HelpIntent please tell me how do you do this
-HelpIntent please tell me how do you do this skill
-HelpIntent please tell me how do you use this
-HelpIntent please tell me how do you use this skill
-HelpIntent please tell me how do you work
-HelpIntent please tell me how does it work
-HelpIntent please tell me how does this skill work
-HelpIntent please tell me how does this work
-HelpIntent please tell me more about this skill
-HelpIntent please tell me what am i supposed to do now
-HelpIntent please tell me what can i ask
-HelpIntent please tell me what can i ask you
-HelpIntent please tell me what can i do
-HelpIntent please tell me what can i say
-HelpIntent please tell me what can i use this for
-HelpIntent please tell me what can you do
-HelpIntent please tell me what can you tell me
-HelpIntent please tell me what commands can i ask
-HelpIntent please tell me what commands can i say
-HelpIntent please tell me what do i do
-HelpIntent please tell me what do you do
-HelpIntent please tell me what questions can i ask
-HelpIntent please tell more more about what I can do
-HelpIntent tell me about this skill 
-HelpIntent tell me about this skill please
-HelpIntent tell me how can i use you
-HelpIntent tell me how can i use you please
-HelpIntent tell me how do i do this
-HelpIntent tell me how do i do this please
-HelpIntent tell me how do i do this skill
-HelpIntent tell me how do i do this skill please
-HelpIntent tell me how do i navigate
-HelpIntent tell me how do i navigate please
-HelpIntent tell me how do i use this
-HelpIntent tell me how do i use this please
-HelpIntent tell me how do i use this skill
-HelpIntent tell me how do i use this skill please
-HelpIntent tell me how do i use you
-HelpIntent tell me how do i use you please
-HelpIntent tell me how do you do this
-HelpIntent tell me how do you do this please
-HelpIntent tell me how do you do this skill
-HelpIntent tell me how do you do this skill please
-HelpIntent tell me how do you use this
-HelpIntent tell me how do you use this please
-HelpIntent tell me how do you use this skill
-HelpIntent tell me how do you use this skill please
-HelpIntent tell me how do you work
-HelpIntent tell me how do you work please
-HelpIntent tell me how does it work
-HelpIntent tell me how does it work please
-HelpIntent tell me how does this skill work
-HelpIntent tell me how does this skill work please
-HelpIntent tell me how does this work
-HelpIntent tell me how does this work please
-HelpIntent tell me more about this skill
-HelpIntent tell me more about this skill please
-HelpIntent tell more more about what I can do
-HelpIntent tell more more about what I can do please
-HelpIntent what am i supposed to do now
-HelpIntent what can i ask
-HelpIntent what can i ask you
-HelpIntent what can i do
-HelpIntent what can i say
-HelpIntent what can i use this for
-HelpIntent what can you do
-HelpIntent what can you tell me
-HelpIntent what commands can i ask
-HelpIntent what commands can i say
-HelpIntent what do i do
-HelpIntent what do i do next
-HelpIntent what do you do
-HelpIntent what questions can i ask
+AMAZON.HelpIntent about this skill
+AMAZON.HelpIntent about this skill please
+AMAZON.HelpIntent explain this skill
+AMAZON.HelpIntent explain this skill please
+AMAZON.HelpIntent explain yourself
+AMAZON.HelpIntent explain yourself please
+AMAZON.HelpIntent get help
+AMAZON.HelpIntent get help please
+AMAZON.HelpIntent help
+AMAZON.HelpIntent help me
+AMAZON.HelpIntent help me please
+AMAZON.HelpIntent help menu
+AMAZON.HelpIntent help menu please
+AMAZON.HelpIntent help options
+AMAZON.HelpIntent help options please
+AMAZON.HelpIntent help please
+AMAZON.HelpIntent how can i use you
+AMAZON.HelpIntent how do i do this
+AMAZON.HelpIntent how do i do this skill
+AMAZON.HelpIntent how do i navigate
+AMAZON.HelpIntent how do i use this
+AMAZON.HelpIntent how do i use this skill
+AMAZON.HelpIntent how do i use you
+AMAZON.HelpIntent how do you do this
+AMAZON.HelpIntent how do you do this skill
+AMAZON.HelpIntent how do you use this
+AMAZON.HelpIntent how do you use this skill
+AMAZON.HelpIntent how do you work
+AMAZON.HelpIntent how does it work
+AMAZON.HelpIntent how does this skill work
+AMAZON.HelpIntent how does this work
+AMAZON.HelpIntent i don't understand
+AMAZON.HelpIntent i'm confused
+AMAZON.HelpIntent open the help menu
+AMAZON.HelpIntent open the help menu please
+AMAZON.HelpIntent please get help
+AMAZON.HelpIntent please help
+AMAZON.HelpIntent please help me
+AMAZON.HelpIntent please offer help options
+AMAZON.HelpIntent please open the help menu
+AMAZON.HelpIntent please take me to the help menu 
+AMAZON.HelpIntent please tell me about this skill
+AMAZON.HelpIntent please tell me about this skill 
+AMAZON.HelpIntent please tell me help options
+AMAZON.HelpIntent please tell me how can i use you
+AMAZON.HelpIntent please tell me how do i do this
+AMAZON.HelpIntent please tell me how do i do this skill
+AMAZON.HelpIntent please tell me how do i navigate
+AMAZON.HelpIntent please tell me how do i use this
+AMAZON.HelpIntent please tell me how do i use this skill
+AMAZON.HelpIntent please tell me how do i use you
+AMAZON.HelpIntent please tell me how do you do this
+AMAZON.HelpIntent please tell me how do you do this skill
+AMAZON.HelpIntent please tell me how do you use this
+AMAZON.HelpIntent please tell me how do you use this skill
+AMAZON.HelpIntent please tell me how do you work
+AMAZON.HelpIntent please tell me how does it work
+AMAZON.HelpIntent please tell me how does this skill work
+AMAZON.HelpIntent please tell me how does this work
+AMAZON.HelpIntent please tell me more about this skill
+AMAZON.HelpIntent please tell me what am i supposed to do now
+AMAZON.HelpIntent please tell me what can i ask
+AMAZON.HelpIntent please tell me what can i ask you
+AMAZON.HelpIntent please tell me what can i do
+AMAZON.HelpIntent please tell me what can i say
+AMAZON.HelpIntent please tell me what can i use this for
+AMAZON.HelpIntent please tell me what can you do
+AMAZON.HelpIntent please tell me what can you tell me
+AMAZON.HelpIntent please tell me what commands can i ask
+AMAZON.HelpIntent please tell me what commands can i say
+AMAZON.HelpIntent please tell me what do i do
+AMAZON.HelpIntent please tell me what do you do
+AMAZON.HelpIntent please tell me what questions can i ask
+AMAZON.HelpIntent please tell more more about what I can do
+AMAZON.HelpIntent tell me about this skill 
+AMAZON.HelpIntent tell me about this skill please
+AMAZON.HelpIntent tell me how can i use you
+AMAZON.HelpIntent tell me how can i use you please
+AMAZON.HelpIntent tell me how do i do this
+AMAZON.HelpIntent tell me how do i do this please
+AMAZON.HelpIntent tell me how do i do this skill
+AMAZON.HelpIntent tell me how do i do this skill please
+AMAZON.HelpIntent tell me how do i navigate
+AMAZON.HelpIntent tell me how do i navigate please
+AMAZON.HelpIntent tell me how do i use this
+AMAZON.HelpIntent tell me how do i use this please
+AMAZON.HelpIntent tell me how do i use this skill
+AMAZON.HelpIntent tell me how do i use this skill please
+AMAZON.HelpIntent tell me how do i use you
+AMAZON.HelpIntent tell me how do i use you please
+AMAZON.HelpIntent tell me how do you do this
+AMAZON.HelpIntent tell me how do you do this please
+AMAZON.HelpIntent tell me how do you do this skill
+AMAZON.HelpIntent tell me how do you do this skill please
+AMAZON.HelpIntent tell me how do you use this
+AMAZON.HelpIntent tell me how do you use this please
+AMAZON.HelpIntent tell me how do you use this skill
+AMAZON.HelpIntent tell me how do you use this skill please
+AMAZON.HelpIntent tell me how do you work
+AMAZON.HelpIntent tell me how do you work please
+AMAZON.HelpIntent tell me how does it work
+AMAZON.HelpIntent tell me how does it work please
+AMAZON.HelpIntent tell me how does this skill work
+AMAZON.HelpIntent tell me how does this skill work please
+AMAZON.HelpIntent tell me how does this work
+AMAZON.HelpIntent tell me how does this work please
+AMAZON.HelpIntent tell me more about this skill
+AMAZON.HelpIntent tell me more about this skill please
+AMAZON.HelpIntent tell more more about what I can do
+AMAZON.HelpIntent tell more more about what I can do please
+AMAZON.HelpIntent what am i supposed to do now
+AMAZON.HelpIntent what can i ask
+AMAZON.HelpIntent what can i ask you
+AMAZON.HelpIntent what can i do
+AMAZON.HelpIntent what can i say
+AMAZON.HelpIntent what can i use this for
+AMAZON.HelpIntent what can you do
+AMAZON.HelpIntent what can you tell me
+AMAZON.HelpIntent what commands can i ask
+AMAZON.HelpIntent what commands can i say
+AMAZON.HelpIntent what do i do
+AMAZON.HelpIntent what do i do next
+AMAZON.HelpIntent what do you do
+AMAZON.HelpIntent what questions can i ask
