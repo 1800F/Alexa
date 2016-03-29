@@ -283,14 +283,13 @@ var responses = function () {
 
     Help: {
       HelpStartMenu: {
-        ask: "Okay, I'd be happy to help.    <break time=\"1s\"/>\n "
+        tell: "Okay, I'd be happy to help.    <break time=\"1s\"/>\n "
           + "You can send flowers to you contacts in your 1-800 Flowers account."
           + "Just say their name to send them flowers.   <break time=\"1s\"/>\n "
           + "You can add contacts and updates addresses on 1-800 Flowers.com.   <break time=\"1s\"/>\n "
           + "You can select the type of arrangement like; Mother's Day, Birthday, Thank You, or Love and Romance."
           + "You can also choose between small, medium, and large arrangement sizes.    <break time=\"1s\"/>\n "
-          + "Lastly, tell me what day you would like the flowers delivered and I will make sure they get their.",
-        reprompt: "For more arrangement types and sizes or to update your contacts go to 1-800 Flowers.com."
+          + "Lastly, tell me what day you would like the flowers delivered and I will make sure they get there.",
       },
     },
 

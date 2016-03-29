@@ -85,7 +85,8 @@ module.exports = StateMachine({
         ArrangementSelectionIntent: 'arrangement-selection',
         SizeSelectionIntent: 'size-selection',
         DateSelectionIntent: 'date-selection',
-        OrderReviewIntent: 'order-review'
+        OrderReviewIntent: 'order-review',
+        "AMAZON.HelpIntent": 'help-menu'
       }
     },
     'exit': {
@@ -157,7 +158,8 @@ module.exports = StateMachine({
       enter: function enter(request) {
         return replyWith('ExitIntent.RepeatLastAskReprompt', 'die', request);
       }
-    }
+    },
+    "help-menu": SimpleHelpMessage('Help.HelpStartMenu', 'Start Menu')
   },
   Access: function Access(request) {
     var self = this;
@@ -234,7 +236,7 @@ function SimpleHelpMessage(msgPath, analyticEvent, toState) {
     enter: function enter(request) {
       var analytics = universalAnalytics(config.googleAnalytics.trackingCode, request.session.user.userId, { strictCidFormat: false });
       analytics.event('Help Flow', analyticEvent).send();
-      return replyWith(msgPath, toState || 'more-help-query', request, null);
+      return replyWith(msgPath, toState || 'die', request, null);
     }
   };
 }

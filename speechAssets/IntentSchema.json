@@ -18,7 +18,8 @@
         {
           "name": "sizeSlot",
           "type": "ARRANGEMENT_SIZES"
-        }{
+        },
+        {
           "name": "bouquet",
           "type": "BOUQUET"
         }
@@ -58,6 +59,9 @@
           "type": "BOUQUET"
         }
       ]
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
     }
   ]
 }
