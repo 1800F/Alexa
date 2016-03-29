@@ -69,12 +69,12 @@ router.post('/', function (req, res, next) {
         var authCode = oauthhelper.encryptTokens({"systemID":data.systemID, "customerID":data.customerID});
         process.stdout.write('auth_code: ' + authCode + "\r");
         if (data.noCC || data.noContacts) {
-          console.log("REDIRECT URL: " + oauthhelper.redirectTo(req.body.state, auth_code));
+          console.log("REDIRECT URL: " + oauthhelper.redirectTo(req.body.state, authCode));
           res.render('home/success-needs-more', {
             page: "success",
             title: "1800flowers - Account Linked",
             auth_code: authCode,
-            redirectUrl: oauthhelper.redirectTo(req.body.state, auth_code),
+            redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
             noCC: data.noCC,
             noContacts: data.noContacts,
             created: false
@@ -105,7 +105,7 @@ router.post('/', function (req, res, next) {
       }
     }).catch(function (err) {
       console.log("ERROR AUTHENTICATING----------------------------------------******************************----------------------:");
-      //console.log(err);
+      console.log(JSON.stringify(err));
       res.render('home/index', {
         page: 'homepage',
         title: '1800flowers',
@@ -167,50 +167,57 @@ router.post('/create', function (req, res, next) {
     state = req.body.state;
 
   flowers.createCustomer(email, password).then(function (user) {
-    process.stdout.write('Create User: ' + user.registerNewCustomerResponse.customerData.customerID + "\r");
-      if (user.registerNewCustomerResponse.error.errorCode) {
-        console.log("ERROR CODE EXISTS: " + user.registerNewCustomerResponse.error.errorCode);
-        res.render('home/create', {
-          page: 'account-error',
-          title: '1800flowers',
-          errorCreating: true,
-          errorMessage: user.registerNewCustomerResponse.error.errorDetails
-        });
-      } else {
-        console.log("ERROR CODE DOESN'T EXIST");
-        var authCode = oauthhelper.encryptTokens({"systemID": user.registerNewCustomerResponse.customerData.systemID});
-        res.render('home/success-needs-more', {
-            page: "success",
-            title: "1800flowers - Account Created",
-            auth_code: authCode,
-            noCC: true,
-            noContacts: true,
-            created: true
-        });
-        // flowers.login(email, password).then(function (flowersUser) {
-        //   flowersUser.getProfile(user.registerNewCustomerResponse.customerData.systemID).then( function (userProfile) {
-        //     console.log("System ID: " + user.registerNewCustomerResponse.customerData.systemID);
-        //     console.log("Customer ID: " + userProfile.Get18FCustomerByAdminSysKeyResponse.result.response.idPK);
-        //     var authCode = oauthhelper.encryptTokens({"systemID":user.registerNewCustomerResponse.customerData.systemID, "customerID":userProfile.Get18FCustomerByAdminSysKeyResponse.result.response.idPK});
-        //     res.render('home/success-needs-more', {
-        //         page: "success",
-        //         title: "1800flowers - Account Created",
-        //         auth_code: authCode,
-        //         noCC: true,
-        //         noContacts: true,
-        //         created: true
-        //     });
-        //   }).catch(function (profileError) {
-        //     console.log("PROFILE ERROR: ", profileError);
-        //       res.render('home/create', {
-        //       page: 'create',
-        //       title: '1800flowers',
-        //       errorCreating: true,
-        //       errorMessage: profileError
-        //     });
-        //   });
-        // });
-      }
+    console.log('Create User:' + user.registerNewCustomerResponse.customerData.customerID);
+    if (user.registerNewCustomerResponse.error.errorCode) {
+      console.log("ERROR CODE EXISTS: " + user.registerNewCustomerResponse.error.errorCode);
+      res.render('home/create', {
+        page: 'account-error',
+        title: '1800flowers',
+        errorCreating: true,
+        errorMessage: user.registerNewCustomerResponse.error.errorDetails
+      });
+    } else {
+      console.log("ERROR CODE DOESN'T EXIST");
+      flowers.addCustomerDetails(first, lastname, email, user.registerNewCustomerResponse.customerData.customerID).then(function (details) {
+        if (details.AddPersonResponse) {
+          console.log(details.AddPersonResponse.result.person);
+          var authCode = oauthhelper.encryptTokens({"systemID": user.registerNewCustomerResponse.customerData.systemID, "customerID": details.AddPersonResponse.result.person.idPK});
+          res.render('home/success-needs-more', {
+              page: "success",
+              title: "1800flowers - Account Created",
+              auth_code: authCode,
+              redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
+              noCC: true,
+              noContacts: true,
+              created: true
+          });
+        }
+      });
+      
+      // flowers.login(email, password).then(function (flowersUser) {
+      //   flowersUser.getProfile(user.registerNewCustomerResponse.customerData.systemID).then( function (userProfile) {
+      //     console.log("System ID: " + user.registerNewCustomerResponse.customerData.systemID);
+      //     console.log("Customer ID: " + userProfile.Get18FCustomerByAdminSysKeyResponse.result.response.idPK);
+      //     var authCode = oauthhelper.encryptTokens({"systemID":user.registerNewCustomerResponse.customerData.systemID, "customerID":userProfile.Get18FCustomerByAdminSysKeyResponse.result.response.idPK});
+      //     res.render('home/success-needs-more', {
+      //         page: "success",
+      //         title: "1800flowers - Account Created",
+      //         auth_code: authCode,
+      //         noCC: true,
+      //         noContacts: true,
+      //         created: true
+      //     });
+      //   }).catch(function (profileError) {
+      //     console.log("PROFILE ERROR: ", profileError);
+      //       res.render('home/create', {
+      //       page: 'create',
+      //       title: '1800flowers',
+      //       errorCreating: true,
+      //       errorMessage: profileError
+      //     });
+      //   });
+      // });
+    }
   }).catch(function (err) {
     process.stdout.write("Error Creating User: " + err + "\r");
     res.render('home/create', {
@@ -238,13 +245,20 @@ router.get('/account-required', function (req, res, next) {
 
 router.get('/privacy-policy', function (req, res, next) {
   //TEST ORDER
-  flowers.login('1stevenh@rain.agency', '1rainPssword').then(function (user) {
-    console.log(user);
-    user.submitOrder().then(function(order) {
-      console.log(order);
-    })
-  });
+  // flowers.login('1stevenh@rain.agency', '1rainPssword').then(function (user) {
+  //   console.log(user);
+  //   user.submitOrder().then(function(order) {
+  //     console.log(order);
+  //   })
+  // });
 
+  //TEST PRODUCT API
+  var floralEmbrace = Flowers.Product(config.flowers, "100299");
+  floralEmbrace.getProductDetails().then(function (details) {
+    console.log("PRODUCT DETAILS: " + JSON.stringify(details));
+    floralEmbrace.details = details;
+  });
+  
 
   res.render('home/privacy-policy', {
     page: "privacy-policy",
