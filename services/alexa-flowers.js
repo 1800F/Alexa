@@ -54,7 +54,7 @@ exports.validate = function (flowersUser) {
           noCC = true;
         }
         //Check to see if there are recipients
-        if (!recipients|| !recipients.MDMRecipientsResponse || recipients.MDMRecipientsResponse.Status == "Fail") {
+        if (!recipients|| recipients.length < 1) {
           //errors.push(ERRORS.CARD);
           noContacts = true;
         } 

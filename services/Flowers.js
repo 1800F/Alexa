@@ -56,7 +56,7 @@ var Flowers = module.exports = function Flowers(options, tokens) {
         }
       }
     };
-    return apprequest('POST', '/registerNewCustomer', {} , body, null, true);
+    return apprequest('POST', '/registerNewCustomer', {} , body, null, "customer");
   }
 
   function addCustomerDetails(first, last, email, customerID) {
@@ -103,7 +103,7 @@ var Flowers = module.exports = function Flowers(options, tokens) {
       }
     };
 
-    return apprequest('POST', '/addPerson', {} , body, null, true);
+    return apprequest('POST', '/addPerson', {} , body, null, "customer");
   }
 
   function dynamoLogin(alexaUserID) {
@@ -113,19 +113,19 @@ var Flowers = module.exports = function Flowers(options, tokens) {
   }
 
   function forgotUsername(email) {
-    return apprequest('POST', '/login/forgot-username', {}, { emailAddress: email });
+    return apprequest('POST', '/login/forgot-username', {}, { emailAddress: email }, null, "account");
   }
 
   function resetPassword(username, email) {
-    return apprequest('POST', '/login/forgot-password', {}, { userName: username, emailAddress: email });
+    return apprequest('POST', '/login/forgot-password', {}, { userName: username, emailAddress: email }, null, "account");
   }
 
-  function apprequest(method, path, queryString, body, paging, isCustomerAPI) {
+  function apprequest(method, path, queryString, body, paging, apiType) {
     var args = arguments,
         self = this;
     return getAuthToken()
     .then(function (token) {
-      return issue(method, token, path, queryString, body, paging, options, isCustomerAPI);
+      return issue(method, token, path, queryString, body, paging, options, apiType);
     }).then(function (res) {
       if (res.statusCode == 401) {
         //Our token expired
@@ -182,7 +182,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
         }
       }
     };
-    return userrequest('POST', '/authenticateUser', {}, body);
+    return userrequest('POST', '/authenticateUser', {}, body, null, "account");
   }
 
   function refresh() {
@@ -207,7 +207,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
         "InquiryLevel":"4"
       }
     };
-    return userrequest('POST', '/getSavedCC', {}, body);
+    return userrequest('POST', '/getSavedCC', {}, body, null, "account");
   }
 
   function getRecipients(customerID) {
@@ -216,7 +216,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
         "contid":customerID
       }
     };
-    return userrequest('POST', '/getRecipients', {}, body).then(function (body) {
+    return userrequest('POST', '/getRecipients', {}, body, null, "account").then(function (body) {
       return body.MDMRecipientsResponse.MDMRecipients.MDMRecipient
     });
   }
@@ -228,7 +228,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
         "contid":customerID
       }
     };
-    return userrequest('POST', '/getRecipientAddress', {}, body);
+    return userrequest('POST', '/getRecipientAddress', {}, body, null, "account");
   }
 
   function getProfile(systemID) {
@@ -245,7 +245,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
         "InquiryLevel":"2"
       }
     };
-    return userrequest('POST', '/getCustomerDetails', {}, body);
+    return userrequest('POST', '/getCustomerDetails', {}, body, null, "account");
   }
 
   function submitOrder() {
@@ -326,14 +326,14 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
     //return userrequest('POST', '/me/stores/' + storeNumber + '/orderToken/' + orderToken + '/submitOrder', {}, body);
   }
 
-  function userrequest(method, path, queryString, body, paging, isCustomerAPI) {
+  function userrequest(method, path, queryString, body, paging, apiType) {
     if (queryString && queryString.giveResponse) {
       var giveResponse = true;
       delete queryString.giveResponse;
     }
     return getUserAuthToken()
     .then(function (token) {
-      return issue(method, token, path, queryString, body, paging, options, isCustomerAPI);
+      return issue(method, token, path, queryString, body, paging, options, apiType);
     }).then(function (res) {
       console.log("----------------------------RESPONSE STATUS------------------------------");
       console.log(res.statusCode);
@@ -348,6 +348,63 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
   function getUserAuthToken() {
     // TODO: Check expiration of the access_token and refresh. Right now we wait for fail before refresh
     return Promise.resolve(tokens.access_token);
+  }
+
+};
+
+var Product = module.exports.Product = function Product(options, productSKU) {
+  //options = _.assign({ version: 'alexa/uat/account/v1' }, options);
+  options.transform = options.transform || _.identity;
+
+  return options.transform({
+    SKU: productSKU,
+    details: {},
+    getProductDetails: getProductDetails,
+    update: update,
+    earliestDelivery: getEarliestDeliveryDate,
+  }, 'product');
+
+  function getProductDetails() {
+    var body = {
+     "getProductDetailsRequest": {
+        "customerId": "123",
+        "customerType": "P",
+        "storeId": "20054",
+        "siteId": "18F",
+        "sourceSystem": "web",
+        "brandCode": "1001",
+        "productSku": this.SKU,
+        "productBase": this.SKU
+     }
+    };
+    return productrequest('POST', '/getProductDetail', {}, body, null, "product").then(function(details){
+      return details.getProductDetailResponse.getProductDetailResult;
+    });
+  }
+
+  function update() {
+
+  }
+
+  function getEarliestDeliveryDate() {
+
+  }
+
+  function productrequest(method, path, queryString, body, paging, apiType) {
+    if (queryString && queryString.giveResponse) {
+      var giveResponse = true;
+      delete queryString.giveResponse;
+    }
+    return issue(method, null, path, queryString, body, paging, options, apiType).then(function (res) {
+      console.log("----------------------------RESPONSE STATUS------------------------------");
+      console.log(res.statusCode);
+      if (res.statusCode < 200 || res.statusCode >= 300) return Promise.reject(res);
+      if (res.statusCode == 201 && !res.body) res.body = {};
+      if (paging) res.body = wrapPagingResult(res.body, productrequest, [method, path, queryString, body]);
+      if (giveResponse) res.body.response = res;
+      console.log("RES BODY: " + JSON.stringify(res.body));
+      return res.body;
+    });
   }
 
 };
@@ -407,12 +464,23 @@ function oauthReq(grant_type, values, options) {
   }
 }
 
-function issue(method, token, path, queryString, body, paging, options, isCustomerAPI) {
+function issue(method, token, path, queryString, body, paging, options, apiType) {
+  var URL = options.endpoint + '/';
+  if (apiType == 'customer') {
+    URL += options.customer + '/' + options.version + path;
+  }
+  else if (apiType == 'product') {
+    URL += options.product + '/' + options.version + path;
+  }
+  else {
+    URL += options.account + '/' + options.version + path
+  }
+
   var qs = _.map(_.assign({}), function (v, k) {
     return encodeURIComponent(k) + '=' + encodeURIComponent(v);
   }).join('&'),
       op = method == 'POST' ? post : get,
-      url = isCustomerAPI ? (options.endpoint + '/' + options.customer + '/' + options.version + path + '?' + qs) : (options.endpoint + '/' + options.account + '/' + options.version + path + '?' + qs),
+      url = URL + '?' + qs,
       startTime = +new Date();
   console.log("ISSUE BODY:");
   console.log(JSON.stringify(body));
@@ -425,7 +493,7 @@ function issue(method, token, path, queryString, body, paging, options, isCustom
     },
     strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false
   };
-  if (!isCustomerAPI) {
+  if (apiType == 'account') {
      req.headers.Authorization = "Bearer " + token;
   }
   if (body && method != 'GET') {

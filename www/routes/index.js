@@ -245,13 +245,20 @@ router.get('/account-required', function (req, res, next) {
 
 router.get('/privacy-policy', function (req, res, next) {
   //TEST ORDER
-  flowers.login('1stevenh@rain.agency', '1rainPssword').then(function (user) {
-    console.log(user);
-    user.submitOrder().then(function(order) {
-      console.log(order);
-    })
-  });
+  // flowers.login('1stevenh@rain.agency', '1rainPssword').then(function (user) {
+  //   console.log(user);
+  //   user.submitOrder().then(function(order) {
+  //     console.log(order);
+  //   })
+  // });
 
+  //TEST PRODUCT API
+  var floralEmbrace = Flowers.Product(config.flowers, "100299");
+  floralEmbrace.getProductDetails().then(function (details) {
+    console.log("PRODUCT DETAILS: " + JSON.stringify(details));
+    floralEmbrace.details = details;
+  });
+  
 
   res.render('home/privacy-policy', {
     page: "privacy-policy",
