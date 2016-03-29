@@ -88,7 +88,7 @@ var Flowers = module.exports = function Flowers(options, tokens) {
           },
           "birthDate":"1900-01-01",
           "name":{
-            "startDate":new Date(),
+            "startDate":"2016-03-13T16:24:20.585Z",
             "nameUsage":{
               "@code":"G",
               "#text":"Preferred"
@@ -413,7 +413,7 @@ function issue(method, token, path, queryString, body, paging, options, isCustom
       url = isCustomerAPI ? (options.endpoint + '/' + options.customer + '/' + options.version + path + '?' + qs) : (options.endpoint + '/' + options.account + '/' + options.version + path + '?' + qs),
       startTime = +new Date();
   console.log("ISSUE BODY:");
-  console.log(body);
+  console.log(JSON.stringify(body));
   var req = {
     url: url,
     headers: {
@@ -428,7 +428,7 @@ function issue(method, token, path, queryString, body, paging, options, isCustom
   }
   if (body && method != 'GET') {
     console.log("BODY RECEIVED:");
-    console.log(body);
+    console.log(JSON.stringify(body));
     req.json = true;
     req.body = body;
   }
@@ -442,8 +442,8 @@ function issue(method, token, path, queryString, body, paging, options, isCustom
   return op(req).then(function (res) {
     if (options.verbose) {
       console.log("RESPONSE: " + url + " - " + res.statusCode + " - " + (new Date() - startTime) + 'ms');
-      // console.log("RESPONSE BODY:");
-      // console.log(res.body);
+      console.log("RESPONSE BODY:");
+      console.log(JSON.stringify(res.body));
     } 
     if (res.body && _.isString(res.body)) {
       try {

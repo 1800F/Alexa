@@ -43,15 +43,18 @@ exports.validate = function (flowersUser) {
       ]).spread(function (paymentMethods, recipients) {
         var _ref;
         process.stdout.write('Validate Reached:\r');
+        console.log("PAYMENT METHODS: " + JSON.stringify(paymentMethods));
+        console.log("payment length: " + JSON.stringify(paymentMethods.GetSavedCardsForCustomerResponse.result.response));
+        console.log("CONTACTS: " + JSON.stringify(recipients));
 
         var errors = [], noCC = false, noContacts = false;
         //Check to see if there are valid payment methods
-        if (!paymentMethods) {
+        if (!paymentMethods || !paymentMethods.GetSavedCardsForCustomerResponse || !paymentMethods.GetSavedCardsForCustomerResponse.result || !paymentMethods.GetSavedCardsForCustomerResponse.result.response || paymentMethods.GetSavedCardsForCustomerResponse.result.response.financialProfile.chargeCard.length < 1 ) {
           //errors.push(ERRORS.CARD);
           noCC = true;
-        } 
+        }
         //Check to see if there are recipients
-        if (!recipients) {
+        if (!recipients|| !recipients.MDMRecipientsResponse || recipients.MDMRecipientsResponse.Status == "Fail") {
           //errors.push(ERRORS.CARD);
           noContacts = true;
         } 
