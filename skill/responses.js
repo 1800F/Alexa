@@ -1,7 +1,9 @@
-/* 
+/**
  * Copyright (C) Crossborders LLC - All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
+ *
+ * An object to place responses
  *
  * Written by Christijan Draper <christijand@rain.agency>, March 2016
  * Reviewed by Christian Torres <christiant@rain.agency>, March 2016
@@ -58,7 +60,7 @@ var responses = function () {
         reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
       },
       OrderReview: {
-        ask: "For review, I have a {arrangementSize} {arrangementType} arrangement to be delivered to {Recipient} on {deliveryDate}. Is that correct?",
+        ask: "For review, I have a {arrangementSize} {arrangementType} arrangement to be delivered to {recipient} on {deliveryDate}. Is that correct?",
         reprompt: "Say, “repeat” to hear your order again or exit to cancel your order. Or, say, “yes” to place your order."
       },
     },
@@ -129,7 +131,7 @@ var responses = function () {
         say: "That address is outside 1 800 Flowers' delivery area.",
       },
       NextAddress: {
-        ask: "How about flowers for {Recipient} at {Address}?",
+        ask: "How about flowers for {recipient} at {address}?",
         reprompt: "Is {address} the correct address for {recipient}?"
       },
       AddOrUpdateAddressesOnline: {
@@ -143,11 +145,11 @@ var responses = function () {
 
     QueryArrangementType: {
       FirstArrangmentDesctiption: {
-        ask: "{arrangementDiscription} Would you like a {arrangementType} arrangement?",
-        reprompt: "Would you like to send a {arrangmentType} arrangement?"
+        ask: "{arrangementDescription} Would you like a {arrangement} arrangement?",
+        reprompt: "Would you like to send a {arrangement} arrangement?"
       },
       ArrangementListAgain: {
-        say: "{okay}, I have arrangements for Mother's Day, Birthday, Love and Romance, and “Thank you”.",
+        say: "{okay}, I have arrangements for Mother's Day, Birthday, Love and Romance, and 'Thank you'.",
         reprompt: ""
       },
       MoreArrangmentsOnline: {
@@ -161,8 +163,8 @@ var responses = function () {
 
     ArrangementDescriptions: {
       NextArrangmentDesctiption: {
-        ask: "{arrangementDiscription} Would you like a {arrangementType} arrangement?",
-        reprompt: "Would you like to send a {arrangmentType} arrangement?"
+        ask: "{arrangementDescription} Would you like a {arrangement} arrangement?",
+        reprompt: "Would you like to send a {arrangement} arrangement?"
       },
       MoreArrangmentsOnline: {
         say: "For more arrangement options go to 1-800-Flowers.com.",
@@ -175,13 +177,13 @@ var responses = function () {
 
     ArrangementSelectionIntent: {
       ArrangementValidation: {
-        say: "{okay}, a {arrangement} arrangement.",
+        say: "{okay}, a {arrangementType} arrangement.",
       },
     },
 
     QuerySize: {
       FirstSizeDesctiption: {
-        ask: "{sizeDiscription} Would you like to buy a {size} arrangement for {price}?",
+        ask: "{sizeDescription} Would you like to buy a {size} arrangement for {price}?",
         reprompt: "Would you like to buy a {size} arrangement for {price}?"
       },
       ContinueWithOrder: {
@@ -192,8 +194,8 @@ var responses = function () {
 
     SizeDescriptions: {
       NextSizeDesctiption: {
-        ask: "{sizeDiscription} Would you like a {arrangementType} arrangement?",
-        reprompt: "Would you like to send a {arrangmentType} arrangement?"
+        ask: "{sizeDescription} Would you like a {size} arrangement?",
+        reprompt: "Would you like to send a {size} arrangement?"
       },
       ContinueWithOrder: {
         ask: "Would you like to continue with your order?",
@@ -203,7 +205,7 @@ var responses = function () {
 
     SizeSelectionIntent: {
       SizeValidation: {
-        say: "{okay}, a {size} arrangement.",
+        say: "{okay}, a {arrangementSize} arrangement.",
       },
     },
 
@@ -212,8 +214,8 @@ var responses = function () {
         say: "{okay}, {date}?",
       },
       DateSelectionAgain: {
-        ask: "To select a date just say “tomorrow” or “next Wednesday” or the month and day, like “March 6th”.",
-        reprompt: "When would you likethe flowers delivered.",
+        ask: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'.",
+        reprompt: "When would you like the flowers delivered?",
       },
       ContinueWithOrder: {
         ask: "Would you like to continue with your order?",
@@ -229,11 +231,11 @@ var responses = function () {
       },
       NotAValidDate: {
         say: "{date} is not available for delivery. Would you like to deliver on {dateMinusOne} or {datePlusOne}?",
-        reprompt: "To select a date just say “tomorrow” or “next Wednesday” or the month and day, like “March 6th”."
+        reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
       },
       NotAValidDateOfferNext: {
         say: "{date} is not available for delivery. Would you like to deliver on {nextDate}?",
-        reprompt: "To select a date just say “tomorrow” or “next Wednesday” or the month and day, like “March 6th”."
+        reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
       },
     },
 
@@ -253,7 +255,7 @@ var responses = function () {
         say: "I've sent your order. There is a review card in the alexa app and you will receive an email confirmation shortly.",
       },
       CancelOrder: {
-        ask: "Would you liket o cancel your order?",
+        ask: "Would you like to cancel your order?",
         reprompt: "Did you want to cancel your order?",
       },
       SendToSomeoneElse: {
