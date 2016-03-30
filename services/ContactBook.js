@@ -46,9 +46,13 @@ ContactBook.prototype.build = function(contacts){
 }
 
 ContactBook.prototype.serialize = function(){
-  return this;
+  return _.omit(this,['user','flowers','analytics']);
 }
 
 ContactBook.prototype.hasContacts = function() {
   return !!this.contacts.length;
+}
+
+ContactBook.prototype.range = function(offset, take) {
+  return _.slice(this.contacts,offset,offset+take);
 }

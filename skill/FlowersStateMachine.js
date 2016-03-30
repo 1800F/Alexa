@@ -246,6 +246,19 @@ module.exports = StateMachine({
         return replyWith('ExitIntent.RepeatLastAskReprompt', 'die', request);
       }
     },
+    "query-options-again": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          if (request.intent.name == 'YesIntent') {
+            return replyWith('QueryRecipientAgain.Validation','options-review',request,po);
+          }else if (request.intent.name == 'NoIntent') {
+            return replyWith('QueryOptionsAgain.Close','die',request,po);
+          }
+        });
+      }
+    },
     "help-menu": SimpleHelpMessage('Help.HelpStartMenu', 'Start Menu')
   },
   Access: function Access(request) {

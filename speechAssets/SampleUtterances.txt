@@ -74,8 +74,12 @@ SizeSelectionIntent I have to have a {sizeSlot}
 DescriptionIntent Who can I send flowers to
 
 YesIntent Yes
+YesIntent Yep
+YesIntent Sure
 
-NoIntent Yes
+NoIntent No
+NoIntent Nope
+NoIntent Nah
 
 AMAZON.HelpIntent get help
 AMAZON.HelpIntent get help please

@@ -88,28 +88,26 @@ PartialOrder.prototype.IsPossibleRecipientInAddressBook = function() {
 PartialOrder.prototype.hasRecipient = function() {
   return !!this.recipient;
 }
-PartialOrder.prototype.hasArrangement = function() {
-  return !!this.arrangement;
-}
-
-PartialOrder.prototype.hasSize = function() {
-  return !!this.size;
-}
 
 PartialOrder.prototype.setupRecipientChoices = function() {
   return this.recipientChoices = {
     offset: 0,
-    choices: self.contactBook.range(0,config.skill.recipientChoiceCount),
+    choices: this.contactBook.range(0,config.skill.recipientChoiceCount),
   };
+}
+
+PartialOrder.prototype.getRecipientChoices = function() {
+  return this.recipientChoices.choices;
 }
 
 PartialOrder.prototype.nextRecipientChoices = function() {
   this.recipientChoices.offset += config.skill.recipientChoiceCount;
-  this.recipientChoices.choices = self.contactBook.range(this.recipientChoices.offset,config.skill.recipientChoiceCount);
+  this.recipientChoices.choices = this.contactBook.range(this.recipientChoices.offset,config.skill.recipientChoiceCount);
 }
 
 PartialOrder.prototype.isLastRecipientChoiceOffer = function() {
-  return this.recipientChoices.offset + config.skill.recipientChoiceount >= this.contactBook.contacts.length;
+  console.log(this.recipientChoices.offset + config.skill.recipientChoiceCount, this.contactBook.contacts.length);
+  return this.recipientChoices.offset + config.skill.recipientChoiceCount >= this.contactBook.contacts.length;
 }
 
 PartialOrder.prototype.pickArrangement = function(arrangementName) {
@@ -118,4 +116,12 @@ PartialOrder.prototype.pickArrangement = function(arrangementName) {
 
 PartialOrder.prototype.pickSize = function(sizeName) {
   this.size = sizeName;
+}
+
+PartialOrder.prototype.hasArrangement = function() {
+  return !!this.arrangement;
+}
+
+PartialOrder.prototype.hasSize = function() {
+  return !!this.size;
 }

@@ -27,20 +27,9 @@ exports.userName = function (po) {
 
 // Recipients
 
-exports.recipientOne = function (po) {
-  return '';
-};
-
-exports.recipientTwo = function (po) {
-  return '';
-};
-
-exports.recipientThree = function (po) {
-  return '';
-};
-
-exports.recipientFour = function (po) {
-  return '';
+exports.recipientChoices = function (po) {
+  var choices = po.getRecipientChoices();
+  return lang.enumerate(_.map(choices,'name'));
 };
 
 exports.numberOfRecipientsLeft = function (po) {
