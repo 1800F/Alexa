@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
  "intents": [
    {
      "intent": "LaunchIntent",
@@ -86,4 +87,77 @@
      "intent": "HelpIntent"
    }
  ]
+=======
+  "intents": [
+    {
+      "intent": "LaunchIntent",
+      "slots": [
+        {
+          "name": "recipientSlot",
+          "type": "AMAZON.US_FIRST_NAME"
+        },
+        {
+          "name": "deliveryDateSlot",
+          "type": "AMAZON.DATE"
+        },
+        {
+          "name": "arrangementSlot",
+          "type": "ARRANGEMENT_TYPES"
+        },
+        {
+          "name": "sizeSlot",
+          "type": "ARRANGEMENT_SIZES"
+        },
+        {
+          "name": "bouquet",
+          "type": "BOUQUET"
+        }
+      ]
+    },
+    {
+      "intent": "RecipientSelectionIntent",
+      "slots": [
+        {
+          "name": "recipientSlot",
+          "type": "AMAZON.US_FIRST_NAME"
+        }
+      ]
+    },
+    {
+      "intent": "ArrangementSelectionIntent",
+      "slots": [
+        {
+          "name": "arrangementSlot",
+          "type": "ARRANGEMENT_TYPES"
+        },
+        {
+          "name": "Bouquet",
+          "type": "BOUQUET"
+        }
+      ]
+    },
+    {
+      "intent": "SizeSelectionIntent",
+      "slots": [
+        {
+          "name": "sizeSlot",
+          "type": "ARRANGEMENT_SIZES"
+        },
+        {
+          "name": "Bouquet",
+          "type": "BOUQUET"
+        }
+      ]
+    },
+    {
+      "intent": "YesIntent"
+    },
+    {
+       "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "NoIntent"
+    }
+  ]
+>>>>>>> origin/dev
 }

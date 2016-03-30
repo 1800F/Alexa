@@ -28,6 +28,7 @@
     "appId": "amzn1.echo-sdk-ams.app.f3046058-e528-4531-b6ed-31448206b503"
   },
   "skill": {
+    "recipientChoiceCount": 4,
     "defaultCredentials": {
       "username": "1stevenh@rain.agency",
       "password": "1rainPssword"

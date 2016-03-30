@@ -58,7 +58,7 @@ Reply.prototype.write = function (response) {
 function toSSML(statement) {
   if (!statement) return null;
   if (S(statement).startsWith('<speak>')) return statement;
-  statement = statement.replace('&', '&amp;'); //Hack. Full xml escaping would be better, but the & is currently the only special character used.
+  statement = statement.replace(/&/g, '&amp;'); //Hack. Full xml escaping would be better, but the & is currently the only special character used.
   return '<speak>' + statement + '</speak>';
 }
 

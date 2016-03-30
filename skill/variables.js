@@ -15,7 +15,9 @@ var _ = require('lodash'),
     lang = require('./lang.js'),
     currency = require('./currency.js'),
     moment = require('moment'),
-    phonetic = require('./phonetic.js')
+    phonetic = require('./phonetic.js'),
+    _ = require('lodash'),
+    address = require('./address.js')
     ;
 
 exports.userName = function (po) {
@@ -27,24 +29,23 @@ exports.userName = function (po) {
 
 // Recipients
 
-exports.recipientOne = function (po) {
-  return '';
-};
-
-exports.recipientTwo = function (po) {
-  return '';
-};
-
-exports.recipientThree = function (po) {
-  return '';
-};
-
-exports.recipientFour = function (po) {
-  return '';
+exports.recipientChoices = function (po) {
+  var choices = po.getRecipientChoices();
+  return lang.enumerate(_.map(choices,'name'));
 };
 
 exports.numberOfRecipientsLeft = function (po) {
   return '';
+};
+
+exports.contactCandidateName = function (po) {
+  var candidate = po.getContactCandidate();
+  return _.compact([candidate.firstName, candidate.lastName]).join(' ');
+};
+
+exports.contactCandidateAddress = function (po) {
+  var addrs = po.getContactCandidate().address.split('|');
+  return address.say(addrs.join(' '));
 };
 
 // Arrangement sizes
@@ -64,15 +65,19 @@ exports.smallPrice = function (po) {
 // To Review Order
 
 exports.arrangementSize = function (po) {
-  return '';
+  return po.size;
 };
 
 exports.arrangementType = function (po) {
-  return '';
+  return po.arrangement;
 };
 
 exports.recipient = function (po) {
   return '';
+};
+
+exports.possibleRecipient = function (po) {
+  return po.possibleRecipient;
 };
 
 exports.deliveryDate = function (po) {
@@ -100,13 +105,11 @@ exports.size = function (po) {
 // OKay
 
 exports.okay = function (po) {
-  var terms = [
+  return _.sample([
     'Okay',
     'Great',
     'Excellent'
-  ];
-  var idx = Math.floor(Math.random() * terms.length);
-  return terms[idx];
+  ]);
 };
 
 // Confirm
