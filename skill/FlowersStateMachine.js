@@ -133,10 +133,41 @@ module.exports = StateMachine({
         });
       }
     },
+    "query-recipient": {
+      to: {
+        LaunchIntent: 'recipient-selection'
+      }
+    },
     "recipient-selection": {
       enter: function enter(request) {
         // request.intent.params.recipientSlot
-        return replyWith('Options.ArrangementList', 'arrangement-selection', request);
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          po.possibleRecipient = request.intent.params.recipientSlot;
+          return replyWith(null,'validate-possible-recipient',request,po);
+        });
+      }
+    },
+    "validate-possible-recipient": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          console.log(po.possibleRecipient);
+          if(!po.IsPossibleRecipientInAddressBook()) return replyWith('ValidatePossibleRecipient.NotInAddressBook', 'die', request, po);
+
+          return replyWith(null, 'die', request, po);
+        });
+      }
+    },
+    "validate-send-to-someone-else": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          replyWith('ValidatePossibleRecipient.SendToSomeoneElse', 'die', request, po);
+        });
       }
     },
     "query-arrangement-type": {

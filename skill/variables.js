@@ -75,6 +75,10 @@ exports.recipient = function (po) {
   return '';
 };
 
+exports.possibleRecipient = function (po) {
+  return po.possibleRecipient;
+};
+
 exports.deliveryDate = function (po) {
   return '';
 };

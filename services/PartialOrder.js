@@ -65,6 +65,23 @@ PartialOrder.prototype.getContacts = function() {
   }));
 }
 
+PartialOrder.prototype.IsPossibleRecipientInAddressBook = function() {
+  var self = this;
+  if(!self.possibleRecipient) return false
+    // Getting matching first names and sort it
+  self.possibleRecipients = self.contacts.filter(function(c) {
+    return new RegExp('^' + self.possibleRecipient, 'i').test(c.FirstName);
+  }).sort(function(a,b) {
+    if (a.FirstName > b.FirstName) return 1;
+    if (a.FirstName < b.FirstName) return -1;
+    if (a.LastName > b.LastName) return 1;
+    if (a.LastName < b.LastName) return -1;
+    return 0;
+  });
+
+  return (self.possibleRecipients.length > 0);
+}
+
 PartialOrder.prototype.hasRecipient = function() {
   return !!this.recipient;
 }
