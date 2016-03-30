@@ -122,7 +122,7 @@ var responses = function () {
 
     QueryAddress: {
       RecipientValidation: {
-        say: "{okay}, flowers for {recipient}?",
+        say: "{okay}, flowers for {recipient}.",
       },
       AddressNotDeliverable: {
         say: "That address is outside 1 800 Flowers' delivery area.",
