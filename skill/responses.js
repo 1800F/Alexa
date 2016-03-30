@@ -76,7 +76,7 @@ var responses = function () {
 
     QueryOptionsAgain: {
       Validation: {
-        say: "{okay}. ",
+        say: "{okay}.",
       },
       Close: {
         tell: "Okay, for more floral needs visit 1-800-Flowers.com.",
@@ -87,14 +87,12 @@ var responses = function () {
       // The {okay} variable consists of the terms, (Okay, Great, Excellent)
       // that are randomly selected to fill the slot.
       FirstAddress: {
-        ask: "{okay}, is that {recipient} at {address}?",
+        ask: "{okay}, is that {contactCandidateName} at {contactCandidateAddress}?",
         reprompt: "Is {address} the correct address for {recipient}?"
       },
       NotInAddressBook: {
-        say: "I don't see {possibleRecipient} in your address book. Go to 1-800-Flowers.com to add contacts.",
-      },
-      SendToSomeoneElse: {
-        ask: "Would you like to send flowers to someone else?",
+        ask: "I don't see {possibleRecipient} in your address book. Go to 1-800-Flowers.com to add contacts." +
+         "Would you like to send flowers to someone else?",
         reprompt: "To send flowers to someone just say their name."
       },
     },

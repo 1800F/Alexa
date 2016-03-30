@@ -15,7 +15,9 @@ var _ = require('lodash'),
     lang = require('./lang.js'),
     currency = require('./currency.js'),
     moment = require('moment'),
-    phonetic = require('./phonetic.js')
+    phonetic = require('./phonetic.js'),
+    _ = require('lodash'),
+    address = require('./address.js')
     ;
 
 exports.userName = function (po) {
@@ -34,6 +36,16 @@ exports.recipientChoices = function (po) {
 
 exports.numberOfRecipientsLeft = function (po) {
   return '';
+};
+
+exports.contactCandidateName = function (po) {
+  var candidate = po.getContactCandidate();
+  return _.compact([candidate.firstName, candidate.lastName]).join(' ');
+};
+
+exports.contactCandidateAddress = function (po) {
+  var addrs = po.getContactCandidate().address.split('|');
+  return address.say(addrs.join(' '));
 };
 
 // Arrangement sizes
@@ -93,13 +105,11 @@ exports.size = function (po) {
 // OKay
 
 exports.okay = function (po) {
-  var terms = [
+  return _.sample([
     'Okay',
     'Great',
     'Excellent'
-  ];
-  var idx = Math.floor(Math.random() * terms.length);
-  return terms[idx];
+  ]);
 };
 
 // Confirm
