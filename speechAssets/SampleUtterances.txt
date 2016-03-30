@@ -71,15 +71,118 @@ SizeSelectionIntent I need to get a {sizeSlot}
 SizeSelectionIntent It  must be a {sizeSlot}
 SizeSelectionIntent I have to have a {sizeSlot}
 
+DescriptionIntent What's the difference
+DescriptionIntent I don't know
+DescriptionIntent Tell me more
+DescriptionIntent How should I know
+DescriptionIntent Let me see
+DescriptionIntent Help me decide
+DescriptionIntent I'd like to know more
+DescriptionIntent What is the difference
+DescriptionIntent What do you recommend
+DescriptionIntent What's in the {arrangementSize}
+DescriptionIntent What difference is there
+DescriptionIntent What difference is there between the sizes
 DescriptionIntent Who can I send flowers to
+DescriptionIntent What are my options
 
-YesIntent Yes
-YesIntent Yep
-YesIntent Sure
+AMAZON.YesIntent absolutely 
+AMAZON.YesIntent affirmative 
+AMAZON.YesIntent all right
+AMAZON.YesIntent all righty
+AMAZON.YesIntent amen
+AMAZON.YesIntent aye aye
+AMAZON.YesIntent bring it 
+AMAZON.YesIntent bring it on
+AMAZON.YesIntent by all means
+AMAZON.YesIntent check
+AMAZON.YesIntent cool
+AMAZON.YesIntent definitely 
+AMAZON.YesIntent do it
+AMAZON.YesIntent exactly
+AMAZON.YesIntent fine
+AMAZON.YesIntent for real
+AMAZON.YesIntent for sure
+AMAZON.YesIntent gladly
+AMAZON.YesIntent go for it
+AMAZON.YesIntent good
+AMAZON.YesIntent hell ya
+AMAZON.YesIntent hell yea
+AMAZON.YesIntent hells yes
+AMAZON.YesIntent i sure am
+AMAZON.YesIntent naturally
+AMAZON.YesIntent of course
+AMAZON.YesIntent oh yeah
+AMAZON.YesIntent okay
+AMAZON.YesIntent please
+AMAZON.YesIntent positively 
+AMAZON.YesIntent right on
+AMAZON.YesIntent roger
+AMAZON.YesIntent sure sounds good
+AMAZON.YesIntent sure thing
+AMAZON.YesIntent thanks
+AMAZON.YesIntent uh huh
+AMAZON.YesIntent very well
+AMAZON.YesIntent yea
+AMAZON.YesIntent yeah
+AMAZON.YesIntent yep
+AMAZON.YesIntent yeppers
+AMAZON.YesIntent yes confirm
+AMAZON.YesIntent yes confirm that
+AMAZON.YesIntent yes i accept
+AMAZON.YesIntent yes i confirm
+AMAZON.YesIntent yes I'd like that
+AMAZON.YesIntent yes I'll take it
+AMAZON.YesIntent yes indeed
+AMAZON.YesIntent yes order from there please
+AMAZON.YesIntent yes order it
+AMAZON.YesIntent yes please
+AMAZON.YesIntent yes that location please
+AMAZON.YesIntent yes that one
+AMAZON.YesIntent yes that's it
+AMAZON.YesIntent yes that's the one I want
+AMAZON.YesIntent yes way
+AMAZON.YesIntent yes you can
+AMAZON.YesIntent yes you may
+AMAZON.YesIntent yessum 
+AMAZON.YesIntent you bet
+AMAZON.YesIntent you know it
+AMAZON.YesIntent yup
 
-NoIntent No
-NoIntent Nope
-NoIntent Nah
+AMAZON.NoIntent Nope
+AMAZON.NoIntent absolutely not
+AMAZON.NoIntent afraid not
+AMAZON.NoIntent bad idea
+AMAZON.NoIntent by no means
+AMAZON.NoIntent don't
+AMAZON.NoIntent don't do that
+AMAZON.NoIntent forget it
+AMAZON.NoIntent forget that
+AMAZON.NoIntent hell no
+AMAZON.NoIntent i don't think so
+AMAZON.NoIntent i don't want that
+AMAZON.NoIntent i'd better not
+AMAZON.NoIntent i'm afraid not
+AMAZON.NoIntent maybe another time
+AMAZON.NoIntent nah
+AMAZON.NoIntent negative
+AMAZON.NoIntent negatory
+AMAZON.NoIntent negatron
+AMAZON.NoIntent never
+AMAZON.NoIntent nix
+AMAZON.NoIntent no thank you
+AMAZON.NoIntent no way
+AMAZON.NoIntent not at all
+AMAZON.NoIntent not by any means
+AMAZON.NoIntent not ever
+AMAZON.NoIntent not now
+AMAZON.NoIntent not right now
+AMAZON.NoIntent not this time
+AMAZON.NoIntent thanks but no thanks
+AMAZON.NoIntent that's a bad idea
+AMAZON.NoIntent unfortunately not
+AMAZON.NoIntent not that
+AMAZON.NoIntent no not that
 
 AMAZON.HelpIntent get help
 AMAZON.HelpIntent get help please
