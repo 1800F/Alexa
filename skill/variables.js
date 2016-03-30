@@ -73,7 +73,7 @@ exports.arrangementType = function (po) {
 };
 
 exports.recipient = function (po) {
-  return '';
+  return _.compact([po.recipient.firstName, po.recipient.lastName]).join(' ');
 };
 
 exports.possibleRecipient = function (po) {
