@@ -10,6 +10,15 @@ var Flowers = require('./Flowers.js')
   , ContactBook = require('./ContactBook.js')
 ;
 
+/* TERMS
+ * possibleRecipient: The name of a person the user wants to send flowers to. It's not yet validated. Always a string or null
+ * recipientChoice: An offering to the user of a name that they could say. When the user says the name, it'll be a
+ *                  possibleRecipient, then validated
+ * contactCandidates: When the user gives us a possible recipient, and we're validating, we pick all the contacts that
+ *                   are close to the possibleRecipient. Each of these is a contactCandidate.
+ * recipient: The actual recipient that has been selected and validated by the user to send flowers to. This is the real deal.
+ */
+
 // Mostly used for testing
 exports.fromData = function (api, data) {
   return new PartialOrder(api || {}, data);
@@ -68,26 +77,13 @@ PartialOrder.prototype.getContactBook = function() {
   }));
 }
 
-PartialOrder.prototype.IsPossibleRecipientInAddressBook = function() {
-  var self = this;
-  if(!self.possibleRecipient) return false
-    // Getting matching first names and sort it
-  self.possibleRecipients = self.contacts.filter(function(c) {
-    return new RegExp('^' + self.possibleRecipient, 'i').test(c.FirstName);
-  }).sort(function(a,b) {
-    if (a.FirstName > b.FirstName) return 1;
-    if (a.FirstName < b.FirstName) return -1;
-    if (a.LastName > b.LastName) return 1;
-    if (a.LastName < b.LastName) return -1;
-    return 0;
-  });
-
-  return (self.possibleRecipients.length > 0);
-}
-
 PartialOrder.prototype.hasRecipient = function() {
   return !!this.recipient;
 }
+//
+/// ***** Recipient Choices ***** ///
+// These are unique names in the user's contact book that we mention to the user
+// as a prompt for who to tell us to select
 
 PartialOrder.prototype.setupRecipientChoices = function() {
   return this.recipientChoices = {
@@ -106,8 +102,34 @@ PartialOrder.prototype.nextRecipientChoices = function() {
 }
 
 PartialOrder.prototype.isLastRecipientChoiceOffer = function() {
-  console.log(this.recipientChoices.offset + config.skill.recipientChoiceCount, this.contactBook.contacts.length);
   return this.recipientChoices.offset + config.skill.recipientChoiceCount >= this.contactBook.contacts.length;
+}
+
+/// ***** Contact Candidates ***** ///
+// These are contacts (Names & Addresses) that match the user's queries. We offer them to the user in a
+// series, and they pick one that will become the final recipient.
+
+PartialOrder.prototype.setupContactCandidates = function() {
+  this.contactCandidates = {
+    offset: 0,
+    choices: this.contactBook.searchByName(this.possibleRecipient)
+  };
+}
+
+PartialOrder.prototype.hasContactCandidates = function() {
+  return this.contactCandidates && this.contactCandidates.choices;
+}
+
+PartialOrder.prototype.getContactCandidate = function() {
+  return this.contactCandidates.choices[this.contactCandidates.offset];
+}
+
+PartialOrder.prototype.acceptCandidateContact = function() {
+  this.recipient = this.getContactCandidate();
+  //Clear out this junk just to make the session smaller
+  this.possibleRecipient = null;
+  this.contactCandidates = null;
+  this.recipientChoices = null;
 }
 
 PartialOrder.prototype.pickArrangement = function(arrangementName) {

@@ -178,10 +178,24 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          console.log(po.possibleRecipient);
-          if(!po.IsPossibleRecipientInAddressBook()) return replyWith('ValidatePossibleRecipient.NotInAddressBook', 'die', request, po);
+          po.setupContactCandidates();
+          if(!po.hasContactCandidates()) return replyWith('ValidatePossibleRecipient.NotInAddressBook', 'query-options-again', request, po);
+          return replyWith('ValidatePossibleRecipient.FirstAddress', 'query-address', request, po);
+        });
+      }
+    },
+    "query-address": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          if (request.intent.name == 'YesIntent') {
+            //TODO: Determine if this address is deliverable. If not, QueryAddress.AddressNotDeliverable, and go to next address
+            po.acceptCandidateContact();
+            return replyWith('QueryAddress.RecipientValidation','options-review',request,po);
+          }else if (request.intent.name == 'NoIntent') {
+          }
 
-          return replyWith(null, 'die', request, po);
         });
       }
     },
@@ -252,7 +266,7 @@ module.exports = StateMachine({
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
           if (request.intent.name == 'YesIntent') {
-            return replyWith('QueryRecipientAgain.Validation','options-review',request,po);
+            return replyWith('QueryOptionsAgain.Validation','options-review',request,po);
           }else if (request.intent.name == 'NoIntent') {
             return replyWith('QueryOptionsAgain.Close','die',request,po);
           }
