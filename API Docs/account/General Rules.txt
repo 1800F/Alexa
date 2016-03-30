@@ -1,0 +1,13 @@
+Identify your application using
+Client ID and secret  -    Use your application's client ID and client secret to access this API
+
+Authenticate using
+OAuth  -    Check below to see which operations require basic OAuth authentication
+Authorization endpoint URL:  https://ecommerce.800-flowers.net/alexa/uat/account/v1/oauth/authorize
+Token endpoint URL:  https://ecommerce.800-flowers.net/alexa/uat/account/v1/oauth/token
+Default scope:  /account/v1
+Grant type:  Authorization Code, Resource Owner
+Token refresh:  disabled
+
+
+/account/v1
