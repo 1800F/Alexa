@@ -20,12 +20,12 @@
   },
   "alexa": {
     "auth": {
-      "redirectUrl": "https://pitangui.amazon.com/spa/skill/account-linking-status.html?vendorId=MIIBUUFO94RCQ",
+      "redirectUrl": "[CHANGE-THIS]",
       "clientId": "alexa-skill",
       "clientSecret": "ihaveasecret",
       "codeKey": "used-to-mangle-codes"
     },
-    "appId": "amzn1.echo-sdk-ams.app.bb6f7987-6502-4127-a407-a103a98f9edc"
+    "appId": "[CHANGE-THIS]"
   },
   "skill": {
     "recipientChoiceCount": 4,
@@ -35,7 +35,7 @@
     }
   },
   "googleAnalytics": {
-    "trackingCode": "XXX"
+    "trackingCode": "[CHANGE-THIS]"
   },
   "verbose": true
 }
