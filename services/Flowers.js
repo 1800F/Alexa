@@ -292,7 +292,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
 
     return getUserAuthToken().then(function (token) {
       return soapRequest(token, 'https://ecommerce.800-flowers.net/alexa/uat/submitOrder/v1', testOrder, options);
-    });    
+    });
 
     // soap.createClient(wsdl, function(err, client) {
     //   if (err) {
@@ -627,13 +627,13 @@ function issue(method, token, path, queryString, body, paging, options, apiType)
     console.log(req.headers);
     console.log("BODY:");
     console.log(req.body);
-  } 
+  }
   return op(req).then(function (res) {
     if (options.verbose) {
       console.log("RESPONSE: " + url + " - " + res.statusCode + " - " + (new Date() - startTime) + 'ms');
       console.log("RESPONSE BODY:");
       console.log(JSON.stringify(res.body));
-    } 
+    }
     if (res.body && _.isString(res.body)) {
       try {
         res.body = JSON.parse(res.body);
@@ -677,13 +677,13 @@ function soapRequest(token, uri, sendObject, options) {
     console.log(req.headers);
     console.log("BODY:");
     console.log(req.body);
-  } 
+  }
   return op(req).then(function (res) {
     if (options.verbose) {
       console.log("RESPONSE: " + url + " - " + res.statusCode + " - " + (new Date() - startTime) + 'ms');
       console.log("RESPONSE BODY:");
       console.log(res.body);
-    } 
+    }
     if (res.body && _.isString(res.body)) {
         parseString(res.body, function (err, result){
           var requestResult = result['SOAP-ENV:Envelope']['SOAP-ENV:Body'][0].orderFileResponse[0];
@@ -703,31 +703,4 @@ function soapRequest(token, uri, sendObject, options) {
         });
     }
   });
-}
-
-module.exports.ERROR_CODES = {
-  "InsufficientBalance": "341014"
-};
-module.exports.HISTORYTYPES = ['ScvTransaction', 'Point', 'SvcTransactionWithPoints', 'Coupon'];
-module.exports.PURCHASEHISTORYTYPES = ['ScvTransaction', 'SvcTransactionWithPoints'];
-module.exports.PRODUCTTYPES = {
-  beverage: 11,
-  food: 13,
-  coffee: 9
-};
-
-module.exports.ProductTypePredicates = _.fromPairs(_.map(module.exports.PRODUCTTYPES, buildProductTypePredicate));
-
-function buildProductTypePredicate(number, name) {
-  return ['is' + name.substring(0, 1).toUpperCase() + name.substring(1, name.length), function (query) {
-    return query == number || query && query.toLowerCaswe && query.toLowerCase() == name;
-  }];
-}
-
-function dateAsTimestamp(date) {
-  if (typeof date === 'undefined') {
-    date = new Date();
-  }
-
-
 }

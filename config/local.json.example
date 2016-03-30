@@ -21,21 +21,22 @@
   },
   "alexa": {
     "auth": {
-      "redirectUrl": "https://pitangui.amazon.com/api/skill/link/M6ZHH7PH52R7T",
+      "redirectUrl": "[CHANGE-THIS]",
       "clientId": "alexa-skill",
       "clientSecret": "ihaveasecret",
       "codeKey": "used-to-mangle-codes"
     },
-    "appId": "amzn1.echo-sdk-ams.app.66b300a7-3747-4713-85af-fb67a6fe7a30"
+    "appId": "[CHANGE-THIS]"
   },
   "skill": {
+    "recipientChoiceCount": 4,
     "defaultCredentials": {
       "username": "1stevenh@rain.agency",
       "password": "1rainPssword"
     }
   },
   "googleAnalytics": {
-    "trackingCode": "XXX"
+    "trackingCode": "[CHANGE-THIS]"
   },
   "verbose": true
 }
