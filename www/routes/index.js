@@ -178,7 +178,7 @@ router.post('/create', function (req, res, next) {
       });
     } else {
       console.log("ERROR CODE DOESN'T EXIST");
-      flowers.addCustomerDetails(first, lastname, email, user.registerNewCustomerResponse.customerData.customerID).then(function (details) {
+      flowers.addCustomerDetails(first, lastname, email, user.registerNewCustomerResponse.customerData.systemID).then(function (details) {
         if (details.AddPersonResponse) {
           console.log(details.AddPersonResponse.result.person);
           var authCode = oauthhelper.encryptTokens({"systemID": user.registerNewCustomerResponse.customerData.systemID, "customerID": details.AddPersonResponse.result.person.idPK});
@@ -257,8 +257,27 @@ router.get('/privacy-policy', function (req, res, next) {
   floralEmbrace.getProductDetails().then(function (details) {
     console.log("PRODUCT DETAILS: " + JSON.stringify(details));
     floralEmbrace.details = details;
+    floralEmbrace.earliestDelivery("L", "84003").then(function (delivery) {
+      console.log("Earliest delivery: " + JSON.stringify(delivery));
+    });
+  });
+
+  //TEST PURCHASE API
+  var purchase = Flowers.Purchase(config.flowers);
+  console.log("------------------------------GETTING SHIPPING------------------------------")
+  purchase.getShipping({productSku:"90950L", prodType:"FPT", itemPrice:"69.99"},
+    {firstName:"Mark", lastName:"Miles", addr1:"686 E State St", addr2:"Suite 101", city:"American Fork", state:"UT", postalCode:"84003", country:"USA"},
+    {shortDate:"14-APR-16"}).then(function(shipping) {
+      console.log("--------Shipping: " + JSON.stringify(shipping));
   });
   
+  purchase.getOrderNumber().then(function (orderNum) {
+    if (orderNum.error) {
+      console.log("Error getting order number: " + orderNum.error);
+    }
+    else
+      console.log("ORDER NUMBER RECEIVED: " + orderNum);
+  });
 
   res.render('home/privacy-policy', {
     page: "privacy-policy",
