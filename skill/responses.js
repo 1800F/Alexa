@@ -93,7 +93,7 @@ var responses = function () {
         reprompt: "Is {address} the correct address for {recipient}?"
       },
       NotInAddressBook: {
-        say: "I don't see {recipient} in your address book. Go to 1-800-Flowers.com to add contacts.",
+        say: "I don't see {possibleRecipient} in your address book. Go to 1-800-Flowers.com to add contacts.",
       },
       SendToSomeoneElse: {
         ask: "Would you like to send flowers to someone else?",
