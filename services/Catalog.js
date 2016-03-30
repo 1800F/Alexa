@@ -35,29 +35,29 @@ module.exports = [
 	}
 	, {
 		'name': 'Birthday'
-		, 'sku': ''
+		, 'sku': '91333'
 		, 'description': "This hand-crafted arrangement features hot-pink roses, purple carnations, hot-pink mini carnations, yellow daisy poms, purple alstroemeria, athos poms, solidago and salal, all gathered in a stylish, 8-inch glass vase tied with colorful ribbon. It comes with an 18-inch Mylar birthday balloon."
 		, 'sizes': [
 			{
 				'name': 'small'
-				, 'suffix': 'S'
+				, 'suffix': 'SHB'
 				, 'description': "The small arrangement is about 14 inches high, including the eight-inch vase, and it is about 10 inches in diameter."
 			}
 			, {
 				'name': 'medium'
-				, 'suffix': 'M'
+				, 'suffix': 'MHB'
 				, 'description': "The medium arrangement is about 15 inches high, including the eight-inch vase, and it is about 11.5 inches in diameter."
 			}
 			, {
 				'name': 'large'
-				, 'suffix': 'L'
+				, 'suffix': 'LHB'
 				, 'description': "The large arrangement is about 16 inches high, including the eight-inch vase, and it is about 13 inches in diameter."
 			}
 		]
 	}
 	, {
 		'name': 'Love and Romance'
-		, 'sku': ''
+		, 'sku': '90950'
 		, 'description': "This field-gathered bouquet has gorgeous red and pink roses, lilies, <code><speak> daisies and alstroemeria, in an eight-inch glass vase tied with satin ribbon."
 		, 'sizes': [
 			{
@@ -79,7 +79,7 @@ module.exports = [
 	}
 	, {
 		'name': 'Thank You'
-		, 'sku': ''
+		, 'sku': '100299'
 		, 'description': "This colorful bouquet is the next best thing to a friendly hug! It is crafted by our expert florists from the hot-pink roses, Asiatic lilies, medium sunflowers, lavender stock, orange alstroemeria and athos poms in a classic cylinder vase."
 		, 'sizes': [
 			{

@@ -8,6 +8,7 @@ var Flowers = require('./Flowers.js')
   , Promise = require('bluebird')
   , verbose = config.verbose
   , ContactBook = require('./ContactBook.js')
+  , catalog = require('./Catalog.js')
 ;
 
 /* TERMS
