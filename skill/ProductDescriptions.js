@@ -53,6 +53,3 @@ var descriptions = function () {
       }
     }
   }
-
-Our florists hand-design each arrangement, so colors, varieties, and container may vary due to local availability
-Lilies may arrive in bud form and will open to full beauty over the next 2-3 days
