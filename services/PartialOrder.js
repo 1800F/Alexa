@@ -69,12 +69,22 @@ PartialOrder.prototype.hasRecipient = function() {
   return !!this.recipient;
 }
 
+PartialOrder.prototype.hasArrangement = function() {
+  return !!this.arrangement;
+}
+
+PartialOrder.prototype.hasSize = function() {
+  return !!this.size;
+}
+
 PartialOrder.prototype.hasContacts = function() {
   return !!this.contacts.length;
 }
 
-PartialOrder.prototype.pickArrangement = function(arrangmentName) {
+PartialOrder.prototype.pickArrangement = function(arrangementName) {
+  this.arrangement = arrangementName;
 }
 
 PartialOrder.prototype.pickSize = function(sizeName) {
+  this.size = sizeName;
 }

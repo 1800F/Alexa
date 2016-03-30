@@ -64,11 +64,11 @@ exports.smallPrice = function (po) {
 // To Review Order
 
 exports.arrangementSize = function (po) {
-  return '';
+  return po.size;
 };
 
 exports.arrangementType = function (po) {
-  return '';
+  return po.arrangement;
 };
 
 exports.recipient = function (po) {

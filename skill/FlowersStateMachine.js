@@ -127,6 +127,8 @@ module.exports = StateMachine({
             if(po.possibleRecipient) return replyWith(null,'validate-possible-recipient',request,po);
             else return replyWith('Options.NoRecipient','query-recipient',request,po);
           }
+          if(!po.hasArrangement()) return replyWith('Options.ArrangementList', 'query-arrangement-type', request, po);
+          if(!po.hasSize()) return replyWith('Options.SizeList', 'query-size', request, po);
           return replyWith(null,'order-review',request,po);
         });
       }
@@ -137,16 +139,46 @@ module.exports = StateMachine({
         return replyWith('Options.ArrangementList', 'arrangement-selection', request);
       }
     },
+    "query-arrangement-type": {
+      to: {
+        DescriptionIntent: 'arrangement-descriptions',
+        LaunchIntent: 'arrangement-selection'
+      }
+    },
+    "arrangement-descriptions": {
+      enter: function enter(request) {
+        console.log('--> arrangement-descriptions');
+      }
+    },
     "arrangement-selection": {
       enter: function enter(request) {
-        // request.intent.params.arrangmentSlot
-        return replyWith('Options.SizeList', 'size-selection', request);
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          po.pickArrangement(request.intent.params.arrangementSlot);
+          return replyWith('ArrangementSelectionIntent.ArrangementValidation', 'options-review', request, po);
+        });
+      }
+    },
+    "query-size": {
+      to: {
+        DescriptionIntent: 'size-descriptions',
+        LaunchIntent: 'size-selection'
+      }
+    },
+    "size-descriptions": {
+      enter: function enter(request) {
+        console.log('--> size-descriptions');
       }
     },
     "size-selection": {
       enter: function enter(request) {
-        // request.intent.params.sizeSlot
-        return replyWith('Options.DateSelection', 'size-selection', request);
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          po.pickSize(request.intent.params.sizeSlot);
+          return replyWith('SizeSelectionIntent.SizeValidation', 'options-review', request, po);
+        });
       }
     },
     "date-selection": {
