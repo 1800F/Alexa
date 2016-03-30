@@ -1,196 +1,89 @@
 {
-  "intents": [
-    {
-      "intent": "LaunchIntent"
-    },
-    {
-      "intent": "RecipientSelectionIntent",
-      "slots": [
+ "intents": [
+   {
+     "intent": "LaunchIntent",
+     "slots": [
+       {
+         "name": "deliveryDate",
+         "type": "AMAZON.DATE"
+       },
+       {
+         "name": "recipient",
+         "type": "AMAZON.US_FIRST_NAME"
+       },
+       {
+         "name": "arrangementType",
+         "type": "ARRANGEMENT_TYPES"
+       },
         {
-          "name": "Name",
-          "type": "AMAZON.US_FIRST_NAME"
-        }
+         "name": "arrangementSize",
+         "type": "ARRANGEMENT_SIZES"
+       }
+     ]
+   },
+   {
+     "intent": "YesIntent"
+   },
+   {
+     "intent": "NoIntent"
+   },
+   {
+     "intent": "RecipientSelection",
+     "slots": [
+       {
+         "name": "recipient",
+         "type": "AMAZON.US_FIRST_NAME"
+       }
+     ]
+   },
+   {
+     "intent": "ArrangementSelection",
+     "slots": [
+       {
+         "name": "arrangementType",
+         "type": "ARRANGEMENT_TYPES"
+       }
+     ]
+   },
+   {
+     "intent": "SizeSelection",
+     "slots": [
+       {
+         "name": "arrangementSize",
+         "type": "ARRANGEMENT_SIZES"
+       }
+     ]
+   },
+   {
+     "intent": "DateSelection",
+     "slots": [
+       {
+         "name": "deliveryDate",
+         "type": "AMAZON.DATE"
+       }
+     ]
+   },
+   {
+     "intent": "DescriptionIntent",
+     "slots": [
+     {
+         "name": "arrangementType",
+         "type": "ARRANGEMENT_TYPES"
+       },
+        {
+         "name": "arrangementSize",
+         "type": "ARRANGEMENT_SIZES"
+       }
       ]
-    },
-    {
-      "intent": "ArrangementSelectionIntent",
-      "slots": [
-        {
-          "name": "ArrangementType",
-          "type": "ARRANGEMENT_TYPES"
-        },
-        {
-          "name": "Bouquet",
-          "type": "BOUQUET"
-        }
-      ]
-    },
-    {
-      "intent": "SizeSelectionIntent",
-      "slots": [
-        {
-          "name": "ArrangementSize",
-          "type": "ARRANGEMENT_SIZES"
-        },
-        {
-          "name": "Bouquet",
-          "type": "BOUQUET"
-        }
-      ]
-    }
-    /*
-    {
-      "intent": "YesIntent"
-    },
-    {
-      "intent": "NoIntent"
-    },
-    {
-      "intent": "RepeatIntent",
-      "slots": [
-        {
-          "name": "repeatType",
-          "type": "LIST_OF_REPEAT_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "RecipientSelection",
-      "slots": [
-        {
-          "name": "Name",
-          "type": "AMAZON.US_FIRST_NAME"
-        }
-      ]
-    },
-    {
-      "intent": "ListItemsIntent",
-      "slots": [
-        {
-          "name": "orderType",
-          "type": "LIST_OF_ORDER_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "OrderSpecificRedirectIntent",
-      "slots": [
-        {
-          "name": "specificItem",
-          "type": "LIST_OF_SPECIFIC_ITEMS"
-        }
-      ]
-    },
-    {
-      "intent": "ItemAdjustmentRedirectIntent",
-      "slots": [
-        {
-          "name": "adjustment",
-          "type": "LIST_OF_ADJUSTMENTS"
-        }
-      ]
-    },
-    {
-      "intent": "LocationSpecificRedirectIntent",
-      "slots": [
-        {
-          "name": "specificLocation",
-          "type": "LIST_OF_LOCATIONS"
-        },
-        {
-          "name": "locationType",
-          "type": "LIST_OF_LOCATION_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "ReloadIntent",
-      "slots": [
-        {
-          "name": "reloadPaymentType",
-          "type": "LIST_OF_RELOAD_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "ExitIntent"
-    },
-    {
-      "intent": "HelpIntent"
-    },
-    {
-      "intent": "HelpHowToOrderIntent"
-    },
-    {
-      "intent": "HelpReloadIntent",
-      "slots": [
-        {
-          "name": "reloadPaymentType",
-          "type": "LIST_OF_RELOAD_TYPES"
-        },
-        {
-          "name": "reloadAction",
-          "type": "LIST_OF_RELOAD_ACTION"
-        }
-      ]
-    },
-    {
-      "intent": "HelpSVCAdjustIntent",
-      "slots": [
-        {
-          "name": "reloadPaymentType",
-          "type": "LIST_OF_RELOAD_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "HelpPaymentChangeIntent",
-      "slots": [
-        {
-          "name": "allPaymentType",
-          "type": "LIST_OF_ALL_PAYMENTS"
-        }
-      ]
-    },
-    {
-      "intent": "HelpCheckBalanceIntent",
-      "slots": [
-        {
-          "name": "reloadPaymentType",
-          "type": "LIST_OF_RELOAD_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "HelpLocationAdjustIntent",
-      "slots": [
-        {
-          "name": "locationType",
-          "type": "LIST_OF_LOCATION_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "HelpOrderAdjustIntent",
-      "slots": [
-        {
-          "name": "orderType",
-          "type": "LIST_OF_ORDER_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "HelpSettingsAdjustIntent",
-      "slots": [
-        {
-          "name": "settingType",
-          "type": "LIST_OF_SETTING_TYPES"
-        }
-      ]
-    },
-    {
-      "intent": "HelpOtherOptions"
-    }
-    */
-  ]
+   },
+   {
+     "intent": "RepeatIntent"
+   },
+   {
+     "intent": "ExitIntent"
+   },
+   {
+     "intent": "HelpIntent"
+   }
+ ]
 }
