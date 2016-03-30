@@ -1,14 +1,3 @@
-/**
- * Copyright (C) Crossborders LLC - All Rights Reserved
- * Unauthorized copying of this file, via any medium is strictly prohibited
- * Proprietary and confidential
- *
- * An object to manage the catalog of arrangement's and size's descriptions.
- *
- * Written by Christijan Draper <christijand@rain.agency>, March 2016
- * Reviewed by Christian Torres <christiant@rain.agency>, March 2016
- */
-
 LaunchIntent to order flowers
 LaunchIntent to order flowers for {deliveryDate}
 LaunchIntent to order flowers for {recipient}
