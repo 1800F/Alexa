@@ -12,6 +12,7 @@
     "account": "alexa/uat/account",
     "customer": "alexa/uat/customer",
     "product": "alexa/uat/product",
+    "payment": "alexa/uat/payment",
     "basicAuth": "YzQwNzhlMDYtN2YxMi00NDJmLWFlNzItZGVmMDkwMTVhNGY4OnJUNmtYMnFVM2lTM3BINWFRNmlWNnNRNHBLMXlWMWFCNGRQNXlVNWpVNm5FMGJUNWlN",
     "verbose": true,
     "logsAreInsensitive": true,

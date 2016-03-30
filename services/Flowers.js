@@ -360,7 +360,6 @@ var Product = module.exports.Product = function Product(options, productSKU) {
     SKU: productSKU,
     details: {},
     getProductDetails: getProductDetails,
-    update: update,
     earliestDelivery: getEarliestDeliveryDate,
   }, 'product');
 
@@ -382,11 +381,30 @@ var Product = module.exports.Product = function Product(options, productSKU) {
     });
   }
 
-  function update() {
-
+  function getEarliestDeliveryDate(sizeLetter, zipCode) {
+    var body = {
+       "getNextAvailDeliveryDateRequest": {
+          "customerType": "R",
+          "siteId": "18F",
+          "sourceSystem": "WEB",
+          "skipDateSurchargesFlag": "N",
+          "items": {
+             "item": {
+                "productId": "123",
+                "productSku": this.SKU + sizeLetter,
+                "zipCode": zipCode,
+                "locationType": "1",
+                "deliveryDate": "",
+                "country": "USA",
+                "brandCode": "1001"
+             }
+          }
+       }
+    };
+    return productrequest('POST', '/getEarliestDeliveryDate', {}, body, null, "product");
   }
 
-  function getEarliestDeliveryDate() {
+  function getLogicalOrderShippingCharge() {
 
   }
 
@@ -407,6 +425,104 @@ var Product = module.exports.Product = function Product(options, productSKU) {
     });
   }
 
+};
+
+var Purchase = module.exports.Purchase = function Purchase(options) {
+  //options = _.assign({ version: 'alexa/uat/account/v1' }, options);
+  options.transform = options.transform || _.identity;
+
+  return options.transform({
+    getShipping: getLogicalOrderShippingCharge,
+    getOrderNumber: getNextOrderNumber,
+  }, 'purchase');
+
+  function getLogicalOrderShippingCharge(product, recipient, delivery) {
+    /* The product object must have:
+          productSku, prodType (from getProductDetails), itemPrice
+
+        The recipient object must have:
+          firstName, lastName, addr1, addr2, city, state, postalCode, country
+
+        The delivery object must have:
+          shortDate(string formatted as: "18-FEB-15")
+
+    */
+    var body = {
+       "getLogicalOrderAndShippingChargeRequest": {
+          "orderLines": {
+             "orderLine": [
+                {
+                   "lineNumber": "1",
+                   "productSku": product.productSku,
+                   "qty": "1",
+                   "shipAlone": "N",
+                   "prodType": product.prodType,
+                   "parentLine": "1",
+                   "logicalOrder": "0",
+                   "fName": recipient.firstName,
+                   "lName": recipient.lastName,
+                   "addr1": recipient.addr1,
+                   "addr2": recipient.addr2,
+                   "city": recipient.city,
+                   "state": recipient.state,
+                   "postalCode": recipient.postalCode,
+                   "country": recipient.country,
+                   "locationType": "1",
+                   "deliveryDate": delivery.shortDate,
+                   "deliveryWindow": "1",
+                   "itemPrice": product.itemPrice,
+                   "brandCode": "1001",
+                   "fsiFlag": "N",
+                   "tryMe": "N",
+                   "shipNow": "N",
+                }
+             ]
+          }
+       }
+    };
+    return purchaseRequest('POST', '/getLogicalOrderShippingCharge', {}, body, null, "product").then(function(shipping){
+      if (shipping.getLogicalOrderAndShippingChargeResponse.responseStatus == "SUCCESS") {
+        return shipping.getLogicalOrderAndShippingChargeResponse.orderItemsGroupingResult.orderLinesResult.orderLineResult;
+      }
+      else
+        return {error:shipping.getLogicalOrderAndShippingChargeResponse.orderItemsGroupingResult.flwsErrors.flwsError.errorMessage};
+    });
+  }
+
+  function getNextOrderNumber() {
+    var body = {
+       "esbSaltaServiceRequest": {
+          "getOrderNumberRequest": {
+             "brandCode": "1001",
+             "sourceId": "W0091"
+          }
+       }
+    };
+
+    return purchaseRequest('POST', '/getNextOrderNumber', {}, body, null, "product").then(function(orderNum){
+      if (orderNum.esbSaltaServiceResponse.getOrdderNumberResponse.getOrdderNumberResult.flwsErrors.flwsError.errorMessage) {
+        return {error:orderNum.esbSaltaServiceResponse.getOrdderNumberResponse.getOrdderNumberResult.flwsErrors.flwsError.errorMessage};
+      }
+      else return orderNum.esbSaltaServiceResponse.getOrdderNumberResponse.getOrdderNumberResult.OrderNumber;
+    });
+  }
+
+  function purchaseRequest(method, path, queryString, body, paging, apiType) {
+    if (queryString && queryString.giveResponse) {
+      var giveResponse = true;
+      delete queryString.giveResponse;
+    }
+    return issue(method, null, path, queryString, body, paging, options, apiType).then(function (res) {
+      console.log("----------------------------RESPONSE STATUS------------------------------");
+      console.log(res.statusCode);
+      if (res.statusCode < 200 || res.statusCode >= 300) return Promise.reject(res);
+      if (res.statusCode == 201 && !res.body) res.body = {};
+      if (paging) res.body = wrapPagingResult(res.body, purchaseRequest, [method, path, queryString, body]);
+      if (giveResponse) res.body.response = res;
+      console.log("RES BODY: " + JSON.stringify(res.body));
+      return res.body;
+    });
+  }
 };
 
 function wrapPagingResult(body, reinvoke, args) {
@@ -472,6 +588,9 @@ function issue(method, token, path, queryString, body, paging, options, apiType)
   else if (apiType == 'product') {
     URL += options.product + '/' + options.version + path;
   }
+  else if (apiType == 'payment') {
+    URL += options.purchase + '/' + options.version + path;
+  }
   else {
     URL += options.account + '/' + options.version + path
   }
@@ -493,7 +612,7 @@ function issue(method, token, path, queryString, body, paging, options, apiType)
     },
     strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false
   };
-  if (apiType == 'account') {
+  if (apiType == 'account' || apiType == 'payment') {
      req.headers.Authorization = "Bearer " + token;
   }
   if (body && method != 'GET') {
@@ -603,4 +722,12 @@ function buildProductTypePredicate(number, name) {
   return ['is' + name.substring(0, 1).toUpperCase() + name.substring(1, name.length), function (query) {
     return query == number || query && query.toLowerCaswe && query.toLowerCase() == name;
   }];
+}
+
+function dateAsTimestamp(date) {
+  if (typeof date === 'undefined') {
+    date = new Date();
+  }
+
+
 }
