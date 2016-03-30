@@ -16,7 +16,7 @@ var descriptions = function () {
         say: "The large arrangement is about 19 inches high, including the eight-inch vase, and it is about 18 inches in diameter."
       },
       BirthdayDescription: {
-        say: "Hand-crafted arrangement of hot-pink roses, purple carnations, hot-pink mini carnations, yellow daisy poms, purple alstroemeria, athos poms, solidago and salal. Gathered in a stylish, 8-inch glass vase tied with colorful ribbon. It comes with an 18-inch Mylar birthday balloon."
+        say: "This hand-crafted arrangement features hot-pink roses, purple carnations, hot-pink mini carnations, yellow daisy poms, purple alstroemeria, athos poms, solidago and salal, all gathered in a stylish, 8-inch glass vase tied with colorful ribbon. It comes with an 18-inch Mylar birthday balloon."
       },
       BirthdaySmall: {
         say: "The small arrangement is about 14 inches high, including the eight-inch vase, and it is about 10 inches in diameter."
@@ -28,7 +28,7 @@ var descriptions = function () {
         say: "The large arrangement is about 16 inches high, including the eight-inch vase, and it is about 13 inches in diameter."
       },
       RomanceDescription: {
-        say: "This field-gathered bouquet has gorgeous red and pink roses, lilies, Gerbera daisies and alstroemeria, in an eight-inch glass vase tied with satin ribbon."
+        say: "This field-gathered bouquet has gorgeous red and pink roses, lilies, <code><speak> daisies and alstroemeria, in an eight-inch glass vase tied with satin ribbon."
       },
       RomanceSmall: {
         say: "The small arrangement is about 17 inches high, including the eight-inch vase, and it is about 13 inches in diameter."
