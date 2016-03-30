@@ -136,6 +136,7 @@ module.exports = StateMachine({
       enter: function enter(request) {
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){ return po.getContactBook().then(_.constant(po)); })
         .then(function(po){
           if (request.intent.name == 'YesIntent' || request.intent.name == 'NoIntent' || request.intent.name == 'DescriptionIntent') {
             po.setupRecipientChoices();
@@ -167,6 +168,7 @@ module.exports = StateMachine({
         // request.intent.params.recipientSlot
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){ return po.getContactBook().then(_.constant(po)); })
         .then(function(po){
           po.possibleRecipient = request.intent.params.recipientSlot;
           return replyWith(null,'validate-possible-recipient',request,po);
@@ -179,7 +181,9 @@ module.exports = StateMachine({
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
           po.setupContactCandidates();
-          if(!po.hasContactCandidates()) return replyWith('ValidatePossibleRecipient.NotInAddressBook', 'query-options-again', request, po);
+          if(!po.hasContactCandidate()) {
+            return replyWith('ValidatePossibleRecipient.NotInAddressBook', 'clear-and-query-options-again', request, po);
+          }
           return replyWith('ValidatePossibleRecipient.FirstAddress', 'query-address', request, po);
         });
       }
@@ -194,17 +198,11 @@ module.exports = StateMachine({
             po.acceptCandidateContact();
             return replyWith('QueryAddress.RecipientValidation','options-review',request,po);
           }else if (request.intent.name == 'NoIntent') {
+            po.nextContactCandidate();
+            if(!po.hasContactCandidate()) return replyWith('QueryAddress.SendToSomeoneElse', 'clear-and-query-options-again', request, po);
+            return replyWith('QueryAddress.NextAddress', 'query-address', request, po);
           }
 
-        });
-      }
-    },
-    "validate-send-to-someone-else": {
-      enter: function enter(request) {
-        return this.Access(request)
-        .then(function(api){ return PartialOrder.fromRequest(api,request); })
-        .then(function(po){
-          replyWith('ValidatePossibleRecipient.SendToSomeoneElse', 'die', request, po);
         });
       }
     },
@@ -258,6 +256,16 @@ module.exports = StateMachine({
     "order-review": {
       enter: function enter(request) {
         return replyWith('ExitIntent.RepeatLastAskReprompt', 'die', request);
+      }
+    },
+    "clear-and-query-options-again": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          po.possibleRecipient = null;
+          return replyWith(null,'query-options-again',request,po);
+        });
       }
     },
     "query-options-again": {

@@ -88,10 +88,10 @@ var responses = function () {
       // that are randomly selected to fill the slot.
       FirstAddress: {
         ask: "{okay}, is that {contactCandidateName} at {contactCandidateAddress}?",
-        reprompt: "Is {address} the correct address for {recipient}?"
+        reprompt: "Is {contactCandidateAddress} the correct address for {contactCandidateName}?"
       },
       NotInAddressBook: {
-        ask: "I don't see {possibleRecipient} in your address book. Go to 1-800-Flowers.com to add contacts." +
+        ask: "I don't see {possibleRecipient} in your address book. Go to 1-800-Flowers.com to add contacts. " +
          "Would you like to send flowers to someone else?",
         reprompt: "To send flowers to someone just say their name."
       },
@@ -127,14 +127,14 @@ var responses = function () {
         say: "That address is outside 1 800 Flowers' delivery area.",
       },
       NextAddress: {
-        ask: "How about flowers for {recipient} at {address}?",
-        reprompt: "Is {address} the correct address for {recipient}?"
+        ask: "How about flowers for {contactCandidateName} at {contactCandidateAddress}?",
+        reprompt: "Is {contactCandidateAddress} the correct address for {contactCandidateName}?"
       },
       AddOrUpdateAddressesOnline: {
-        say: "You can only send flowers to contacts in your 1 800 Flowers address book. Go to 1-800-Flowers.com to add more contacts.",
       },
       SendToSomeoneElse: {
-        ask: "Would you like to send flowers to someone else?",
+        ask: "You can only send flowers to contacts in your 1 800 Flowers address book. Go to 1-800-Flowers.com to add more contacts. " +
+          "Would you like to send flowers to someone else?",
         reprompt: "To send flowers to someone just say their name."
       },
     },

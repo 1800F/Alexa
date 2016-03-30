@@ -35,13 +35,8 @@ exports.empty = function (api) {
   return new PartialOrder(api, {});
 };
 
-// Makes a new PO and populates with the starting point order information
-exports.build = function (api) {
-  var po = new PartialOrder(api);
-  return po.build();
-};
-
 function PartialOrder(api, data) {
+  data = data || {};
   this.q = {};
   _.assign(this, api);
   _.assign(this, data);
@@ -64,7 +59,7 @@ PartialOrder.prototype.serialize = function () {
   if (ret.items) _.forEach(ret.items, function (item) {
     delete item.q;
   });
-  ret.contactBook = ret.contactBook.serialize();
+  if(ret.contactBook) ret.contactBook = ret.contactBook.serialize();
   return ret;
 };
 
@@ -116,8 +111,12 @@ PartialOrder.prototype.setupContactCandidates = function() {
   };
 }
 
-PartialOrder.prototype.hasContactCandidates = function() {
-  return this.contactCandidates && this.contactCandidates.choices;
+PartialOrder.prototype.hasContactCandidate = function() {
+  return this.contactCandidates && this.contactCandidates.offset < this.contactCandidates.choices.length;
+}
+
+PartialOrder.prototype.nextContactCandidate = function() {
+  return this.contactCandidates.offset++;
 }
 
 PartialOrder.prototype.getContactCandidate = function() {
