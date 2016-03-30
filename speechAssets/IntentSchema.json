@@ -1,93 +1,4 @@
 {
-<<<<<<< HEAD
- "intents": [
-   {
-     "intent": "LaunchIntent",
-     "slots": [
-       {
-         "name": "deliveryDate",
-         "type": "AMAZON.DATE"
-       },
-       {
-         "name": "recipient",
-         "type": "AMAZON.US_FIRST_NAME"
-       },
-       {
-         "name": "arrangementType",
-         "type": "ARRANGEMENT_TYPES"
-       },
-        {
-         "name": "arrangementSize",
-         "type": "ARRANGEMENT_SIZES"
-       }
-     ]
-   },
-   {
-     "intent": "YesIntent"
-   },
-   {
-     "intent": "NoIntent"
-   },
-   {
-     "intent": "RecipientSelection",
-     "slots": [
-       {
-         "name": "recipient",
-         "type": "AMAZON.US_FIRST_NAME"
-       }
-     ]
-   },
-   {
-     "intent": "ArrangementSelection",
-     "slots": [
-       {
-         "name": "arrangementType",
-         "type": "ARRANGEMENT_TYPES"
-       }
-     ]
-   },
-   {
-     "intent": "SizeSelection",
-     "slots": [
-       {
-         "name": "arrangementSize",
-         "type": "ARRANGEMENT_SIZES"
-       }
-     ]
-   },
-   {
-     "intent": "DateSelection",
-     "slots": [
-       {
-         "name": "deliveryDate",
-         "type": "AMAZON.DATE"
-       }
-     ]
-   },
-   {
-     "intent": "DescriptionIntent",
-     "slots": [
-     {
-         "name": "arrangementType",
-         "type": "ARRANGEMENT_TYPES"
-       },
-        {
-         "name": "arrangementSize",
-         "type": "ARRANGEMENT_SIZES"
-       }
-      ]
-   },
-   {
-     "intent": "RepeatIntent"
-   },
-   {
-     "intent": "ExitIntent"
-   },
-   {
-     "intent": "HelpIntent"
-   }
- ]
-=======
   "intents": [
     {
       "intent": "LaunchIntent",
@@ -131,7 +42,7 @@
           "type": "ARRANGEMENT_TYPES"
         },
         {
-          "name": "Bouquet",
+          "name": "bouquet",
           "type": "BOUQUET"
         }
       ]
@@ -144,20 +55,35 @@
           "type": "ARRANGEMENT_SIZES"
         },
         {
-          "name": "Bouquet",
+          "name": "bouquet",
           "type": "BOUQUET"
         }
       ]
     },
     {
-      "intent": "YesIntent"
+     "intent": "DescriptionIntent",
+     "slots": [
+     {
+         "name": "arrangementType",
+         "type": "ARRANGEMENT_TYPES"
+       },
+        {
+         "name": "arrangementSize",
+         "type": "ARRANGEMENT_SIZES"
+       }
+      ]
     },
     {
-       "intent": "AMAZON.HelpIntent"
+      "intent": "AMAZON.YesIntent"
     },
     {
-      "intent": "NoIntent"
+      "intent": "AMAZON.NoIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
     }
   ]
->>>>>>> origin/dev
 }
