@@ -40,7 +40,7 @@ var descriptions = function () {
         say: "The large arrangement is about 20 inches high, including the eight-inch vase, and it is about 16 inches in diameter."
       },
       ThankYouDescription: {
-        say: "This colorful bouquet is the next best thing to a friendly hug! It is crafted by our expert florists from the hot-pink roses, Asiatic lilies, medium sunflowers, lavender stock, orange alstroemeria and athos poms in a classic cylinder vase."
+        say: "This colorful bouquet is the next best thing to a friendly hug! It is crafted by our expert florists with hot-pink roses, Asiatic lilies, medium sunflowers, lavender stock, orange alstroemeria and athos poms in a classic cylinder vase."
       },
       ThankYouSmall: {
         say: "The small arrangement is about 11 inches high, including the eight-inch vase, and it is about 11 inches in diameter."
