@@ -13,46 +13,46 @@ RecipientSelectionIntent Please send them to {recipientSlot}
 RecipientSelectionIntent Can I send flowers to {recipientSlot}
 
 ArrangementSelectionIntent {arrangementSlot}
-ArrangementSelectionIntent {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent {arrangementSlot} {bouquet}
 ArrangementSelectionIntent A {arrangementSlot}
-ArrangementSelectionIntent A {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent A {arrangementSlot} {bouquet}
 ArrangementSelectionIntent I would like a {arrangementSlot}
-ArrangementSelectionIntent I would like a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I would like a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent How about {arrangementSlot}
-ArrangementSelectionIntent How about {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent How about {arrangementSlot} {bouquet}
 ArrangementSelectionIntent I'd like a {arrangementSlot}
-ArrangementSelectionIntent I'd like a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I'd like a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent Oh. {arrangementSlot}
-ArrangementSelectionIntent Oh. {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent Oh. {arrangementSlot} {bouquet}
 ArrangementSelectionIntent Let's go with {arrangementSlot}
-ArrangementSelectionIntent Let's go with {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent Let's go with {arrangementSlot} {bouquet}
 ArrangementSelectionIntent Let's do a {arrangementSlot}
-ArrangementSelectionIntent Let's do a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent Let's do a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent I want a {arrangementSlot}
-ArrangementSelectionIntent I want a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I want a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent Let's make it a {arrangementSlot}
-ArrangementSelectionIntent Let's make it a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent Let's make it a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent Order a {arrangementSlot}
-ArrangementSelectionIntent Order a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent Order a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent Send a {arrangementSlot}
-ArrangementSelectionIntent Send a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent Send a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent Get a {arrangementSlot}
-ArrangementSelectionIntent Get a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent Get a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent I choose a {arrangementSlot}
-ArrangementSelectionIntent I choose a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I choose a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent I have to get a {arrangementSlot}
-ArrangementSelectionIntent I have to get a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I have to get a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent I must to get a {arrangementSlot}
-ArrangementSelectionIntent I must to get a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I must to get a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent I need to get a {arrangementSlot}
-ArrangementSelectionIntent I need to get a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I need to get a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent It must be a {arrangementSlot}
-ArrangementSelectionIntent It must be a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent It must be a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent I have to have a {arrangementSlot}
-ArrangementSelectionIntent I have to have a {arrangementSlot} {Bouquet}
+ArrangementSelectionIntent I have to have a {arrangementSlot} {bouquet}
 
 SizeSelectionIntent {sizeSlot}
-SizeSelectionIntent A {sizeSlot} {Bouquet}
+SizeSelectionIntent A {sizeSlot} {bouquet}
 SizeSelectionIntent A {sizeSlot}
 SizeSelectionIntent I would like a {sizeSlot}
 SizeSelectionIntent How about {sizeSlot}
@@ -71,12 +71,12 @@ SizeSelectionIntent I need to get a {sizeSlot}
 SizeSelectionIntent It  must be a {sizeSlot}
 SizeSelectionIntent I have to have a {sizeSlot}
 
-AMAZON.HelpIntent about this skill
-AMAZON.HelpIntent about this skill please
-AMAZON.HelpIntent explain this skill
-AMAZON.HelpIntent explain this skill please
-AMAZON.HelpIntent explain yourself
-AMAZON.HelpIntent explain yourself please
+DescriptionIntent Who can I send flowers to
+
+YesIntent Yes
+
+NoIntent Yes
+
 AMAZON.HelpIntent get help
 AMAZON.HelpIntent get help please
 AMAZON.HelpIntent help

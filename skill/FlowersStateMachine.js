@@ -3,7 +3,6 @@
 var StateMachine = require('./StateMachine.js'),
     currency = require('./currency.js'),
     Reply = require('./reply.js'),
-    alexaFlowers = require('../services/alexa-flowers.js'),
     Flowers = require('../services/Flowers.js'),
     FlowersUser = Flowers.FlowersUser,
     config = require('../config'),
@@ -111,8 +110,8 @@ module.exports = StateMachine({
           po.possibleDeliveryDate = request.intent.params.deliveryDateSlot;
           po.pickArrangement(request.intent.params.arrangementSlot);
           po.pickSize(request.intent.params.sizeSlot);
-          return po.getContacts().then(function(contacts){
-            if(!po.hasContacts()) return replyWith('Errors.NoRecipientsInAddressBook', 'die', request, po);
+          return po.getContactBook().then(function(contactBook){
+            if(!po.contactBook.hasContacts()) return replyWith('Errors.NoRecipientsInAddressBook', 'die', request, po);
             return replyWith(null, 'options-review', request, po);
           });
         });
@@ -125,7 +124,7 @@ module.exports = StateMachine({
         .then(function(po){
           if(!po.hasRecipient()) {
             if(po.possibleRecipient) return replyWith(null,'validate-possible-recipient',request,po);
-            else return replyWith('Options.NoRecipient','query-recipient',request,po);
+            return replyWith('Options.RecipientSelection','query-recipient',request,po);
           }
           if(!po.hasArrangement()) return replyWith('Options.ArrangementList', 'query-arrangement-type', request, po);
           if(!po.hasSize()) return replyWith('Options.SizeList', 'query-size', request, po);
@@ -134,8 +133,33 @@ module.exports = StateMachine({
       }
     },
     "query-recipient": {
-      to: {
-        LaunchIntent: 'recipient-selection'
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          if (request.intent.name == 'YesIntent' || request.intent.name == 'NoIntent' || request.intent.name == 'DescriptionIntent') {
+            po.setupRecipientChoices();
+            if(!po.getRecipientChoices().length) return replyWith('QueryRecipientList.ContinueWithOrder','query-options-again',request,po);
+            if(po.isLastRecipientChoiceOffer()) return replyWith('QueryRecipient.RecipientList','query-recipient-list',request,po);
+            return replyWith('QueryRecipient.FirstFourRecipientList','query-recipient-list',request,po);
+          }
+        });
+      }
+    },
+    "query-recipient-list": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          if (request.intent.name == 'YesIntent') {
+            return replyWith('QueryRecipientList.OkayWho','query-recipient-list',request,po);
+          }else if (request.intent.name == 'NoIntent') {
+            po.nextRecipientChoices();
+            if(!po.getRecipientChoices().length) return replyWith('QueryRecipientList.ContinueWithOrder','query-options-again',request,po);
+            if(po.isLastRecipientChoiceOffer()) return replyWith('QueryRecipient.LastRecipientList','query-recipient-list',request,po);
+            return replyWith('QueryRecipientList.NextFourRecipientList','query-recipient-list',request,po);
+          }
+        });
       }
     },
     "recipient-selection": {
@@ -269,11 +293,6 @@ module.exports = StateMachine({
     });
   }
 });
-
-function isHelpState(state) {
-  if (!state) return false;
-  return module.exports.getState(state).name.toLowerCase().indexOf('help') >= 0;
-}
 
 function replyWith(msgPath, state, request, partialOrder) {
   if (verbose) console.log('Move to state [' + state + '] and say ' + msgPath);

@@ -61,7 +61,13 @@
       ]
     },
     {
-      "intent": "AMAZON.HelpIntent"
+      "intent": "YesIntent"
+    },
+    {
+       "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "NoIntent"
     }
   ]
 }

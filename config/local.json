@@ -20,14 +20,15 @@
   },
   "alexa": {
     "auth": {
-      "redirectUrl": "https://pitangui.amazon.com/api/skill/link/M6ZHH7PH52R7T",
+      "redirectUrl": "https://pitangui.amazon.com/spa/skill/account-linking-status.html?vendorId=MIIBUUFO94RCQ",
       "clientId": "alexa-skill",
       "clientSecret": "ihaveasecret",
       "codeKey": "used-to-mangle-codes"
     },
-    "appId": "amzn1.echo-sdk-ams.app.66b300a7-3747-4713-85af-fb67a6fe7a30"
+    "appId": "amzn1.echo-sdk-ams.app.bb6f7987-6502-4127-a407-a103a98f9edc"
   },
   "skill": {
+    "recipientChoiceCount": 4,
     "defaultCredentials": {
       "username": "1stevenh@rain.agency",
       "password": "1rainPssword"

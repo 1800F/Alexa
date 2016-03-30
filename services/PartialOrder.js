@@ -1,13 +1,14 @@
 'use strict';
 
-var alexaFlowers = require('./alexa-flowers.js'),
-    Flowers = require('./Flowers.js'),
-    FlowersUser = Flowers.FlowersUser,
-    config = require('../config'),
-    _ = require('lodash'),
-    moment = require('moment'),
-    Promise = require('bluebird'),
-    verbose = config.verbose;
+var Flowers = require('./Flowers.js')
+  , FlowersUser = Flowers.FlowersUser
+  , config = require('../config')
+  , _ = require('lodash')
+  , moment = require('moment')
+  , Promise = require('bluebird')
+  , verbose = config.verbose
+  , ContactBook = require('./ContactBook.js')
+;
 
 // Mostly used for testing
 exports.fromData = function (api, data) {
@@ -35,6 +36,7 @@ function PartialOrder(api, data) {
   this.q = {};
   _.assign(this, api);
   _.assign(this, data);
+  if(data.contactBook) this.contactBook = ContactBook.fromData(api,data.contactBook);
 }
 
 PartialOrder.prototype.getFlag = function (name) {
@@ -53,15 +55,16 @@ PartialOrder.prototype.serialize = function () {
   if (ret.items) _.forEach(ret.items, function (item) {
     delete item.q;
   });
+  ret.contactBook = ret.contactBook.serialize();
   return ret;
 };
 
-PartialOrder.prototype.getContacts = function() {
+PartialOrder.prototype.getContactBook = function() {
   var self = this;
-  if(self.contacts) return self.contacts;
-  return self.q.contacts = (self.q.contacts || self.user.getRecipients(self.user.customerID).then(function(contacts){
-    console.log('Contacts',contacts)
-    self.contacts = contacts;
+  if(self.contactBook) return Promise.resolve(self.contactBook);
+  return self.q.contactBook = (self.q.contactBook || self.user.getRecipients(self.user.customerID).then(function(contacts){
+    self.contactBook = ContactBook.fromContacts({user: self.user, flowers: self.flowers},contacts);
+    return self.contactBook;
   }));
 }
 
@@ -85,7 +88,6 @@ PartialOrder.prototype.IsPossibleRecipientInAddressBook = function() {
 PartialOrder.prototype.hasRecipient = function() {
   return !!this.recipient;
 }
-
 PartialOrder.prototype.hasArrangement = function() {
   return !!this.arrangement;
 }
@@ -94,8 +96,20 @@ PartialOrder.prototype.hasSize = function() {
   return !!this.size;
 }
 
-PartialOrder.prototype.hasContacts = function() {
-  return !!this.contacts.length;
+PartialOrder.prototype.setupRecipientChoices = function() {
+  return this.recipientChoices = {
+    offset: 0,
+    choices: self.contactBook.range(0,config.skill.recipientChoiceCount),
+  };
+}
+
+PartialOrder.prototype.nextRecipientChoices = function() {
+  this.recipientChoices.offset += config.skill.recipientChoiceCount;
+  this.recipientChoices.choices = self.contactBook.range(this.recipientChoices.offset,config.skill.recipientChoiceCount);
+}
+
+PartialOrder.prototype.isLastRecipientChoiceOffer = function() {
+  return this.recipientChoices.offset + config.skill.recipientChoiceount >= this.contactBook.contacts.length;
 }
 
 PartialOrder.prototype.pickArrangement = function(arrangementName) {
