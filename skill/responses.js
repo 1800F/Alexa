@@ -125,7 +125,7 @@ var responses = function () {
         say: "{okay}, flowers for {recipient}.",
       },
       AddressNotDeliverable: {
-        say: "That address is outside 1 800 Flowers' delivery area.",
+        say: "I'm sorry. Flowers ordered through the 1-800-Flowers Amazon Echo Skill cannot be delivered to that address.",
       },
       NextAddress: {
         ask: "How about flowers for {contactCandidateName} at {contactCandidateAddress}?",
