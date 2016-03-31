@@ -65,7 +65,6 @@ LaunchIntent for an arrangement
 LaunchIntent for flowers
 LaunchIntent for some flowers
 
-
 RecipientSelectionIntent {recipientSlot}
 RecipientSelectionIntent For {recipientSlot}
 RecipientSelectionIntent Send flowers to {recipientSlot}
