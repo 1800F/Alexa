@@ -42,7 +42,7 @@ var responses = function () {
     Options: {
       RecipientSelection: {
         ask: "Hi there. Who would you like to send flowers to?",
-        reprompt: "Say the person's name to send them flowers or say, (no, someone else) to hear more available contacts."
+        reprompt: "What's the first name of the person you want to send flowers to?"
       },
       ArrangementList: {
         ask: "I have four types of arrangements available: Mothers Day, Birthday, \"Love and Romance\", and, Thank you. <break time=\"500ms\"/>Which would you like?",
@@ -58,8 +58,8 @@ var responses = function () {
         reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
       },
       OrderReview: {
-        ask: "Okay, I have a {arrangementSize} {arrangementType} arrangement to be delivered to {recipient} on {deliveryDate}. Is that right?",
-        reprompt: "Would you like me to place that order? I can also repeat the details for you."
+        ask: "To review: I have a {arrangementSize} {arrangementType} arrangement to be delivered to {recipient} on {deliveryDate}. Is that right?",
+        reprompt: "Would you like to place your order?"
       },
     },
 
@@ -71,7 +71,7 @@ var responses = function () {
       },
       FirstFourRecipientList: {
         ask: "Your first four contacts are {recipientChoices}. " +
-          " Would you like to send flowers to one of them?",
+          "Would you like to send flowers to one of them?",
         reprompt: "Say the person's name to send them flowers or say, (no, someone else) to hear more available contacts."
       },
     },
@@ -93,16 +93,16 @@ var responses = function () {
         reprompt: "Is {contactCandidateAddress} the correct address for {contactCandidateName}?"
       },
       NotInAddressBook: {
-        ask: "I don't see {possibleRecipient} in your address book. Go to 1-800-Flowers.com to add contacts. " +
-         "Would you like to send flowers to someone else?",
-        reprompt: "To send flowers to someone just say their name."
+        ask: "I don't see {possibleRecipient} in your address book. You can always go to 1 800 Flowers.com to add new contacts. " +
+         " Would you like to send flowers to someone else?",
+        reprompt: "To send flowers to someone, just say their first name."
       },
     },
 
     QueryRecipientList: {
       OkayWho: {
-        ask: "{okay}, Who?",
-        reprompt: "Who would you like to send flowers to?"
+        ask: "{okay}, what’s the first name of the person you want to send flowers to?",
+        reprompt: "What is the first name of the person you would like to send flowers to?"
       },
       NextFourRecipientList: {
         ask: "Your next four contacts are {recipientChoices}. " +
@@ -116,7 +116,7 @@ var responses = function () {
       },
       ContinueWithOrder: {
         ask: "You can only send flowers to contacts in your 1 800 Flowers address book. Go to 1 800 Flowers.com to add more contacts. "
-        + "Would you like to continue with your order?",
+        + " Would you like to continue with your order?",
         reprompt: "Did you want to continue with your order?",
       },
     },
@@ -165,10 +165,10 @@ var responses = function () {
         reprompt: "Would you like to send a {arrangementName} arrangement?"
       },
       MoreArrangmentsOnline: {
-        say: "For more arrangement options go to 1-800-Flowers.com.",
+        say: "Those are the only arrangement types I have available. Please visit 1-800-Flowers.com to order other arrangements.",
       },
       ContinueWithOrder: {
-        ask: "Would you like to continue with your order?",
+        ask: "Would you like to hear those arrangements again?",
         reprompt: "Did you want to continue with your order?",
       },
     },
@@ -212,7 +212,7 @@ var responses = function () {
         say: "{okay}, {deliveryDate}.",
       },
       DateSelectionAgain: {
-        ask: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'.",
+        ask: "To select a date you can say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'. What day would you like the flowers delivered?",
         reprompt: "When would you like the flowers delivered?",
       },
       ContinueWithOrder: {
@@ -228,6 +228,7 @@ var responses = function () {
         say: "{okay}, {date}.",
       },
       NotAValidDate: {
+        //For developer ... please ensure the logic of this phrase makes sense with the code you create (dateMinusOne should never bring up a non-available date).
         say: "{date} is not available for delivery. Would you like to deliver on {dateMinusOne} or {datePlusOne}?",
         reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
       },
@@ -264,7 +265,7 @@ var responses = function () {
 
     CancelOrderConfirmation: {
       canceled: {
-        tell: "Okay, our order has been canceled.",
+        tell: "Okay, your order has been canceled.",
       },
       OrderReviewReprompt: {
         ask: "Your order total is {price} including taxes and delivery fee, to be billed to your {paymentType}. Should I place the order?",
@@ -275,7 +276,7 @@ var responses = function () {
     BadInput: {
       // This should replay the reprompt associated with the last ask the user received.
       RepeatLastAskReprompt: {
-        say: "",
+        say: "I'm sorry. I didn't understand.",
       },
     },
 
@@ -294,7 +295,7 @@ var responses = function () {
     ExitIntent: {
       // This should replay the reprompt associated with the last ask the user received.
       RepeatLastAskReprompt: {
-        tell: "Okay, for more floral needs visit 1-800-Flowers.com?",
+        tell: "Okay, for more floral needs visit 1-800-Flowers.com.",
       },
     },
   };

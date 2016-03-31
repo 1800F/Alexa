@@ -97,6 +97,7 @@ SizeSelectionIntent I must to get a {sizeSlot}
 SizeSelectionIntent I need to get a {sizeSlot}
 SizeSelectionIntent It  must be a {sizeSlot}
 SizeSelectionIntent I have to have a {sizeSlot}
+SizeSelectionIntent I want to buy a {sizeSlot}
 
 
 DescriptionIntent What's the difference
