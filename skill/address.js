@@ -34,12 +34,10 @@ exports.say = function (address) {
 
 exports.isDeliverable = function (address) {
   if (!(address.country.toLowerCase() === "us")) {
-    console.log(_.lowerCase((address.country)));
     return false;
   } else if (!(address.line1) || !(address.city) || !(address.state) || !(address.zip) || !(address.country)) {
     return false;
   }
-  console.log(address);
   return true;
 };
 
