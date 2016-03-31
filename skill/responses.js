@@ -141,8 +141,8 @@ var responses = function () {
 
     QueryArrangementType: {
       FirstArrangmentDesctiption: {
-        ask: "{arrangementDescription} Would you like a {arrangement} arrangement?",
-        reprompt: "Would you like to send a {arrangement} arrangement?"
+        ask: "{arrangementDescription} Would you like a {arrangementName} arrangement?",
+        reprompt: "Would you like to send a {arrangementName} arrangement?"
       },
       ArrangementListAgain: {
         say: "{okay}, I have arrangements for Mother's Day, Birthday, Love and Romance, and 'Thank you'.",
@@ -159,8 +159,8 @@ var responses = function () {
 
     ArrangementDescriptions: {
       NextArrangmentDesctiption: {
-        ask: "{arrangementDescription} Would you like a {arrangement} arrangement?",
-        reprompt: "Would you like to send a {arrangement} arrangement?"
+        ask: "{arrangementDescription} Would you like a {arrangementName} arrangement?",
+        reprompt: "Would you like to send a {arrangementName} arrangement?"
       },
       MoreArrangmentsOnline: {
         say: "For more arrangement options go to 1-800-Flowers.com.",
