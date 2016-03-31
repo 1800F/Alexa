@@ -167,7 +167,7 @@ PartialOrder.prototype.acceptArrangement = function() {
 PartialOrder.prototype.setupSizeDescriptions = function() {
   this.sizeDescriptions = {
     offset: 0,
-    choices: Catalog.sizesByArrangement(this.arrangement);
+    choices: Catalog.sizesByArrangement(this.arrangement)
   };
 }
 
