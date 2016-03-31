@@ -180,8 +180,8 @@ var responses = function () {
 
     QuerySize: {
       FirstSizeDescription: {
-        ask: "{sizeDescription} Would you like to buy a {size} arrangement for {price}?",
-        reprompt: "Would you like to buy a {size} arrangement for {price}?"
+        ask: "{sizeDescription} Would you like to buy a {size} arrangement for {price} before tax and delivery fees?",
+        reprompt: "Would you like to buy a {size} arrangement for {price} before tax and delivery fees?"
       },
       ContinueWithOrder: {
         ask: "Would you like to continue with your order?",
@@ -238,7 +238,7 @@ var responses = function () {
 
     QueryOrderConfirmation: {
       ConfirmOrder: {
-        ask: "Your order total is {price} to be billed to your {paymentType}. Should I place the order?",
+        ask: "Your order total is {price} including taxes and delivery fee, to be billed to your {paymentType}. Should I place the order?",
         reprompt: "Should I place your order for {price}?"
       },
       CancelOrder: {
@@ -266,7 +266,7 @@ var responses = function () {
         tell: "Okay, our order has been canceled.",
       },
       OrderReviewReprompt: {
-        ask: "Your order total is {price} to be billed to your {paymentType}. Should I place the order?",
+        ask: "Your order total is {price} including taxes and delivery fee, to be billed to your {paymentType}. Should I place the order?",
         reprompt: "Should I place your order for {price}?"
       },
     },
