@@ -257,14 +257,17 @@ router.get('/privacy-policy', function (req, res, next) {
   // });
 
   //TEST PRODUCT API
-  // var floralEmbrace = Flowers.Product(config.flowers, "100299");
-  // floralEmbrace.getProductDetails().then(function (details) {
-  //   console.log("PRODUCT DETAILS: " + JSON.stringify(details));
-  //   floralEmbrace.details = details;
+  var floralEmbrace = Flowers.Product(config.flowers, "100299L");
+  floralEmbrace.getProductDetails().then(function (details) {
+    console.log("PRODUCT DETAILS: " + JSON.stringify(details));
+    floralEmbrace.details = details;
+    floralEmbrace.getDeliveryCalendar("84660", null, "04-05-2016").then(function (calendar) {
+      console.log("DELIVERY CALENDAR: " + JSON.stringify(calendar));
+    });
   //   floralEmbrace.earliestDelivery("L", "84003").then(function (delivery) {
   //     console.log("Earliest delivery: " + JSON.stringify(delivery));
   //   });
-  // });
+ });
 
   //TEST PURCHASE API
   // var purchase = Flowers.Purchase(config.flowers);
