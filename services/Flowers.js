@@ -248,82 +248,15 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
     return userrequest('POST', '/getCustomerDetails', {}, body, null, "account");
   }
 
-  function submitOrder() {
-    var testOrder = {
-        '@': {
-          "xmlns:ord": "http://1800flowers.com/BTOP/OrderFile"
-        },
-        // "ord:orderFile": {
-        "ord:orders": [{
-          "ord:orderHeader": {
-            "ord:primaryBrand": "1001",
-            "ord:orderNumber": "123809",
-            "ord:externalOrderNumber": "",
-            "ord:externalTransId": "",
-            "ord:machineId": "192177225",
-            "ord:orderDate": "03/28/2016 10:20:28",
-            "ord:thirdPartyToken": {
-              "ord:tokenId": "",
-              "ord:tokenType": "",
-              "ord:tokenDetails1": "",
-              "ord:tokenDetails2": "",
-            },
-            "ord:soldTo": {
-              "ord:cifID": "1502088757",
-              "ord:houseAccountNumber": "",
-              "ord:title": "",
-              "ord:firstName": "",
-              "ord:lastName": "",
-              //"ord:": "",
-            }
-          },
-          "ord:orderDetails": {
-            "ord:BrandCode":"FLW",
-          },
-          "ord:errorFlag": "false"
-        }]
-        //}
-    };
-
-    // var js2XMLParseOptions = {declaration: {'include': false},prettyPrinting: {'enabled': true}};
-    // var myxml = js2xmlparser('ord:orderFile', testOrder, js2XMLParseOptions);
-    // console.log("TESTORDER XML:");
-    // console.log(myxml);
-
-    return getUserAuthToken().then(function (token) {
-      return soapRequest(token, 'https://ecommerce.800-flowers.net/alexa/uat/submitOrder/v1', testOrder, options);
+  function submitOrder(product, recipient, user, payment, delivery) {
+    var purchase = Flowers.Purchase(config.flowers);
+    return purchase.createOrder(product, recipient, user, payment, delivery).then( function(testOrder) {
+      return getUserAuthToken().then(function (token) {
+        return soapRequest(token, 'https://ecommerce.800-flowers.net/alexa/uat/submitOrder/v1', testOrder, options);
+      });
     });
 
-    // soap.createClient(wsdl, function(err, client) {
-    //   if (err) {
-    //     console.log("ERROR CREATING CLIENT: " + err);
-    //     return err;
-    //   }
-    //   else {
-    //     getUserAuthToken().then(function (token) {
-    //       client.setSecurity(new soap.BearerSecurity(token));
-    //       console.log("CLIENT FOLLOWS:");
-    //       console.log(client);
-    //       client.submitOrderFile(testOrder, function(err, result, body) {
-    //           if (err) {
-    //             console.log('Error Submitting: ' + err);
-    //             return err;
-    //           }
-    //           else {
-    //             parseString(body, function (err, result){
-    //               var requestResult = result['SOAP-ENV:Envelope']['SOAP-ENV:Body'][0].orderFileResponse[0];
-    //               console.log("BODY PARSED:");
-    //               console.log(requestResult);
-    //               return requestResult;
-    //             })
-    //           }
-    //       });
-    //     });
-    //   }
-    // });
-
-    // console.log('Submit order body',JSON.stringify(body,null,2));
-    //return userrequest('POST', '/me/stores/' + storeNumber + '/orderToken/' + orderToken + '/submitOrder', {}, body);
+    
   }
 
   function userrequest(method, path, queryString, body, paging, apiType) {
@@ -434,6 +367,8 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
   return options.transform({
     getShipping: getLogicalOrderShippingCharge,
     getOrderNumber: getNextOrderNumber,
+    getTaxes: getTaxes,
+    createOrder: createOrderObject,
   }, 'purchase');
 
   function getLogicalOrderShippingCharge(product, recipient, delivery) {
@@ -504,6 +439,349 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
         return {error:orderNum.esbSaltaServiceResponse.getOrdderNumberResponse.getOrdderNumberResult.flwsErrors.flwsError.errorMessage};
       }
       else return orderNum.esbSaltaServiceResponse.getOrdderNumberResponse.getOrdderNumberResult.OrderNumber;
+    });
+  }
+
+  function getTaxes(sku, zip, itemPrice, shipping) {
+    var body = {
+       "getRecipientTaxRequest": {
+          "recipients": {
+             "recipient": [
+                {
+                   "lineNumber": "1",
+                   "productSku": sku,
+                   "qty": "1",
+                   "prodType": "FPT",
+                   "zipCode": zip,
+                   "country": "USA",
+                   "itemPrice": itemPrice,
+                   "shippingCharge": shipping,
+                   "brandCode": "1001"
+                }
+             ]
+          }
+       }
+    };
+
+    return purchaseRequest('POST', '/getTaxes', {}, body, null, "product").then(function(taxes){
+      var recResult = taxes.getRecipientTaxResponse.getRecipientTaxResult.recipientsResult.recipientResult[0];
+      if (recResult.errorCode != "0") {
+        return {error:recResult.errorDescription};
+      }
+      else return recResult.taxAmount;
+    });
+  }
+
+  function createOrderObject(product, user, recipient, payment, delivery) {
+    return getNextOrderNumber().then(function (orderNumber) {
+      var testOrder = {
+          '@': {
+            "xmlns:ord": "http://1800flowers.com/BTOP/OrderFile"
+          },
+          // "ord:orderFile": {
+          "ord:orders": [{
+            "ord:orderHeader": {
+              "ord:primaryBrand": "1001",
+              "ord:orderNumber": orderNumber,
+              "ord:externalOrderNumber": "",
+              "ord:externalTransId": "",
+              "ord:machineId": "192177225",
+              "ord:orderDate": dateTimeString(),
+              "ord:thirdPartyToken": {
+                "ord:tokenId": "",
+                "ord:tokenType": "",
+                "ord:tokenDetails1": "",
+                "ord:tokenDetails2": "",
+              },
+              "ord:soldTo": {
+                "ord:cifId": user.systemID, //Waiting on reply from Jyothi
+                "ord:houseAccountNumber": "",
+                "ord:title": "",
+                "ord:firstName": user.firstName,
+                "ord:lastName": user.lastName,
+                "ord:address": {
+                  "ord:streetAddress1": user.address.addr1,
+                  "ord:streetAddress2": user.address.addr2,
+                  "ord:streetAddress3": "",
+                  "ord:attentionText": "",
+                  "ord:cityName": user.address.city,
+                  "ord:state": user.address.state,
+                  "ord:zipCode": user.address.postalCode,
+                  "ord:countryCode": user.address.country,
+                  "ord:addressType": "0",
+                },
+                "ord:phones": {
+                  "ord:type": "HP",
+                  "ord:telephoneNumber": user.phone,
+                },
+                "ord:emailAddress": "",
+                "ord:optInFlag": "",
+                "ord:gender": "",
+                "ord:specialFlag": "",
+                "ord:businessName": "",
+                "ord:middleName": "",
+                "ord:suffix": "",
+                "ord:CustomerSuffix": "",
+              },
+              "ord:orderTotalAmount": {
+                "ord:totalAmount": product.amount,
+                "ord:taxAmount": product.tax,
+                "ord:discountAmount": "0.0",
+                "ord:serviceCharge": "",
+                "ord:giftCertificateAmount": "0.0",
+                "ord:shippingChargeAmount": product.shipping,
+              },
+              "ord:serverId": "",
+              "ord:sourceId": "W0095",
+              "ord:sourceCode": "",
+              "ord:sourceTypeCode": "",
+              "ord:companyCode": "", //WILL BE PROVIDED BY 1800 FLOWERS
+              "ord:merchantId": "", //WILL BE PROVIDED BY 1800 FLOWERS
+              "ord:partnerId": "",
+              "ord:linkshareDetails": {
+                "ord:linkshareId": "",
+                "ord:orderStartTime": "",
+                "ord:orderCompleteTime": "",
+              },
+              "ord:agentInfo": {
+                "ord:employeeCode": "",
+                "ord:sourceCode": "",
+                "ord:telecenterCode": "",
+              },
+              "ord:transactionReleaseCode": "",
+              "ord:findersFileNumber": "",
+              "ord:DNIS": "",
+              "ord:caller": "test",
+              "ord:ANI": "",
+              "ord:IPAddress": "", //1800 FLOWERS WILL VERIFY THAT IT IS OK TO OMIT
+              "ord:ReleaseDescription": "",
+              "ord:channelId": "",
+              "ord:orderNotes": "",
+              "ord:orderCaptureClientId": "",
+              "ord:bannerCode": "",
+              "ord:referralCode": "",
+              "ord:cmTrackInfo1": "",
+              "ord:cmTrackInfo2": "",
+              "ord:agentId": "",
+              "ord:startTime": "",
+              "ord:endTime": "",
+              "ord:finderNumber": "",
+              "ord:customerInterface": "ALEXA",
+              "ord:refererUrl": "",
+              "ord:landingUrl": "",
+              "ord:userAgent": "ALEXA",
+              "ord:shopperSatus": "G",
+              "ord:passportUsed": "",
+              "ord:passportStatus": "",
+              "ord:signedApp": "",
+              "ord:giftListUsed": "N",
+              "ord:promoStatus": "",
+              "ord:checkoutBrand": "FLOWERS",
+            },
+            "ord:orderDetails": {
+              "ord:brandCode":"1001",
+              "ord:recipient": {
+                "ord:recipientNumber": "1",
+                "ord:title": "",
+                "ord:firstName": recipient.firstName,
+                "ord:lastName": recipient.lastName,
+                "ord:emailAddress": recipient.email,
+                "ord:address": {
+                  "ord:streetAddress1": recipient.addr1,
+                  "ord:streetAddress2": recipient.addr2,
+                  "ord:streetAddress3": "",
+                  "ord:attentionText": "",
+                  "ord:cityName": recipient.city,
+                  "ord:state": recipient.state,
+                  "ord:zipCode": recipient.postalCode,
+                  "ord:countryCode": recipient.country,
+                  "ord:addressType": "1",
+                },
+                "ord:addressVerify": "",
+                "ord:recordTypeIndicator": "",
+                "ord:addressTypeIndicator": "",
+                "ord:dpvConfirmIndicator": "",
+                "ord:deliveryDate": "",
+                "ord:phones": {
+                  "ord:type": "HP",
+                  "ord:telephoneNumber": recipient.phone,
+                },
+                "ord:specialInstructions": "",
+                "ord:products": {
+                  "ord:externalOrderLineId": "",
+                  "ord:externalItemId": "",
+                  "ord:shipAlone": "N",
+                  "ord:lineNumber": "1",
+                  "ord:parentLineNumber": "1",
+                  "ord:fsiFlag": "N",
+                  "ord:tryMe": "N",
+                  "ord:productCode": product.sku,
+                  "ord:quantity": "1",
+                  "ord:vaseId": "",
+                  "ord:productName": product.name,
+                  "ord:productType": "FPT",
+                  "ord:brandCode": "1001",
+                  "ord:soldOnBrandCode": "",
+                  "ord:productInstructions": "",
+                  "ord:productPrice": product.price,
+                  "ord:secondChoiceProductCode": "",
+                  "ord:monogramFlag": "",
+                  "ord:monogramId": "",
+                  "ord:monogramType": "",
+                  "ord:monogramText": "",
+                  "ord:continuityIndicator": "",
+                  "ord:crossBrandOrderInfo": "",
+                  "ord:personalizationInformation": "",
+                  "ord:shippingMethod": "",
+                  "ord:cardMessage": "",
+                  "ord:ocassionCode": "8",
+                  "ord:holidayCode": "",
+                  "ord:itemDiscountAmount": "0.00",
+                  "ord:itemDiscountAmountPercent": "0.00",
+                  "ord:itemTaxAmount": product.tax,
+                  "ord:itemServiceChargeAmount": "0.00",
+                  "ord:itemShippingChargeAmount": product.shipping,
+                  "ord:methodDescription": "",
+                  "ord:deliveryDate": product.deliveryDate,
+                  "ord:outsideDate": "",
+                  "ord:flexGuaranteedFlag": "N",
+                  "ord:customerDOB": "",
+                  "ord:shipNow": "N",
+                  "ord:primeShippingApplied": "",
+                  "ord:thirdPartyTokens": {
+                    "ord:thirdPartyToken": {
+                      "ord:tokenId": "",
+                      "ord:tokenType": "",
+                      "ord:tokenDetails1": "",
+                      "ord:tokenDetails2": "",
+                    },
+                  },
+                  "ord:lineItemType": "",
+                },
+                "ord:recipientTotalAmount": {
+                  "ord:totalAmount": product.total,
+                  "ord:taxAmount": product.tax,
+                  "ord:discountAmount": "0.0",
+                  "ord:serviceCharge": "0.0",
+                  "ord:giftCertificateAmount": "0.0",
+                  "ord:shippingChargeAmount": product.shipping,
+                },
+                "ord:gender": "",
+                "ord:fssId": "",
+                "ord:businessName": "",
+                "ord:businessExtension": "",
+                "ord:suffix": "",
+                "ord:recipientSuffix": "",
+              },
+              "ord:brandTotalAmount": {
+                "ord:totalAmount": product.total,
+                "ord:taxAmount": product.tax,
+                "ord:discountAmount": "0.0",
+                "ord:serviceCharge": "0.0",
+                "ord:giftCertificateAmount": "0.0",
+                "ord:shippingChargeAmount": product.shipping,
+              },
+              "ord:paymentDetails": {
+                "ord:creditCardPayment": {
+                  "ord:creditCardNumber": payment.number,
+                  "ord:nameOnCard": payment.name,
+                  "ord:billToInfo": {
+                    "ord:cifId": user.systemID,
+                    "ord:title": "",
+                    "ord:firstName": user.firstName,
+                    "ord:lastName": user.lastName,
+                    "ord:address": {
+                      "ord:streetAddress1": user.address.addr1,
+                      "ord:streetAddress2": user.address.addr2,
+                      "ord:streetAddress3": "",
+                      "ord:attentionText": "",
+                      "ord:cityName": user.address.city,
+                      "ord:state": user.address.state,
+                      "ord:zipCode": user.address.postalCode,
+                      "ord:countryCode": user.address.country,
+                      "ord:addressType": "0",
+                    },
+                    "ord:phones": {
+                      "ord:type": "HP",
+                      "ord:telephoneNumber": user.phone,
+                    },
+                    "ord:emailAddress": user.email,
+                    "ord:optInFlag": "",
+                    "ord:gender": "",
+                    "ord:specialFlag": "",
+                    "ord:businessName": "",
+                    "ord:middleName": "",
+                    "ord:suffix": "",
+                    "ord:CustomerSuffix": "",
+                  },
+                  "ord:expirationDate": payment.expiration,
+                  "ord:cardType": payment.cardType,
+                  "ord:cryptogram": "",
+                  "ord:thirdPartyPaymentType": "",
+                  "ord:thirdPartyTransactionId": "",
+                  "ord:approvalCode": payment.approvalCode,
+                  "ord:secureIdentifier": "",
+                  "ord:CAVVValue": "",
+                  "ord:AVSResponseCode": payment.AVSResponseCode,
+                  "ord:currencyValue": "",
+                  "ord:IPAddress": "",
+                  "ord:transactionXid": "",
+                  "ord:cardSecurityValue": "",
+                  "ord:CAVVResponseCode": "",
+                  "ord:cardSecurityValueResponse": "",
+                  "ord:authType": payment.authType,
+                  "ord:authorizedAmount": payment.authorizedAmount,
+                  "ord:googleTransactionId": "",
+                },
+                "ord:houseAccountPayment": {
+                  "ord:accountNumber": "",
+                  "ord:referenceCode": "",
+                  "ord:costCenterCode": "",
+                  "ord:poNumber": "",
+                  "ord:paymentAmount": "",
+                },
+                "ord:BMLPayment": {
+                  "ord:bmlAccountNumber": "",
+                  "ord:dateOfBirth": "",
+                  "ord:socialSecurityNumber": "",
+                  "ord:termsAndConditionVersion": "",
+                  "ord:itemCategory": "",
+                  "ord:additionalInfo": "",
+                  "ord:registrationDate": "",
+                  "ord:productDeliveryType": "",
+                  "ord:authorizedAmount": "",
+                  "ord:authType": "",
+                },
+                "ord:funbuckPayment": {
+                  "ord:employeeId": "",
+                  "ord:noOfFunbucks": "",
+                },
+                "ord:payPalPayment": {
+                  "ord:transactionId": "",
+                  "ord:settlementDate": "",
+                  "ord:settlementAmount": "",
+                },
+                "ord:vme": {
+                  "ord:callid": "",
+                  "ord:adminId": "",
+                  "ord:transactionId": "",
+                  "ord:settlementDate": "",
+                  "ord:settlementAmount": "",
+                },
+                "ord:giftCardPayments": "",
+              },
+              "ord:promotions": "",
+              "ord:basketThirdPartyInfo": {
+                "ord:third_party_name": "",
+                "ord:third_party_clubId": "",
+                "ord:third_party_memberId": "",
+              },
+            },
+            "ord:errorFlag": ""
+          }]
+          //}
+      };
+      return testOrder;
     });
   }
 
@@ -703,4 +981,39 @@ function soapRequest(token, uri, sendObject, options) {
         });
     }
   });
+}
+
+function dateTimeString(date) {
+  if (typeof date === 'undefined') {
+    date = new Date();
+  }
+  else {
+    date = new Date(date);
+  }
+
+  var day = date.getDate();
+  var month = date.getMonth()+1; //January is 0!
+  var year = date.getFullYear();
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var seconds = date.getSeconds();
+
+  if(day<10) {
+      day='0'+day
+  } 
+  if(month<10) {
+      month='0'+month
+  }
+  if(hours<10) {
+      hours='0'+hours
+  } 
+  if(minutes<10) {
+      minutes='0'+minutes
+  } 
+  if(seconds<10) {
+      seconds='0'+seconds
+  } 
+
+
+  return month + "/" + day + "/" + year + " " + hours + ":" +  minutes + ":" + seconds;
 }
