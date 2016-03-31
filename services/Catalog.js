@@ -58,7 +58,7 @@ module.exports = [
 	, {
 		'name': 'Love and Romance'
 		, 'sku': '90950'
-		, 'description': "This field-gathered bouquet has gorgeous red and pink roses, lilies, <code><speak> daisies and alstroemeria, in an eight-inch glass vase tied with satin ribbon."
+		, 'description': "This field-gathered bouquet has gorgeous red and pink roses, lilies, Gerbera daisies and alstroemeria, in an eight-inch glass vase tied with satin ribbon."
 		, 'sizes': [
 			{
 				'name': 'small'

@@ -122,10 +122,10 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          // if(!po.hasRecipient()) {
-            // if(po.possibleRecipient) return replyWith(null,'validate-possible-recipient',request,po);
-            // return replyWith('Options.RecipientSelection','query-recipient',request,po);
-          // }
+          if(!po.hasRecipient()) {
+            if(po.possibleRecipient) return replyWith(null,'validate-possible-recipient',request,po);
+            return replyWith('Options.RecipientSelection','query-recipient',request,po);
+          }
           if(!po.hasArrangement()) return replyWith('Options.ArrangementList', 'query-arrangement-type', request, po);
           if(!po.hasSize()) return replyWith('Options.SizeList', 'query-size', request, po);
           return replyWith(null,'order-review',request,po);
@@ -220,14 +220,14 @@ module.exports = StateMachine({
           if (request.intent.name == 'DescriptionIntent') {
             po.setupArrangementDescriptions();
             console.log('Current Arrangement ' + po.getArrangementDescription().name);
-            return replyWith('QueryArrangementType.FirstArrangmentDesctiption', 'arrangement-descriptions', request, po);
+            return replyWith('QueryArrangementType.FirstArrangmentDescription', 'arrangement-descriptions', request, po);
           } else if (request.intent.name == 'AMAZON.NoIntent') {
             po.nextArrangementDescription();
             if (!po.hasArrangementDescription()) {
-              return replyWith('ArrangementDescriptions.MoreArrangmentsOnline', 'die', request, po);
+              return replyWith('ArrangementDescriptions.MoreArrangmentsOnline', 'query-continue-with-order', request, po);
             }
             console.log('Current Arrangement ' + po.getArrangementDescription().name);
-            return replyWith('ArrangementDescriptions.NextArrangmentDesctiption', 'arrangement-descriptions', request, po);
+            return replyWith('ArrangementDescriptions.NextArrangmentDescription', 'arrangement-descriptions', request, po);
           }
 
           // AMAZON.YesIntent
@@ -243,6 +243,17 @@ module.exports = StateMachine({
         .then(function(po){
           po.pickArrangement(request.intent.params.arrangementSlot);
           return replyWith('ArrangementSelectionIntent.ArrangementValidation', 'options-review', request, po);
+        });
+      }
+    },
+    "query-continue-with-order": {
+      enter: function enter (request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po) { 
+          if (request.from == 'arrangement-descriptions') {
+            return replyWith('ArrangementDescriptions.ContinueWithOrder', 'query-options-again', request, po);
+          }
         });
       }
     },

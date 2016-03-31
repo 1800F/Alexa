@@ -5,7 +5,7 @@
  *
  * An object to place responses
  *
- * Written by Christijan Draper <christijand@rain.agency>, March 2016
+ * Written by Christijan Draper <christijand@rain.agency> & Matthew Parkin <matthewp@rain.agency>, March 2016
  * Reviewed by Christian Torres <christiant@rain.agency>, March 2016
  */
 'use strict';
@@ -16,6 +16,7 @@ var responses = function () {
 
   return {
     Errors: {
+
       NotConnectedToAccount: {
         tell: "Before I can help you place an order, you'll need to connect to your 1-800-Flowers account.\n        To help you get started, I've added a link to the authorization process in the Home screen of the Alexa app.\n        <break time=\"1s\"/>\n        When you're ready, come back and I'll be happy to help you place your order!",
         card: authCard
@@ -121,7 +122,7 @@ var responses = function () {
 
     QueryAddress: {
       RecipientValidation: {
-        say: "{okay}, flowers for {recipient}?",
+        say: "{okay}, flowers for {recipient}.",
       },
       AddressNotDeliverable: {
         say: "That address is outside 1 800 Flowers' delivery area.",
@@ -140,7 +141,7 @@ var responses = function () {
     },
 
     QueryArrangementType: {
-      FirstArrangmentDesctiption: {
+      FirstArrangmentDescription: {
         ask: "{arrangementDescription} Would you like a {arrangementName} arrangement?",
         reprompt: "Would you like to send a {arrangementName} arrangement?"
       },
@@ -158,7 +159,7 @@ var responses = function () {
     },
 
     ArrangementDescriptions: {
-      NextArrangmentDesctiption: {
+      NextArrangmentDescription: {
         ask: "{arrangementDescription} Would you like a {arrangementName} arrangement?",
         reprompt: "Would you like to send a {arrangementName} arrangement?"
       },
@@ -178,7 +179,7 @@ var responses = function () {
     },
 
     QuerySize: {
-      FirstSizeDesctiption: {
+      FirstSizeDescription: {
         ask: "{sizeDescription} Would you like to buy a {size} arrangement for {price}?",
         reprompt: "Would you like to buy a {size} arrangement for {price}?"
       },
@@ -189,7 +190,7 @@ var responses = function () {
     },
 
     SizeDescriptions: {
-      NextSizeDesctiption: {
+      NextSizeDescription: {
         ask: "{sizeDescription} Would you like a {size} arrangement?",
         reprompt: "Would you like to send a {size} arrangement?"
       },

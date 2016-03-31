@@ -44,8 +44,7 @@ exports.contactCandidateName = function (po) {
 };
 
 exports.contactCandidateAddress = function (po) {
-  var addrs = po.getContactCandidate().address.split('|');
-  return address.say(addrs.join(' '));
+  return address.say(address.fromPipes(po.getContactCandidate().address));
 };
 
 // Arrangement sizes
