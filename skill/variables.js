@@ -86,8 +86,14 @@ exports.deliveryDate = function (po) {
 // Query arrangement, size
 
 exports.arrangementDescription = function(po) {
-  return '';
+  var arrangement = po.getArrangementDescription();
+  return arrangement.description;
 };
+
+exports.arrangementName = function(po) {
+  var arrangement = po.getArrangementDescription();
+  return arrangement.name;
+}
 
 exports.arrangement = function (po) {
   return '';
