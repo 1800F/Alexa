@@ -49,7 +49,7 @@ var responses = function () {
         reprompt: "Did you want a Mother's Day, Birthday, Love and Romance, or 'Thank you' arrangement?"
       },
       SizeList: {
-        ask: "What arrangement size would you like? Large for {largePrice}, medium for {mediumPrice}, or small for {smallPrice}.",
+        ask: "What arrangement size would you like? Large for {largePrice}, medium for {mediumPrice}, or small for {smallPrice}. Prices do not include taxes or delivery fees.",
         reprompt: "Did you want a Large, Medium, or Small arrangement?"
       },
       DateSelection: {
