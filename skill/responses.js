@@ -208,7 +208,7 @@ var responses = function () {
 
     QueryDate: {
       DateValidation: {
-        say: "{okay}, {date}?",
+        say: "{okay}, {deliveryDate}.",
       },
       DateSelectionAgain: {
         ask: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'.",
@@ -224,7 +224,7 @@ var responses = function () {
       // The {okay} variable consists of the terms, (Okay, Great, Excellent)
       // that are randomly selected to fill the slot.
       DateValidation: {
-        say: "{okay}, {date}?",
+        say: "{okay}, {date}.",
       },
       NotAValidDate: {
         say: "{date} is not available for delivery. Would you like to deliver on {dateMinusOne} or {datePlusOne}?",
