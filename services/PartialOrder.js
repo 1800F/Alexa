@@ -8,7 +8,7 @@ var Flowers = require('./Flowers.js')
   , Promise = require('bluebird')
   , verbose = config.verbose
   , ContactBook = require('./ContactBook.js')
-  , catalog = require('./Catalog.js')
+  , Catalog = require('./Catalog.js')
 ;
 
 /* TERMS
@@ -134,33 +134,59 @@ PartialOrder.prototype.acceptCandidateContact = function() {
   this.recipientChoices = null;
 }
 
-/// ***** Arrangement Descriptions *** ///
+/// ***** Arrangement Descriptions ***** ///
 /// These are the arrangement (Name & Description) that user can order. We describe them to the user
 /// in a series, and they can pick one that will become the final arrangement.
 
 PartialOrder.prototype.setupArrangementDescriptions = function() {
-  this.arrangementDescriptions = {
-    offset: 0,
-    choices: catalog
-  };
+  this.arrangementDescriptionOffset = 0;
 }
 
 PartialOrder.prototype.hasArrangementDescription = function() {
-  return this.arrangementDescriptions && this.arrangementDescriptions.offset < this.arrangementDescriptions.choices.length;
+  return this.arrangementDescriptionOffset && this.arrangementDescriptionOffset < Catalog.choices.length;
 }
 
 PartialOrder.prototype.nextArrangementDescription = function() {
-  return this.arrangementDescriptions.offset++;
+  return this.arrangementDescriptionOffset++;
 }
 
 PartialOrder.prototype.getArrangementDescription = function() {
-  return this.arrangementDescriptions.choices[this.arrangementDescriptions.offset];
+  return Catalog.choices[this.arrangementDescriptionOffset];
 }
 
 PartialOrder.prototype.acceptArrangement = function() {
   this.pickArrangement(this.getArrangementDescription().name);
   // Clear out this junk just to make the session smaller
-  this.arrangementDescriptions = null;
+  this.arrangementDescriptionOffset = null;
+}
+
+/// ***** Size Descriptions ***** ///
+/// These are the sizes (Name & Description) that user can order for the specific arrangement.
+/// We describe them to the user in serios, and they can pick one that will become the final size.
+
+PartialOrder.prototype.setupSizeDescriptions = function() {
+  this.sizeDescriptions = {
+    offset: 0,
+    choices: Catalog.sizesByArrangement(this.arrangement);
+  };
+}
+
+PartialOrder.prototype.hasSizeDescriptions = function() {
+  return this.sizeDescriptions && this.sizeDescriptions.offset < this.sizeDescriptions.choices.length;
+}
+
+PartialOrder.prototype.nextSizeDescription = function() {
+  return this.sizeDescriptions.offset++;
+}
+
+PartialOrder.prototype.getSizeDescription = function() {
+  return this.sizeDescriptions.choices[this.sizeDescriptions.offset];
+}
+
+PartialOrder.prototype.acceptSize = function() {
+  this.pickSize(this.getSizeDescription().name);
+  // Clear out this junk just to make the session smaller
+  this.sizeDescriptions = null;
 }
 
 PartialOrder.prototype.pickArrangement = function(arrangementName) {
