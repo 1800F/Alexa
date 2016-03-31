@@ -294,6 +294,7 @@ var Product = module.exports.Product = function Product(options, productSKU) {
     details: {},
     getProductDetails: getProductDetails,
     earliestDelivery: getEarliestDeliveryDate,
+    getDeliveryCalendar: getDeliveryCalendar,
   }, 'product');
 
   function getProductDetails() {
@@ -337,7 +338,27 @@ var Product = module.exports.Product = function Product(options, productSKU) {
     return productrequest('POST', '/getEarliestDeliveryDate', {}, body, null, "product");
   }
 
-  function getLogicalOrderShippingCharge() {
+  function getDeliveryCalendar(zipCode, startDate, specificDate) {
+    if (typeof startDate === 'undefined' || startDate == null) startDate = "";
+    else startDate = dateShortString(startDate);
+
+    if (typeof specificDate === 'undefined' || startDate == null) specificDate = "";
+    else specificDate = dateShortString(specificDate);
+
+    var body = {
+     "getDlvrCalRequest": {
+        "country": "USA",
+        "deliveryDate": specificDate,
+        "locationType": "1",
+        "productSku": this.SKU,
+        "siteId": "18F",
+        "startDate": startDate,
+        "zipCode": zipCode,
+        "brandCode": "1001"
+     }
+    };
+
+    return productrequest('POST', '/getDeliveryCalendar', {}, body, null, "product");
 
   }
 
@@ -1016,4 +1037,27 @@ function dateTimeString(date) {
 
 
   return month + "/" + day + "/" + year + " " + hours + ":" +  minutes + ":" + seconds;
+}
+
+function dateShortString(date) {
+  if (typeof date === 'undefined') {
+    date = new Date();
+  }
+  else {
+    date = new Date(date);
+  }
+
+  var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+    "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
+  ];
+
+  var day = date.getDate();
+  var month = date.getMonth();
+  var year = date.getFullYear() - 2000;
+
+  if(day<10) {
+      day='0'+day
+  } 
+  
+  return day + "-" + monthNames[month] + "-" + year;
 }
