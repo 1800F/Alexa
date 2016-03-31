@@ -79,25 +79,25 @@ module.exports = StateMachine({
     "entry": {
       to: {
         LaunchIntent: 'launch',
-        ExitIntent: 'exit',
         RecipientSelectionIntent: 'recipient-selection',
         ArrangementSelectionIntent: 'arrangement-selection',
         SizeSelectionIntent: 'size-selection',
         DateSelectionIntent: 'date-selection',
         OrderReviewIntent: 'order-review',
-        "AMAZON.HelpIntent": 'help-menu'
+        "AMAZON.HelpIntent": 'help-menu',
+        "AMAZON.StopIntent": 'exit'
       }
     },
     'exit': {
       enter: function enter(request) {
-        return this.Access(request).then(function (user) {
-          return PartialOrder.fromRequest(user, request);
-        }).then(function (po) {
-          return replyWith('Exit.GeneralExit', 'die', request, po);
-        })
-        .catch(function(){
-          return replyWith('Exit.GeneralExit', 'die', request, null);
-        });
+        return this.Access(request)
+          .then(function(api){ return PartialOrder.fromRequest(api,request); })
+          .then(function(po){
+            return replyWith('ExitIntent.RepeatLastAskReprompt', 'die', request, po);
+          })
+          .catch(function(){
+            return replyWith('ExitIntent.RepeatLastAskReprompt', 'die', request, null);
+          });
       }
     },
     'die': { isTerminal: true },

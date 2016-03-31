@@ -42,7 +42,7 @@
           "type": "ARRANGEMENT_TYPES"
         },
         {
-          "name": "Bouquet",
+          "name": "bouquet",
           "type": "BOUQUET"
         }
       ]
@@ -55,19 +55,35 @@
           "type": "ARRANGEMENT_SIZES"
         },
         {
-          "name": "Bouquet",
+          "name": "bouquet",
           "type": "BOUQUET"
         }
       ]
     },
     {
-      "intent": "YesIntent"
+     "intent": "DescriptionIntent",
+     "slots": [
+     {
+         "name": "arrangementType",
+         "type": "ARRANGEMENT_TYPES"
+       },
+        {
+         "name": "arrangementSize",
+         "type": "ARRANGEMENT_SIZES"
+       }
+      ]
     },
     {
-       "intent": "AMAZON.HelpIntent"
+      "intent": "AMAZON.YesIntent"
     },
     {
-      "intent": "NoIntent"
+      "intent": "AMAZON.NoIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
     }
   ]
 }
