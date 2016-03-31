@@ -138,7 +138,7 @@ module.exports = StateMachine({
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){ return po.getContactBook().then(_.constant(po)); })
         .then(function(po){
-          if (request.intent.name == 'YesIntent' || request.intent.name == 'NoIntent' || request.intent.name == 'DescriptionIntent') {
+          if (request.intent.name == 'AMAZON.YesIntent' || request.intent.name == 'AMAZON.NoIntent' || request.intent.name == 'DescriptionIntent') {
             po.setupRecipientChoices();
             if(!po.getRecipientChoices().length) return replyWith('QueryRecipientList.ContinueWithOrder','query-options-again',request,po);
             if(po.isLastRecipientChoiceOffer()) return replyWith('QueryRecipient.RecipientList','query-recipient-list',request,po);
@@ -152,9 +152,9 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          if (request.intent.name == 'YesIntent') {
+          if (request.intent.name == 'AMAZON.YesIntent') {
             return replyWith('QueryRecipientList.OkayWho','query-recipient-list',request,po);
-          }else if (request.intent.name == 'NoIntent') {
+          }else if (request.intent.name == 'AMAZON.NoIntent') {
             po.nextRecipientChoices();
             if(!po.getRecipientChoices().length) return replyWith('QueryRecipientList.ContinueWithOrder','query-options-again',request,po);
             if(po.isLastRecipientChoiceOffer()) return replyWith('QueryRecipient.LastRecipientList','query-recipient-list',request,po);
@@ -193,11 +193,11 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          if (request.intent.name == 'YesIntent') {
+          if (request.intent.name == 'AMAZON.YesIntent') {
             //TODO: Determine if this address is deliverable. If not, QueryAddress.AddressNotDeliverable, and go to next address
             po.acceptCandidateContact();
             return replyWith('QueryAddress.RecipientValidation','options-review',request,po);
-          }else if (request.intent.name == 'NoIntent') {
+          }else if (request.intent.name == 'AMAZON.NoIntent') {
             po.nextContactCandidate();
             if(!po.hasContactCandidate()) return replyWith('QueryAddress.SendToSomeoneElse', 'clear-and-query-options-again', request, po);
             return replyWith('QueryAddress.NextAddress', 'query-address', request, po);
@@ -273,9 +273,9 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          if (request.intent.name == 'YesIntent') {
+          if (request.intent.name == 'AMAZON.YesIntent') {
             return replyWith('QueryOptionsAgain.Validation','options-review',request,po);
-          }else if (request.intent.name == 'NoIntent') {
+          }else if (request.intent.name == 'AMAZON.NoIntent') {
             return replyWith('QueryOptionsAgain.Close','die',request,po);
           }
         });
