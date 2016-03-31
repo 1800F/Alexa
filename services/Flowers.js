@@ -252,7 +252,14 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
     var purchase = Flowers.Purchase(config.flowers);
     return purchase.createOrder(product, recipient, user, payment, delivery).then( function(testOrder) {
       return getUserAuthToken().then(function (token) {
-        return soapRequest(token, 'https://ecommerce.800-flowers.net/alexa/uat/submitOrder/v1', testOrder, options);
+        return soapRequest(token, 'https://ecommerce.800-flowers.net/alexa/uat/submitOrder/v1', testOrder, options).then(function(order) {
+          console.log("ORDER PROCESSED: " + JSON.stringify(order));
+          if (order[0].flwsErrors[0].flwsError[0].errorMessage[0]) {
+            return {error: order[0].flwsErrors[0].flwsError[0].errorMessage[0]};
+          }
+          else
+            return order[0];
+        });
       });
     });
 
@@ -315,7 +322,7 @@ var Product = module.exports.Product = function Product(options, productSKU) {
     });
   }
 
-  function getEarliestDeliveryDate(sizeLetter, zipCode) {
+  function getEarliestDeliveryDate(zipCode) {
     var body = {
        "getNextAvailDeliveryDateRequest": {
           "customerType": "R",
@@ -325,7 +332,7 @@ var Product = module.exports.Product = function Product(options, productSKU) {
           "items": {
              "item": {
                 "productId": "123",
-                "productSku": this.SKU + sizeLetter,
+                "productSku": this.SKU,
                 "zipCode": zipCode,
                 "locationType": "1",
                 "deliveryDate": "",
@@ -386,11 +393,26 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
   options.transform = options.transform || _.identity;
 
   return options.transform({
+    login: login,
     getShipping: getLogicalOrderShippingCharge,
     getOrderNumber: getNextOrderNumber,
     getTaxes: getTaxes,
+    tokenizeCC: tokenizeCC,
+    authorizeCC: authorizeCC,
     createOrder: createOrderObject,
   }, 'purchase');
+
+  function login() {
+    options.oAuthScope = "/payment/v1";
+    //Do oauthRequest with defaultCredentials
+    return oauthReq('password', { username: '1stevenh@rain.agency', password: '1rainPssword' }, options).then(function (tokens) {
+      //If successful, store username and password entered in into options to use for authenticate
+      if (tokens.error) return Promise.reject(tokens.error);
+      console.log("LOGIN OPTIONS: ");
+      console.log(options);
+      return tokens;
+    });
+  }
 
   function getLogicalOrderShippingCharge(product, recipient, delivery) {
     /* The product object must have:
@@ -493,13 +515,94 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
     });
   }
 
+  function tokenizeCC(CC, token) {
+    var body = {
+     "protectTokenRequest": {
+        "tokenDetail": {
+           "sourceid": "W0097",
+           "token": CC
+        },
+        "authorizationData": {
+           "userName": config.flowers.paymentUser,
+           "password": config.flowers.paymentPass
+        }
+     }
+    };
+
+    return purchaseRequest('POST', '/tokenizeCC', {}, body, null, "payment", token).then(function(token){
+      console.log("Tokenization Result: " + JSON.stringify(token));
+      if (token.errorCode != "0") {
+        return {error:token.errorDescription};
+      }
+      else return token;
+    });
+  }
+
+  function authorizeCC(token) {
+    var body = {
+      "paymentRequest": {
+          "authorization": {
+             "security": {
+                "username": config.flowers.paymentUser, //This will be updated in production
+                "password": config.flowers.paymentPass  //This will be updated in production
+             },
+             "sourceId": "W0097",
+             "orderId": "8401226524",
+             "creditCards": {
+                "creditCard": {
+                   "creditCardPaymentInfo": {
+                      "cardNumber": "8BD2B7D9323DAACB",
+                      "cardType": "MC",
+                      "securityCode": "123",
+                      "nameOnCard": "asd s",
+                      "cardExpDate": "0419",
+                      "currencyCode": "840",
+                      "transactionAmount": "2171",
+                      "divisionNumber": "104272",
+                      "transactionType": "7"
+                   },
+                   "billToAddressProfile": {
+                      "profile": {
+                         "name": "Test test",
+                         "address": {
+                            "addressLine1": "1 old country rd",
+                            "addressLine2": "test",
+                            "city": "CARLE PLACE",
+                            "stateCode": "NY",
+                            "countryCode": "US",
+                            "zipCode": "11514"
+                         },
+                         "phone": {
+                            "telephoneType": "d",
+                            "telephoneNumber": "5162374830"
+                         },
+                         "email": {
+                            "emailPrimary": "test@test.com"
+                         }
+                      }
+                   }
+                }
+             }
+          }
+       }
+    };
+
+    return purchaseRequest('POST', '/authorizeCC', {}, body, null, "payment", token).then(function(authorization){
+      var authResult = authorization;
+      console.log("CC Auth Result: " + JSON.stringify(authResult));
+      if (authResult.errorCode != "0") {
+        return {error:authResult.errorDescription};
+      }
+      else return authResult.paymentResponse.authorizations.creditCardAuthorizations;
+    });
+  }
+
   function createOrderObject(product, user, recipient, payment, delivery) {
     return getNextOrderNumber().then(function (orderNumber) {
       var testOrder = {
-          '@': {
-            "xmlns:ord": "http://1800flowers.com/BTOP/OrderFile"
-          },
-          // "ord:orderFile": {
+          // '@': {
+          //   "xmlns:ord": "http://1800flowers.com/BTOP/OrderFile"
+          // },
           "ord:orders": [{
             "ord:orderHeader": {
               "ord:primaryBrand": "1001",
@@ -515,7 +618,7 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
                 "ord:tokenDetails2": "",
               },
               "ord:soldTo": {
-                "ord:cifId": user.systemID, //Waiting on reply from Jyothi
+                "ord:cifId": user.systemID, 
                 "ord:houseAccountNumber": "",
                 "ord:title": "",
                 "ord:firstName": user.firstName,
@@ -553,10 +656,10 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
                 "ord:shippingChargeAmount": product.shipping,
               },
               "ord:serverId": "",
-              "ord:sourceId": "W0095",
+              "ord:sourceId": "W0097",
               "ord:sourceCode": "",
               "ord:sourceTypeCode": "",
-              "ord:companyCode": "", //WILL BE PROVIDED BY 1800 FLOWERS
+              "ord:companyCode": "063",
               "ord:merchantId": "", //WILL BE PROVIDED BY 1800 FLOWERS
               "ord:partnerId": "",
               "ord:linkshareDetails": {
@@ -800,18 +903,18 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
             },
             "ord:errorFlag": ""
           }]
-          //}
       };
       return testOrder;
     });
   }
 
-  function purchaseRequest(method, path, queryString, body, paging, apiType) {
+  function purchaseRequest(method, path, queryString, body, paging, apiType, token) {
+    if (typeof token === 'undefined' || token == null) token = null;
     if (queryString && queryString.giveResponse) {
       var giveResponse = true;
       delete queryString.giveResponse;
     }
-    return issue(method, null, path, queryString, body, paging, options, apiType).then(function (res) {
+    return issue(method, token, path, queryString, body, paging, options, apiType).then(function (res) {
       console.log("----------------------------RESPONSE STATUS------------------------------");
       console.log(res.statusCode);
       if (res.statusCode < 200 || res.statusCode >= 300) return Promise.reject(res);
@@ -847,6 +950,8 @@ function oauthReq(grant_type, values, options) {
       "Accept": 'application/json'
     }
   ;
+  if (options.oAuthScope == "/payment/v1")
+    url = options.endpoint + '/' + options.payment + '/' + options.version + '/oauth/token?sig=' + sig();
   if (options.verbose) {
     console.log('OAUTH Request: ', url);
     console.log('OAUTH Body: ', body);
@@ -888,7 +993,7 @@ function issue(method, token, path, queryString, body, paging, options, apiType)
     URL += options.product + '/' + options.version + path;
   }
   else if (apiType == 'payment') {
-    URL += options.purchase + '/' + options.version + path;
+    URL += options.payment + '/' + options.version + path;
   }
   else {
     URL += options.account + '/' + options.version + path
@@ -955,7 +1060,7 @@ function soapRequest(token, uri, sendObject, options) {
       js2XMLParseOptions = {declaration: {'include': false},prettyPrinting: {'enabled': true}},
       myxml = js2xmlparser('ord:orderFile', sendObject, js2XMLParseOptions),
       startTime = +new Date(),
-      body = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header></soapenv:Header><soapenv:Body>';
+      body = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ord="http://1800flowers.com/BTOP/OrderFile"><soapenv:Header></soapenv:Header><soapenv:Body>';
 
   body += myxml += "</soapenv:Body></soapenv:Envelope>";
   var req = {
@@ -985,12 +1090,11 @@ function soapRequest(token, uri, sendObject, options) {
     }
     if (res.body && _.isString(res.body)) {
         parseString(res.body, function (err, result){
-          var requestResult = result['SOAP-ENV:Envelope']['SOAP-ENV:Body'][0].orderFileResponse[0];
-          console.log("BODY PARSED:");
-          console.log(requestResult);
-          res.body = requestResult;
           try {
-            res.body = JSON.parse(res.body);
+            var requestResult = result['soapenv:Envelope']['soapenv:Body'][0].orderFileResponse[0].orderFileResponseResult;
+            console.log("BODY PARSED:");
+            console.log(JSON.stringify(requestResult));
+            res.body = requestResult;
           } catch (e) {
             if (options.verbose) {
               console.log("FAILED TO PARSE:");
@@ -998,9 +1102,9 @@ function soapRequest(token, uri, sendObject, options) {
             }
             throw e;
           }
-          return res;
         });
     }
+    return res.body;
   });
 }
 

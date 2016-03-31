@@ -17,7 +17,9 @@
     "verbose": true,
     "logsAreInsensitive": true,
     "callsPerSecond": 50,
-    "platform": "echo"
+    "platform": "echo",
+    "paymentUser": "test",
+    "paymentPass": "test"
   },
   "alexa": {
     "auth": {

@@ -257,20 +257,29 @@ router.get('/privacy-policy', function (req, res, next) {
   // });
 
   //TEST PRODUCT API
-  var floralEmbrace = Flowers.Product(config.flowers, "100299L");
-  floralEmbrace.getProductDetails().then(function (details) {
-    console.log("PRODUCT DETAILS: " + JSON.stringify(details));
-    floralEmbrace.details = details;
-    floralEmbrace.getDeliveryCalendar("84660", null, "04-05-2016").then(function (calendar) {
-      console.log("DELIVERY CALENDAR: " + JSON.stringify(calendar));
-    });
+  // var floralEmbrace = Flowers.Product(config.flowers, "100299L");
+  // floralEmbrace.getProductDetails().then(function (details) {
+  //   console.log("PRODUCT DETAILS: " + JSON.stringify(details));
+  //   floralEmbrace.details = details;
+  //   floralEmbrace.getDeliveryCalendar("84660", null, "04-05-2016").then(function (calendar) {
+  //     console.log("DELIVERY CALENDAR: " + JSON.stringify(calendar));
+  //   });
   //   floralEmbrace.earliestDelivery("L", "84003").then(function (delivery) {
   //     console.log("Earliest delivery: " + JSON.stringify(delivery));
   //   });
- });
+ // });
 
   //TEST PURCHASE API
-  // var purchase = Flowers.Purchase(config.flowers);
+  var purchase = Flowers.Purchase(config.flowers);
+  purchase.login().then(function (tokens) {
+    //console.log("AUTH TOKENS CCAUTH---------------" + JSON.stringify(tokens.access_token));
+    // purchase.tokenizeCC("8B1235123541514612", tokens.access_token).then(function (tokenized) {
+    //   console.log("Tokenize FINISHED: " + tokenized);
+    // });
+  purchase.authorizeCC(tokens.access_token).then(function (authorized) {
+      console.log("Authorize CC FINISHED: " + authorized);
+    });
+  });
   // console.log("------------------------------GETTING SHIPPING------------------------------")
   // purchase.getShipping({productSku:"90950L", prodType:"FPT", itemPrice:"69.99"},
   //   {firstName:"Mark", lastName:"Miles", addr1:"686 E State St", addr2:"Suite 101", city:"American Fork", state:"UT", postalCode:"84003", country:"USA"},
