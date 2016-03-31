@@ -61,14 +61,23 @@
       ]
     },
     {
+     "intent": "DateSelectionIntent",
+     "slots": [
+     {
+         "name": "deliveryDateSlot",
+         "type": "AMAZON.DATE"
+       }
+     ]
+    },
+    {
      "intent": "DescriptionIntent",
      "slots": [
      {
-         "name": "arrangementType",
+         "name": "arrangementSlot",
          "type": "ARRANGEMENT_TYPES"
        },
         {
-         "name": "arrangementSize",
+         "name": "sizeSlot",
          "type": "ARRANGEMENT_SIZES"
        }
       ]
@@ -84,6 +93,9 @@
     },
     {
       "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.RepeatIntent"
     }
   ]
 }
