@@ -2,7 +2,8 @@
 
 var fs = require('fs'),
     path = require('path'),
-    _ = require('lodash');
+    _ = require('lodash'),
+    states = require('./states.json');
 
 var rules = fs.readFileSync(path.join(__dirname, 'address-rules.txt'), 'utf8').split(/\r?\n/).map(parseRule).filter(function (x) {
   return x;
@@ -11,16 +12,17 @@ var rules = fs.readFileSync(path.join(__dirname, 'address-rules.txt'), 'utf8').s
 exports.fromPipes = function(address){
   // e.g. "24 S Center Street|||Spanish Fork|UT|84660|US"
   var parts = address.split('|');
+  var abbreviation = parts[4].toUpperCase();
   return {
     line1: parts[0],
     line2: parts[1],
     line3: parts[2],
     city: parts[3],
-    state: parts[4],
+    state: states[abbreviation],
     zip: parts[5],
-    country: parts[6],
-  }
-}
+    country: parts[6]
+  };
+};
 
 exports.say = function (address) {
   if (!address) return address;
@@ -31,6 +33,13 @@ exports.say = function (address) {
 };
 
 exports.isDeliverable = function (address) {
+  if (!(address.country.toLowerCase() === "us")) {
+    console.log(_.lowerCase((address.country)));
+    return false;
+  } else if (!(address.line1) || !(address.city) || !(address.state) || !(address.zip) || !(address.country)) {
+    return false;
+  }
+  console.log(address);
   return true;
 };
 
