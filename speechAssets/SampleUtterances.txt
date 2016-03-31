@@ -170,10 +170,13 @@ AMAZON.RepeatIntent play it again please
 AMAZON.RepeatIntent please repeat
 AMAZON.RepeatIntent please repeat that
 AMAZON.RepeatIntent please repeat what you said
+AMAZON.RepeatIntent please repeat the details
 AMAZON.RepeatIntent repeat
 AMAZON.RepeatIntent repeat it
 AMAZON.RepeatIntent repeat it please
 AMAZON.RepeatIntent repeat please
+AMAZON.RepeatIntent repeat the details
+AMAZON.RepeatIntent repeat the details Please
 AMAZON.RepeatIntent say it again
 AMAZON.RepeatIntent say it again please
 AMAZON.RepeatIntent say that again

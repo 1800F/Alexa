@@ -45,11 +45,12 @@ var responses = function () {
         reprompt: "Say the person's name to send them flowers or say, (no, someone else) to hear more available contacts."
       },
       ArrangementList: {
-        ask: "What type of arrangement would you like?  I have arrangements for Mother's Day, Birthday, Love and Romance, and 'Thank you'.",
-        reprompt: "Did you want a Mother's Day, Birthday, Love and Romance, or 'Thank you' arrangement?"
+        ask: "I have four types of arrangements available: Mothers Day, Birthday, \"Love and Romance\", and, Thank you. <break time=\"500ms\"/>Which would you like?",
+        reprompt: "Did you want an arrangement for someone's birthday, <break time=\"350ms\"/>Mothers Day,<break time=\"350ms\"/> \"Love and Romance\", <break time=\"350ms\"/>or, to say<break time=\"10ms\"/>Thank you?"
       },
       SizeList: {
-        ask: "What arrangement size would you like? Large for {largePrice}, medium for {mediumPrice}, or small for {smallPrice}. Prices do not include taxes or delivery fees.",
+        //Note to developer: prices in this response should be read without saying dollars or cents unless it is a full dollar amount with no cents (e.g. $45.99 should be read forty-five ninety-nine, but $45.00 should be read forty-five dollars.)
+        ask: "We have a Large arrangement for {largePrice}, medium for {mediumPrice}, or small for {smallPrice}. Prices do not include taxes or delivery fees. Which size would you like to order?",
         reprompt: "Did you want a Large, Medium, or Small arrangement?"
       },
       DateSelection: {
@@ -57,16 +58,16 @@ var responses = function () {
         reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
       },
       OrderReview: {
-        ask: "For review, I have a {arrangementSize} {arrangementType} arrangement to be delivered to {recipient} on {deliveryDate}. Is that correct?",
-        reprompt: "Say, “repeat” to hear your order again or exit to cancel your order. Or, say, “yes” to place your order."
+        ask: "Okay, I have a {arrangementSize} {arrangementType} arrangement to be delivered to {recipient} on {deliveryDate}. Is that right?",
+        reprompt: "Would you like me to place that order? I can also repeat the details for you."
       },
     },
 
     QueryRecipient: {
       RecipientList: {
-        ask: "You can send flower to {recipientChoices}. "+
+        ask: "You can send flowers to {recipientChoices}. "+
           " Who would you like to send flowers to?",
-        reprompt: "To send flowers to someone else just add them to your address book on 1-800-Flowers.com?"
+        reprompt: "To send flowers to someone else, just add them to your address book on 1-800-Flowers.com."
       },
       FirstFourRecipientList: {
         ask: "Your first four contacts are {recipientChoices}. " +
