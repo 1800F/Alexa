@@ -1,103 +1,103 @@
 LaunchIntent to order flowers
-LaunchIntent to order flowers for {deliveryDate}
-LaunchIntent to order flowers for {recipient}
+LaunchIntent to order flowers for {deliveryDateSlot}
+LaunchIntent to order flowers for {recipientSlot}
 LaunchIntent to order me flowers
-LaunchIntent to order me flowers for {deliveryDate}
-LaunchIntent to order {recipient} flowers
-LaunchIntent to order {recipient} flowers for {deliveryDate}
-LaunchIntent to send a {arrangementSize} {arrangementType} to {recipient} on {deliveryDate}
-LaunchIntent to send a {arrangementSize} bouquet of flowers to {recipient} on {deliveryDate}
-LaunchIntent to send flowers on {deliveryDate}
-LaunchIntent to send flowers to {recipient}
-LaunchIntent to send some flowers on {deliveryDate}
-LaunchIntent to send some flowers to {recipient}
-LaunchIntent to send some flowers to {recipient} on {deliveryDate}
+LaunchIntent to order me flowers for {deliveryDateSlot}
+LaunchIntent to order {recipientSlot} flowers
+LaunchIntent to order {recipientSlot} flowers for {deliveryDateSlot}
+LaunchIntent to send a {sizeSlot} {arrangementSlot} to {recipientSlot} on {deliveryDateSlot}
+LaunchIntent to send a {sizeSlot} bouquet of flowers to {recipientSlot} on {deliveryDateSlot}
+LaunchIntent to send flowers on {deliveryDateSlot}
+LaunchIntent to send flowers to {recipientSlot}
+LaunchIntent to send some flowers on {deliveryDateSlot}
+LaunchIntent to send some flowers to {recipientSlot}
+LaunchIntent to send some flowers to {recipientSlot} on {deliveryDateSlot}
 LaunchIntent I want to send some flowers
-LaunchIntent I want to send some flowers to {recipient}
-LaunchIntent I want to send some flowers to {recipient} on {deliveryDate}
+LaunchIntent I want to send some flowers to {recipientSlot}
+LaunchIntent I want to send some flowers to {recipientSlot} on {deliveryDateSlot}
 LaunchIntent I want to send flowers
-LaunchIntent I want to send flowers to {recipient}
-LaunchIntent I want to send flowers to {recipient} on {deliveryDate}
+LaunchIntent I want to send flowers to {recipientSlot}
+LaunchIntent I want to send flowers to {recipientSlot} on {deliveryDateSlot}
 LaunchIntent I want to send a floral arrangement
-LaunchIntent I want to send a floral arrangement to {recipient}
-LaunchIntent I want to send a floral arrangement to {recipient} on {deliveryDate}
-LaunchIntent I want to send a {arrangementSize}  floral arrangement
-LaunchIntent I want to send a {arrangementSize} floral arrangement to {recipient}
-LaunchIntent I want to send a {arrangementSize} floral arrangement to {recipient} on {deliveryDate}
-LaunchIntent I want a {arrangementSize} {arrangementType} for {recipient}
-LaunchIntent I want a {arrangementSize} {arrangementType} for {recipient} on {deliveryDate}
-LaunchIntent to send a {arrangementSize} floral arrangement to {recipient}
-LaunchIntent to send a {arrangementSize} floral arrangement to {recipient} on {deliveryDate}
-LaunchIntent I need some flowers for {recipient}
-LaunchIntent I need some flowers for {deliveryDate}
-LaunchIntent I need some flowers for {recipient} on  {deliveryDate}
+LaunchIntent I want to send a floral arrangement to {recipientSlot}
+LaunchIntent I want to send a floral arrangement to {recipientSlot} on {deliveryDateSlot}
+LaunchIntent I want to send a {sizeSlot}  floral arrangement
+LaunchIntent I want to send a {sizeSlot} floral arrangement to {recipientSlot}
+LaunchIntent I want to send a {sizeSlot} floral arrangement to {recipientSlot} on {deliveryDateSlot}
+LaunchIntent I want a {sizeSlot} {arrangementSlot} for {recipientSlot}
+LaunchIntent I want a {sizeSlot} {arrangementSlot} for {recipientSlot} on {deliveryDateSlot}
+LaunchIntent to send a {sizeSlot} floral arrangement to {recipientSlot}
+LaunchIntent to send a {sizeSlot} floral arrangement to {recipientSlot} on {deliveryDateSlot}
+LaunchIntent I need some flowers for {recipientSlot}
+LaunchIntent I need some flowers for {deliveryDateSlot}
+LaunchIntent I need some flowers for {recipientSlot} on {deliveryDateSlot}
 LaunchIntent I need flowers
-LaunchIntent I need flowers for {recipient}
-LaunchIntent I need flowers for {deliveryDate}
-LaunchIntent I need flowers for {recipient} on  {deliveryDate}
-LaunchIntent I need a {arrangementSize} {arrangementType} for {recipient}
-LaunchIntent I need a {arrangementSize} {arrangementType} for {recipient} on {deliveryDate}
+LaunchIntent I need flowers for {recipientSlot}
+LaunchIntent I need flowers for {deliveryDateSlot}
+LaunchIntent I need flowers for {recipientSlot} on  {deliveryDateSlot}
+LaunchIntent I need a {sizeSlot} {arrangementSlot} for {recipientSlot}
+LaunchIntent I need a {sizeSlot} {arrangementSlot} for {recipientSlot} on {deliveryDateSlot}
 LaunchIntent I need to order flowers
-LaunchIntent I need to order flowers for {recipient}
-LaunchIntent I need to order flowers for {deliveryDate}
-LaunchIntent I need to order a {arrangementSize} {arrangementType} for {recipient}
-LaunchIntent I need to order a {arrangementSize} {arrangementType} for {recipient} on {deliveryDate}
+LaunchIntent I need to order flowers for {recipientSlot}
+LaunchIntent I need to order flowers for {deliveryDateSlot}
+LaunchIntent I need to order a {sizeSlot} {arrangementSlot} for {recipientSlot}
+LaunchIntent I need to order a {sizeSlot} {arrangementSlot} for {recipientSlot} on {deliveryDateSlot}
 LaunchIntent I need some flowers
 LaunchIntent I need an arrangement stat
 LaunchIntent I need an arrangement
-LaunchIntent I need some flowers for {recipient}
-LaunchIntent I need some flowers for {deliveryDate}
-LaunchIntent I need some flowers for {recipient} on  {deliveryDate}
-LaunchIntent I need to send a {arrangementSize} {arrangementType} to {recipient}
-LaunchIntent I need to send a {arrangementSize} {arrangementType} to {recipient} on {deliveryDate}
+LaunchIntent I need some flowers for {recipientSlot}
+LaunchIntent I need some flowers for {deliveryDateSlot}
+LaunchIntent I need some flowers for {recipientSlot} on  {deliveryDateSlot}
+LaunchIntent I need to send a {sizeSlot} {arrangementSlot} to {recipientSlot}
+LaunchIntent I need to send a {sizeSlot} {arrangementSlot} to {recipientSlot} on {deliveryDateSlot}
 LaunchIntent I need flowers
-LaunchIntent I need flowers for {recipient}
-LaunchIntent I need flowers for {deliveryDate}
-LaunchIntent I need flowers for {recipient} on  {deliveryDate}
-LaunchIntent I need a {arrangementSize} {arrangementType} for {recipient}
-LaunchIntent I need a {arrangementSize} {arrangementType} for {recipient} on {deliveryDate}
+LaunchIntent I need flowers for {recipientSlot}
+LaunchIntent I need flowers for {deliveryDateSlot}
+LaunchIntent I need flowers for {recipientSlot} on  {deliveryDateSlot}
+LaunchIntent I need a {sizeSlot} {arrangementSlot} for {recipientSlot}
+LaunchIntent I need a {sizeSlot} {arrangementSlot} for {recipientSlot} on {deliveryDateSlot}
 LaunchIntent I need to order flowers
-LaunchIntent I need to order flowers for {recipient}
-LaunchIntent I need to order flowers for {deliveryDate}
-LaunchIntent I need to order a {arrangementSize} {arrangementType} for {recipient}
-LaunchIntent I need to order a {arrangementSize} {arrangementType} for {recipient} on {deliveryDate}
+LaunchIntent I need to order flowers for {recipientSlot}
+LaunchIntent I need to order flowers for {deliveryDateSlot}
+LaunchIntent I need to order a {sizeSlot} {arrangementSlot} for {recipientSlot}
+LaunchIntent I need to order a {sizeSlot} {arrangementSlot} for {recipientSlot} on {deliveryDateSlot}
 LaunchIntent for an arrangement
 LaunchIntent for flowers
 LaunchIntent for some flowers
 
+RecipientSelectionIntent {recipientSlot}
+RecipientSelectionIntent For {recipientSlot}
+RecipientSelectionIntent Send flowers to {recipientSlot}
+RecipientSelectionIntent Send to {recipientSlot}
+RecipientSelectionIntent I want {recipientSlot}
+RecipientSelectionIntent I would like to send to {recipientSlot}
+RecipientSelectionIntent Should go to {recipientSlot}
+RecipientSelectionIntent I want to send to {recipientSlot}
+RecipientSelectionIntent These are for {recipientSlot}
+RecipientSelectionIntent Please send them to {recipientSlot}
+RecipientSelectionIntent Can I send flowers to {recipientSlot}
 
-RecipientSelection {recipient}
-RecipientSelection For {recipient}
-RecipientSelection Send flowers to {recipient}
-RecipientSelection Send to {recipient}
-RecipientSelection I want {recipient}
-RecipientSelection I would like to send to {recipient}
-RecipientSelection Should go to {recipient}
-RecipientSelection I want to send to {recipient}
-RecipientSelection These are for {recipient}
-RecipientSelection Please send them to {recipient}
-RecipientSelection Can I send flowers to {recipient}
 
-
-SizeSelection {arrangementSize}
-SizeSelection A {arrangementSize} arrangement
-SizeSelection A {arrangementSize}
-SizeSelection I would like a {arrangementSize}
-SizeSelection How about {arrangementSize}
-SizeSelection I'd like a {arrangementSize}
-SizeSelection Oh {arrangementSize}
-SizeSelection Let's go with {arrangementSize}
-SizeSelection Let's do with {arrangementSize}
-SizeSelection I want a {arrangementSize}
-SizeSelection Order a {arrangementSize}
-SizeSelection Send a {arrangementSize}
-SizeSelection Get a {arrangementSize}
-SizeSelection I choose a {arrangementSize}
-SizeSelection I have to get a {arrangementSize}
-SizeSelection I must to get a {arrangementSize}
-SizeSelection I need to get a {arrangementSize}
-SizeSelection It  must be a {arrangementSize}
-SizeSelection I have to have a {arrangementSize}
+SizeSelectionIntent {sizeSlot}
+SizeSelectionIntent A {sizeSlot} arrangement
+SizeSelectionIntent A {sizeSlot}
+SizeSelectionIntent I would like a {sizeSlot}
+SizeSelectionIntent How about {sizeSlot}
+SizeSelectionIntent I'd like a {sizeSlot}
+SizeSelectionIntent Oh {sizeSlot}
+SizeSelectionIntent Let's go with {sizeSlot}
+SizeSelectionIntent Let's do with {sizeSlot}
+SizeSelectionIntent I want a {sizeSlot}
+SizeSelectionIntent Order a {sizeSlot}
+SizeSelectionIntent Send a {sizeSlot}
+SizeSelectionIntent Get a {sizeSlot}
+SizeSelectionIntent I choose a {sizeSlot}
+SizeSelectionIntent I have to get a {sizeSlot}
+SizeSelectionIntent I must to get a {sizeSlot}
+SizeSelectionIntent I need to get a {sizeSlot}
+SizeSelectionIntent It  must be a {sizeSlot}
+SizeSelectionIntent I have to have a {sizeSlot}
+SizeSelectionIntent I want to buy a {sizeSlot}
 
 
 DescriptionIntent What's the difference
@@ -109,88 +109,91 @@ DescriptionIntent Help me decide
 DescriptionIntent I'd like to know more
 DescriptionIntent What is the difference
 DescriptionIntent What do you recommend
-DescriptionIntent What's in the {arrangementSize}
+DescriptionIntent What's in the {sizeSlot}
 DescriptionIntent What difference is there
 DescriptionIntent What difference is there between the sizes
 DescriptionIntent Who can I send flowers to
 DescriptionIntent What are my options
 
 
-ArrangementSelection {arrangementType}
-ArrangementSelection A {arrangementType} arrangement
-ArrangementSelection A {arrangementType}
-ArrangementSelection I would like a {arrangementType}
-ArrangementSelection How about {arrangementType}
-ArrangementSelection I'd like a {arrangementType}
-ArrangementSelection Oh {arrangementType}
-ArrangementSelection Let's go with {arrangementType}
-ArrangementSelection Let's do a {arrangementType}
-ArrangementSelection I want a {arrangementType}
-ArrangementSelection Let's make it a {arrangementType}
-ArrangementSelection Order a {arrangementType}
-ArrangementSelection Send a {arrangementType}
-ArrangementSelection Get a {arrangementType}
-ArrangementSelection I choose a {arrangementType}
-ArrangementSelection I have to get a {arrangementType}
-ArrangementSelection I must to get a {arrangementType}
-ArrangementSelection I need to get a {arrangementType}
-ArrangementSelection It  must be a {arrangementType}
-ArrangementSelection I have to have a {arrangementType}
+ArrangementSelectionIntent {arrangementSlot}
+ArrangementSelectionIntent A {arrangementSlot} arrangement
+ArrangementSelectionIntent A {arrangementSlot}
+ArrangementSelectionIntent I would like a {arrangementSlot}
+ArrangementSelectionIntent How about {arrangementSlot}
+ArrangementSelectionIntent I'd like a {arrangementSlot}
+ArrangementSelectionIntent Oh {arrangementSlot}
+ArrangementSelectionIntent Let's go with {arrangementSlot}
+ArrangementSelectionIntent Let's do a {arrangementSlot}
+ArrangementSelectionIntent I want a {arrangementSlot}
+ArrangementSelectionIntent Let's make it a {arrangementSlot}
+ArrangementSelectionIntent Order a {arrangementSlot}
+ArrangementSelectionIntent Send a {arrangementSlot}
+ArrangementSelectionIntent Get a {arrangementSlot}
+ArrangementSelectionIntent I choose a {arrangementSlot}
+ArrangementSelectionIntent I have to get a {arrangementSlot}
+ArrangementSelectionIntent I must to get a {arrangementSlot}
+ArrangementSelectionIntent I need to get a {arrangementSlot}
+ArrangementSelectionIntent It  must be a {arrangementSlot}
+ArrangementSelectionIntent I have to have a {arrangementSlot}
 
 
-DateSelection on {deliveryDate}
-DateSelection how about {deliveryDate}
-DateSelection let's do {deliveryDate}
-DateSelection can we do {deliveryDate}
-DateSelection what about {deliveryDate}
-DateSelection maybe {deliveryDate}
-DateSelection deliver them on {deliveryDate}
-DateSelection deliver them {deliveryDate}
-DateSelection can you deliver them on {deliveryDate}
-DateSelection I want them delivered {deliveryDate}
+DateSelectionIntent on {deliveryDateSlot}
+DateSelectionIntent how about {deliveryDateSlot}
+DateSelectionIntent let's do {deliveryDateSlot}
+DateSelectionIntent can we do {deliveryDateSlot}
+DateSelectionIntent what about {deliveryDateSlot}
+DateSelectionIntent maybe {deliveryDateSlot}
+DateSelectionIntent deliver them on {deliveryDateSlot}
+DateSelectionIntent deliver them {deliveryDateSlot}
+DateSelectionIntent can you deliver them on {deliveryDateSlot}
+DateSelectionIntent I want them delivered {deliveryDateSlot}
 
 
-RepeatIntent again
-RepeatIntent again please
-RepeatIntent can you repeat that
-RepeatIntent can you repeat that please
-RepeatIntent couldn't hear you
-RepeatIntent huh
-RepeatIntent i couldn't hear you
-RepeatIntent i didn't catch that
-RepeatIntent i'm not sure what you said
-RepeatIntent once again
-RepeatIntent once again please
-RepeatIntent once more
-RepeatIntent once more
-RepeatIntent once more please
-RepeatIntent one more time
-RepeatIntent one more time please
-RepeatIntent play it again
-RepeatIntent play it again please
-RepeatIntent please repeat
-RepeatIntent please repeat that
-RepeatIntent please repeat what you said
-RepeatIntent repeat
-RepeatIntent repeat it
-RepeatIntent repeat it please
-RepeatIntent repeat please
-RepeatIntent say it again
-RepeatIntent say it again please
-RepeatIntent say that again
-RepeatIntent say that again please
-RepeatIntent tell me again
-RepeatIntent tell me again please
-RepeatIntent tell me once more
-RepeatIntent tell me once more please
-RepeatIntent try it again
-RepeatIntent try it again please
-RepeatIntent wait
-RepeatIntent wait what
-RepeatIntent what
-RepeatIntent what did you say
-RepeatIntent what was that
-RepeatIntent what's that
+AMAZON.RepeatIntent again
+AMAZON.RepeatIntent again please
+AMAZON.RepeatIntent can you repeat that
+AMAZON.RepeatIntent can you repeat that please
+AMAZON.RepeatIntent couldn't hear you
+AMAZON.RepeatIntent huh
+AMAZON.RepeatIntent i couldn't hear you
+AMAZON.RepeatIntent i didn't catch that
+AMAZON.RepeatIntent i'm not sure what you said
+AMAZON.RepeatIntent once again
+AMAZON.RepeatIntent once again please
+AMAZON.RepeatIntent once more
+AMAZON.RepeatIntent once more
+AMAZON.RepeatIntent once more please
+AMAZON.RepeatIntent one more time
+AMAZON.RepeatIntent one more time please
+AMAZON.RepeatIntent play it again
+AMAZON.RepeatIntent play it again please
+AMAZON.RepeatIntent please repeat
+AMAZON.RepeatIntent please repeat that
+AMAZON.RepeatIntent please repeat what you said
+AMAZON.RepeatIntent please repeat the details
+AMAZON.RepeatIntent repeat
+AMAZON.RepeatIntent repeat it
+AMAZON.RepeatIntent repeat it please
+AMAZON.RepeatIntent repeat please
+AMAZON.RepeatIntent repeat the details
+AMAZON.RepeatIntent repeat the details Please
+AMAZON.RepeatIntent say it again
+AMAZON.RepeatIntent say it again please
+AMAZON.RepeatIntent say that again
+AMAZON.RepeatIntent say that again please
+AMAZON.RepeatIntent tell me again
+AMAZON.RepeatIntent tell me again please
+AMAZON.RepeatIntent tell me once more
+AMAZON.RepeatIntent tell me once more please
+AMAZON.RepeatIntent try it again
+AMAZON.RepeatIntent try it again please
+AMAZON.RepeatIntent wait
+AMAZON.RepeatIntent wait what
+AMAZON.RepeatIntent what
+AMAZON.RepeatIntent what did you say
+AMAZON.RepeatIntent what was that
+AMAZON.RepeatIntent what's that
 
 
 AMAZON.YesIntent absolutely

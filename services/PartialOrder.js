@@ -8,6 +8,7 @@ var Flowers = require('./Flowers.js')
   , Promise = require('bluebird')
   , verbose = config.verbose
   , ContactBook = require('./ContactBook.js')
+  , Catalog = require('./Catalog.js')
 ;
 
 /* TERMS
@@ -17,6 +18,8 @@ var Flowers = require('./Flowers.js')
  * contactCandidates: When the user gives us a possible recipient, and we're validating, we pick all the contacts that
  *                   are close to the possibleRecipient. Each of these is a contactCandidate.
  * recipient: The actual recipient that has been selected and validated by the user to send flowers to. This is the real deal.
+ * arrangementDescriptions: When the user ask us for the arrangement's descriptions, we describe them to the user.
+ * arrangement: The actual arrangement that has been selected by the user.
  */
 
 // Mostly used for testing
@@ -129,6 +132,61 @@ PartialOrder.prototype.acceptCandidateContact = function() {
   this.possibleRecipient = null;
   this.contactCandidates = null;
   this.recipientChoices = null;
+}
+
+/// ***** Arrangement Descriptions ***** ///
+/// These are the arrangement (Name & Description) that user can order. We describe them to the user
+/// in a series, and they can pick one that will become the final arrangement.
+
+PartialOrder.prototype.setupArrangementDescriptions = function() {
+  this.arrangementDescriptionOffset = 0;
+}
+
+PartialOrder.prototype.hasArrangementDescription = function() {
+  return this.arrangementDescriptionOffset && this.arrangementDescriptionOffset < Catalog.choices.length;
+}
+
+PartialOrder.prototype.nextArrangementDescription = function() {
+  return this.arrangementDescriptionOffset++;
+}
+
+PartialOrder.prototype.getArrangementDescription = function() {
+  return Catalog.choices[this.arrangementDescriptionOffset];
+}
+
+PartialOrder.prototype.acceptArrangement = function() {
+  this.pickArrangement(this.getArrangementDescription().name);
+  // Clear out this junk just to make the session smaller
+  this.arrangementDescriptionOffset = null;
+}
+
+/// ***** Size Descriptions ***** ///
+/// These are the sizes (Name & Description) that user can order for the specific arrangement.
+/// We describe them to the user in serios, and they can pick one that will become the final size.
+
+PartialOrder.prototype.setupSizeDescriptions = function() {
+  this.sizeDescriptions = {
+    offset: 0,
+    choices: Catalog.sizesByArrangement(this.arrangement)
+  };
+}
+
+PartialOrder.prototype.hasSizeDescriptions = function() {
+  return this.sizeDescriptions && this.sizeDescriptions.offset < this.sizeDescriptions.choices.length;
+}
+
+PartialOrder.prototype.nextSizeDescription = function() {
+  return this.sizeDescriptions.offset++;
+}
+
+PartialOrder.prototype.getSizeDescription = function() {
+  return this.sizeDescriptions.choices[this.sizeDescriptions.offset];
+}
+
+PartialOrder.prototype.acceptSize = function() {
+  this.pickSize(this.getSizeDescription().name);
+  // Clear out this junk just to make the session smaller
+  this.sizeDescriptions = null;
 }
 
 PartialOrder.prototype.pickArrangement = function(arrangementName) {
