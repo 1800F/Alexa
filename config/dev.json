@@ -19,7 +19,8 @@
     "callsPerSecond": 50,
     "platform": "echo",
     "paymentUser": "test",
-    "paymentPass": "test"
+    "paymentPass": "test",
+    "encryptKey": "18F-SuperSekritSki11Inf!"
   },
   "alexa": {
     "auth": {

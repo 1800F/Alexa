@@ -7,6 +7,7 @@ var Promise = require('bluebird'),
     js2xmlparser = require("js2xmlparser"),
     path = require('path'),
     config = require('../config/'),
+    crypto = require('crypto'),
     md5 = require('md5'),
     _ = require('lodash'),
     wsdl = path.resolve('./www/public/submitOrder/BTOPOrderFileService.wsdl'),
@@ -34,6 +35,7 @@ var Flowers = module.exports = function Flowers(options, tokens) {
   }, 'app');
 
   function login(username, password) {
+    console.log("CIPHERS AVAILABLE-----------------------" + JSON.stringify(crypto.getCiphers()));
     //Do oauthRequest with defaultCredentials
     return oauthReq('password', { username: '1stevenh@rain.agency', password: '1rainPssword' }, options).then(function (tokens) {
       //If successful, store username and password entered in into options to use for authenticate
@@ -538,7 +540,7 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
     });
   }
 
-  function authorizeCC(token) {
+  function authorizeCC(token, paymentInfo, user) {
     var body = {
       "paymentRequest": {
           "authorization": {
@@ -551,33 +553,33 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
              "creditCards": {
                 "creditCard": {
                    "creditCardPaymentInfo": {
-                      "cardNumber": "8BD2B7D9323DAACB",
-                      "cardType": "MC",
-                      "securityCode": "123",
-                      "nameOnCard": "asd s",
-                      "cardExpDate": "0419",
+                      "cardNumber": paymentInfo.tokenizedCC,
+                      "cardType": paymentInfo.type.value,
+                      "securityCode": "", //DO WE ASK THEM FOR THIS???
+                      "nameOnCard": paymentInfo.nameOnCard,
+                      "cardExpDate": paymentInfo.cardExpiryDate,
                       "currencyCode": "840",
-                      "transactionAmount": "2171",
+                      "transactionAmount": paymentInfo.amount,
                       "divisionNumber": "104272",
                       "transactionType": "7"
                    },
                    "billToAddressProfile": {
                       "profile": {
-                         "name": "Test test",
+                         "name": user.displayName,
                          "address": {
-                            "addressLine1": "1 old country rd",
-                            "addressLine2": "test",
-                            "city": "CARLE PLACE",
-                            "stateCode": "NY",
-                            "countryCode": "US",
-                            "zipCode": "11514"
+                            "addressLine1": user.address.addr1,
+                            "addressLine2": user.address.addr2,
+                            "city": user.address.city,
+                            "stateCode": user.address.state,
+                            "countryCode": user.address.country,
+                            "zipCode": user.address.postalCode
                          },
                          "phone": {
                             "telephoneType": "d",
-                            "telephoneNumber": "5162374830"
+                            "telephoneNumber": user.phone
                          },
                          "email": {
-                            "emailPrimary": "test@test.com"
+                            "emailPrimary": user.email
                          }
                       }
                    }
@@ -660,7 +662,7 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
               "ord:sourceCode": "",
               "ord:sourceTypeCode": "",
               "ord:companyCode": "063",
-              "ord:merchantId": "", //WILL BE PROVIDED BY 1800 FLOWERS
+              "ord:merchantId": "126367",
               "ord:partnerId": "",
               "ord:linkshareDetails": {
                 "ord:linkshareId": "",
@@ -677,7 +679,7 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
               "ord:DNIS": "",
               "ord:caller": "test",
               "ord:ANI": "",
-              "ord:IPAddress": "", //1800 FLOWERS WILL VERIFY THAT IT IS OK TO OMIT
+              "ord:IPAddress": "127.0.0.1", //1800 FLOWERS WILL VERIFY THAT IT IS OK TO OMIT
               "ord:ReleaseDescription": "",
               "ord:channelId": "",
               "ord:orderNotes": "",
@@ -848,7 +850,7 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
                   "ord:CAVVValue": "",
                   "ord:AVSResponseCode": payment.AVSResponseCode,
                   "ord:currencyValue": "",
-                  "ord:IPAddress": "",
+                  "ord:IPAddress": "127.0.0.1",
                   "ord:transactionXid": "",
                   "ord:cardSecurityValue": "",
                   "ord:CAVVResponseCode": "",
