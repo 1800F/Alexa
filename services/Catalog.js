@@ -13,7 +13,7 @@
 exports.choices = [
 	{
 		'name': 'Mothers Day'
-		, 'sku': ''
+		, 'sku': '146638'
 		, 'description': "This delicate bouquet, features light pink roses, pink Oriental, Hybrid, and Peruvian lilies, carnations, white snapdragons, pink stock, and salal tips. It is artistically designed in an eight-inch-tall, pink, vintage-inspired glass vase."
 		, 'sizes': [
 			{
@@ -58,7 +58,7 @@ exports.choices = [
 	, {
 		'name': 'Love and Romance'
 		, 'sku': '90950'
-		, 'description': "This field-gathered bouquet has gorgeous red and pink roses, lilies, Gerbera daisies and alstroemeria, in an eight-inch glass vase tied with satin ribbon."
+		, 'description': "This field-gathered bouquet has gorgeous red and pink roses, lilies, <phoneme alphabet=\"ipa\" ph=\"ˈgɝ.bɝ.əˌ\">Gerbera</phoneme> daisies and alstroemeria, in an eight-inch glass vase tied with <phoneme alphabet=\"ipa\" ph=\"ˈsa.tinˌ\">satin</phoneme> ribbon."
 		, 'sizes': [
 			{
 				'name': 'small'
@@ -102,5 +102,5 @@ exports.choices = [
 ];
 
 exports.sizesByArrangement = function(arrangement) {
-	
+
 }

@@ -192,7 +192,7 @@ var responses = function () {
 
     SizeDescriptions: {
       NextSizeDescription: {
-        ask: "{sizeDescription} Would you like a {size} arrangement?",
+        ask: "{sizeDescription} Would you like a {size} arrangement for {price} before tax and delivery fee?",
         reprompt: "Would you like to send a {size} arrangement?"
       },
       ContinueWithOrder: {
