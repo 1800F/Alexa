@@ -58,7 +58,7 @@ exports.choices = [
 	, {
 		'name': 'Love and Romance'
 		, 'sku': '90950'
-		, 'description': "<speak>This field-gathered bouquet has gorgeous red and pink roses, lilies, <phoneme alphabet=\"ipa\" ph=\"ˈgɝ.bɝ.əˌ\">Gerbera</phoneme> daisies and alstroemeria, in an eight-inch glass vase tied with <phoneme alphabet=\"ipa\" ph=\"ˈsa.tinˌ\">satin</phoneme> ribbon.</speak>"
+		, 'description': "This field-gathered bouquet has gorgeous red and pink roses, lilies, <phoneme alphabet=\"ipa\" ph=\"ˈgɝ.bɝ.əˌ\">Gerbera</phoneme> daisies and alstroemeria, in an eight-inch glass vase tied with <phoneme alphabet=\"ipa\" ph=\"ˈsa.tinˌ\">satin</phoneme> ribbon."
 		, 'sizes': [
 			{
 				'name': 'small'
@@ -102,5 +102,5 @@ exports.choices = [
 ];
 
 exports.sizesByArrangement = function(arrangement) {
-	
+
 }
