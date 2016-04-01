@@ -19,17 +19,17 @@ exports.choices = [
 			{
 				'name': 'small'
 				, 'suffix': 'S'
-				, 'description': "The small arrangement is about 17 inches high, including the eight-inch vase, and it is about 14 inches in diameter."
+				, 'description': "The small, 13-stem, Mother's Day arrangement is about 17 inches high, including the eight-inch pink vase, and it is about 14 inches in diameter. This arrangement includes one hybrid lily, four pink carnations, and two white snapdragons, with three pink alstroemeria and three salal tips."
 			}
 			, {
 				'name': 'medium'
 				, 'suffix': 'M'
-				, 'description': "The medium arrangement is about 18 inches high, including the eight-inch vase, and it is about 16 inches in diameter."
+				, 'description': "The lovely medium Mother's Day arrangement stands about 18 inches high, including the eight-inch pink vase, and it is about 16 inches in diameter. This arrangement includes one Oriental lily, three pink roses, three white snapdragons, two pink stock, three pink alstroemeria and three salal tips, for a total of 15 stems."
 			}
 			, {
 				'name': 'large'
 				, 'suffix': 'L'
-				, 'description': "The large arrangement is about 19 inches high, including the eight-inch vase, and it is about 18 inches in diameter."
+				, 'description': "The beautiful 20-stem large Mother's Day arrangement stands about 19 inches high, including the eight-inch pink vase. It is about 18 inches in diameter. This arrangement includes two Oriental lilies, five pink roses, three white snapdragons, three pink stock, four pink alstroemeria and three salal tips."
 			}
 		]
 	}
