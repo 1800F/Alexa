@@ -9,6 +9,7 @@ var Flowers = require('./Flowers.js')
   , verbose = config.verbose
   , ContactBook = require('./ContactBook.js')
   , Catalog = require('./Catalog.js')
+  , address = require('../skill/address.js')
 ;
 
 /* TERMS
@@ -77,6 +78,10 @@ PartialOrder.prototype.getContactBook = function() {
 
 PartialOrder.prototype.hasRecipient = function() {
   return !!this.recipient;
+}
+
+PartialOrder.prototype.getRecipientAddress = function() {
+  return address.fromPipes(this.recipient.address);
 }
 //
 /// ***** Recipient Choices ***** ///
@@ -203,4 +208,73 @@ PartialOrder.prototype.hasArrangement = function() {
 
 PartialOrder.prototype.hasSize = function() {
   return !!this.size;
+}
+
+PartialOrder.prototype.hasDeliveryDate = function() {
+  return !!this.deliveryDate;
+}
+
+PartialOrder.prototype.hasDeliveryDate = function() {
+  return !!this.deliveryDate;
+}
+
+PartialOrder.prototype.getCatalogEntry = function() {
+  var self = this;
+  if(!this.arrangement || !this.size) return null;
+  var category = _.find(Catalog.choices,function(cat){
+    return cat.name.toLowerCase() == self.arrangement;
+  });
+  var size = _.find(category.sizes,function(size){
+    return size.name.toLowerCase() == self.size.toLowerCase();
+  });
+  var sku = category.sku + size.suffix;
+
+  return {
+    product: Flowers.Product(config.flowers,sku),
+    category: category,
+    size: size
+  };
+}
+
+PartialOrder.prototype.acceptPossibleDeliveryDate = function(date) {
+  var self = this
+    , mDate = moment(date = date || self.possibleDeliveryDate) //It's already been validated
+  ;
+  self.deliveryDate = mDate.toISOString();
+}
+
+PartialOrder.prototype.isDateDeliverable = function(date, product) {
+  var self = this;
+  return Promise.try(function(){
+    var mDate = moment(date);
+   //No past deliver dates allowed, but TZs are tricky, to fudge a day and let the API handle TZs.
+    if(!date || !mDate.isValid || mDate.isBefore(moment().add(-1,'day'))) return false;
+    product = product || self.getCatalogEntry();
+    return product.product.getDeliveryCalendar(self.getRecipientAddress().zip,null,mDate.toISOString())
+    .then(function(res){
+      return res.getDlvrCalResponse.responseStatus == 'SUCCESS';
+    })
+  });
+}
+
+PartialOrder.prototype.findDeliveryDateOffers = function(date) {
+  var self = this;
+  return Promise.try(function(){
+    var mDate = moment(date)
+      , product = self.getCatalogEntry()
+      , options = [];
+    if(!mDate.isValid || mDate.isBefore(moment().add(-1,'day'))) options = [moment().add(1,'day'),moment().add(2,'day')];
+    else options = [moment(mDate).add(-1,'day'), moment(mDate).add(1,'day')];
+    if(verbose) console.log('Offering alternative dates: ', options.map(function(d){ return d.format('YYYY-MM-DD'); }))
+
+    return Promise.all(options.map(function(date){ return self.isDateDeliverable(date,product); }))
+    .then(function(valids){
+      self.deliveryDateOffers = _(options)
+        .zip(valids)
+        .filter('1')
+        .map(function(d){ return d[0].toISOString(); })
+        .value();
+      return self.deliveryDateOffers;
+    });
+  });
 }

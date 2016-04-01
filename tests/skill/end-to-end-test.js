@@ -6,13 +6,24 @@ var fs = require('fs')
 ;
 
 describe('end to end',function(){
+  this.timeout(1000000);
   itIs('undeliverable-address',function(res){
     assert.include(res.response.outputSpeech.ssml,'That address is outside');
   })
 
+  itIs('sunday-undeliverable-date',function(res){
+    assert.match(res.response.outputSpeech.ssml,/Would you like to deliver on .*/i);
+    assert.equal(res.sessionAttributes.state,'query-date');
+  })
+
+  itIs('past-undeliverable-date',function(res){
+    assert.match(res.response.outputSpeech.ssml,/Would you like to deliver on .*/i);
+    assert.equal(res.sessionAttributes.state,'query-date');
+  })
+
   function itIs(requestFile, cb) {
     it(requestFile,function(done){
-      var event = require('./requests/'+requestFile  + '.json');
+      var event = require('./requests/'+requestFile  + '.js');
       event.session.application.applicationId = config.alexa.appId;
       // TODO Fill in the accessToken with something meaningful
       skill.handler(event, {

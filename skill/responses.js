@@ -36,7 +36,7 @@ var responses = function () {
       },
       ErrorNonPlannedAtLaunch: {
         tell: "I'm sorry, I couldn't understand you. To launch this skill you can say, Alexa ask 1-800-Flowers to order flowers or simply say Alexa open 1-800-Flowers."
-      },
+      }
     },
 
     Options: {
@@ -225,17 +225,13 @@ var responses = function () {
       // The {okay} variable consists of the terms, (Okay, Great, Excellent)
       // that are randomly selected to fill the slot.
       DateValidation: {
-        say: "{okay}, {date}.",
+        say: "{okay}, {deliveryDate}.",
       },
       NotAValidDate: {
         //For developer ... please ensure the logic of this phrase makes sense with the code you create (dateMinusOne should never bring up a non-available date).
-        say: "{date} is not available for delivery. Would you like to deliver on {dateMinusOne} or {datePlusOne}?",
+        ask: "{date} is not available for delivery. Would you like to deliver on {deliveryDateOffers}?",
         reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
-      },
-      NotAValidDateOfferNext: {
-        say: "{date} is not available for delivery. Would you like to deliver on {nextDate}?",
-        reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
-      },
+      }
     },
 
     QueryOrderConfirmation: {
