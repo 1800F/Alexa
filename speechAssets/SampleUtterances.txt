@@ -65,7 +65,6 @@ LaunchIntent for an arrangement
 LaunchIntent for flowers
 LaunchIntent for some flowers
 
-
 RecipientSelectionIntent {recipientSlot}
 RecipientSelectionIntent For {recipientSlot}
 RecipientSelectionIntent Send flowers to {recipientSlot}
@@ -98,6 +97,7 @@ SizeSelectionIntent I must to get a {sizeSlot}
 SizeSelectionIntent I need to get a {sizeSlot}
 SizeSelectionIntent It  must be a {sizeSlot}
 SizeSelectionIntent I have to have a {sizeSlot}
+SizeSelectionIntent I want to buy a {sizeSlot}
 
 
 DescriptionIntent What's the difference
@@ -171,10 +171,13 @@ AMAZON.RepeatIntent play it again please
 AMAZON.RepeatIntent please repeat
 AMAZON.RepeatIntent please repeat that
 AMAZON.RepeatIntent please repeat what you said
+AMAZON.RepeatIntent please repeat the details
 AMAZON.RepeatIntent repeat
 AMAZON.RepeatIntent repeat it
 AMAZON.RepeatIntent repeat it please
 AMAZON.RepeatIntent repeat please
+AMAZON.RepeatIntent repeat the details
+AMAZON.RepeatIntent repeat the details Please
 AMAZON.RepeatIntent say it again
 AMAZON.RepeatIntent say it again please
 AMAZON.RepeatIntent say that again

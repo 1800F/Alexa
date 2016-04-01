@@ -10,7 +10,7 @@
  */
 'use strict';
 
-module.exports = [
+exports.choices = [
 	{
 		'name': 'Mothers Day'
 		, 'sku': '146638'
@@ -100,3 +100,7 @@ module.exports = [
 		]
 	}
 ];
+
+exports.sizesByArrangement = function(arrangement) {
+	
+}
