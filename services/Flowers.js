@@ -7,10 +7,8 @@ var Promise = require('bluebird'),
     js2xmlparser = require("js2xmlparser"),
     path = require('path'),
     config = require('../config/'),
-    crypto = require('crypto'),
     md5 = require('md5'),
     _ = require('lodash'),
-    wsdl = path.resolve('./www/public/submitOrder/BTOPOrderFileService.wsdl'),
     countryCode = 'US',
     localeCode = 'en-us'
     ;
@@ -22,20 +20,18 @@ var Flowers = module.exports = function Flowers(options, tokens) {
   var qAuthReq = null;
 
   return options.transform({
-    forgotUsername: forgotUsername,
-    resetPassword: resetPassword,
+    // forgotUsername: forgotUsername,
+    // resetPassword: resetPassword,
     login: login,
     createCustomer: createCustomer,
     addCustomerDetails:addCustomerDetails,
     auth: getAuthToken,
-    dynamoLogin:dynamoLogin,
     User: function User(tokens) {
       return FlowersUser(options, tokens);
     }
   }, 'app');
 
   function login(username, password) {
-    console.log("CIPHERS AVAILABLE-----------------------" + JSON.stringify(crypto.getCiphers()));
     //Do oauthRequest with defaultCredentials
     return oauthReq('password', { username: '1stevenh@rain.agency', password: '1rainPssword' }, options).then(function (tokens) {
       //If successful, store username and password entered in into options to use for authenticate
@@ -108,19 +104,13 @@ var Flowers = module.exports = function Flowers(options, tokens) {
     return apprequest('POST', '/addPerson', {} , body, null, "customer");
   }
 
-  function dynamoLogin(alexaUserID) {
-    //Get email and password from DynamoDB
-    aws.config.update({accessKeyId: options.dynamoID, secretAccessKey: options.dynamoSecret});
-    //Login using those credentials and authenticate?
-  }
+  // function forgotUsername(email) {
+  //   return apprequest('POST', '/login/forgot-username', {}, { emailAddress: email }, null, "account");
+  // }
 
-  function forgotUsername(email) {
-    return apprequest('POST', '/login/forgot-username', {}, { emailAddress: email }, null, "account");
-  }
-
-  function resetPassword(username, email) {
-    return apprequest('POST', '/login/forgot-password', {}, { userName: username, emailAddress: email }, null, "account");
-  }
+  // function resetPassword(username, email) {
+  //   return apprequest('POST', '/login/forgot-password', {}, { userName: username, emailAddress: email }, null, "account");
+  // }
 
   function apprequest(method, path, queryString, body, paging, apiType) {
     var args = arguments,
