@@ -180,7 +180,7 @@ var responses = function () {
 
     QuerySize: {
       FirstSizeDescription: {
-        ask: "{sizeDescription} Would you like to buy a {size} arrangement for {price}?",
+        ask: "{sizeDescription} Would you like to buy a {size} arrangement for {price} before tax and delivery fee?",
         reprompt: "Would you like to buy a {size} arrangement for {price}?"
       },
       ContinueWithOrder: {
@@ -191,7 +191,7 @@ var responses = function () {
 
     SizeDescriptions: {
       NextSizeDescription: {
-        ask: "{sizeDescription} Would you like a {size} arrangement?",
+        ask: "{sizeDescription} Would you like a {size} arrangement for {price} before tax and delivery fee?",
         reprompt: "Would you like to send a {size} arrangement?"
       },
       ContinueWithOrder: {
