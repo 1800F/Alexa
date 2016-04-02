@@ -333,7 +333,40 @@ module.exports = StateMachine({
     },
     "order-review": {
       enter: function enter(request) {
-        return replyWith('ExitIntent.RepeatLastAskReprompt', 'die', request);
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          return replyWith('OptionsReview.OrderReview', 'query-order-confirmation', request,po);
+        });
+      }
+    },
+    "query-order-confirmation": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          if (request.intent.name == 'AMAZON.YesIntent') {
+            return po.prepOrderForPlacement().then(function(isValid){
+              if(!isValid) return replyWith('Errors.ErrorAtLaunch','die',request,po);
+              return replyWith('QueryOrderConfirmation.ConfirmOrder','query-buy-confirmation',request,po);
+            });
+          }else if (request.intent.name == 'AMAZON.NoIntent') {
+            return replyWith('QueryOrderConfirmation.CancelOrder','cancel-order-confirmation',request,po);
+          }
+        });
+      }
+    },
+    "cancel-order-confirmation": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          if (request.intent.name == 'AMAZON.YesIntent') {
+            return replyWith('CancelOrderConfirmation.Canceled','die',request,po);
+          }else if (request.intent.name == 'AMAZON.NoIntent') {
+            return replyWith('queryOrderConfirmation.ConfirmOrder','query-order-confirmation',request,po);
+          }
+        });
       }
     },
     "clear-and-query-options-again": {

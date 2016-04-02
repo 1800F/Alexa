@@ -36,6 +36,7 @@ ContactBook.prototype.build = function(contacts){
     .map(function(contact){
       return {
         id: contact.cont_id,
+        demoId: contact.demoGraphicsID,
         firstName: contact.FirstName,
         lastName: contact.LastName,
         address: contact.NickName, // Insanely, the API stores addresses in the Nickname field

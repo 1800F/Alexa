@@ -278,3 +278,45 @@ PartialOrder.prototype.findDeliveryDateOffers = function(date) {
     });
   });
 }
+
+PartialOrder.prototype.prepOrderForPlacement = function(){
+  // 0. Get Product prices
+  // 1. Get Recipient Address
+  // 2. Get Shipping prices
+  // 3. Get Tax information
+  // 4. Aggregate prices
+  // 5. Select payment method
+  //
+  var productPrice = self.arrangement.price
+    , purchase = Flowers.Purchase(config.flowers)
+  ;
+  return Promise.all([
+    this.user.getRecipientAddress(self.recipient.demoId,self.recipient.id),
+    purchase.login() //TODO Reuse the auth token found in Flowers by extending the scope to include purchasing
+  ])
+  .spread(function(address){
+    return purchase.getShipping({
+      productSku: self.arrangement.sku,
+      productSku: self.arrangement.prodType,
+      itemPrice: self.arrangement.price,
+    },address,self.deliveryDate);
+  }).then(function(shipping){
+
+  })
+    login: login,
+    getShipping: getLogicalOrderShippingCharge,
+    getOrderNumber: getNextOrderNumber,
+    getTaxes: getTaxes,
+    tokenizeCC: tokenizeCC,
+    authorizeCC: authorizeCC,
+    createOrder: createOrderObject,
+
+}
+
+PartialOrder.prototype.placeOrder = function(){
+  //0. Get order Number
+  //1. Authorize CC
+  //2. create order
+}
+
+

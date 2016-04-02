@@ -58,7 +58,8 @@ var responses = function () {
         reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
       },
       OrderReview: {
-        ask: "To review: I have a {arrangementSize} {arrangementType} arrangement to be delivered to {recipient} on {deliveryDate}. Is that right?",
+        ask: "To review: I have a {arrangementSize} {arrangementType} arrangement to be delivered to {recipient} on {deliveryDate}. " +
+          " Is that right?",
         reprompt: "Would you like to place your order?"
       },
     },
@@ -262,11 +263,7 @@ var responses = function () {
     CancelOrderConfirmation: {
       canceled: {
         tell: "Okay, your order has been canceled.",
-      },
-      OrderReviewReprompt: {
-        ask: "Your order total is {price} including taxes and delivery fee, to be billed to your {paymentType}. Should I place the order?",
-        reprompt: "Should I place your order for {price}?"
-      },
+      }
     },
 
     BadInput: {
