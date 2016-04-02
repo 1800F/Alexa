@@ -7,7 +7,7 @@ var fs = require('fs')
 
 describe('end to end',function(){
   itIs('undeliverable-address',function(res){
-    assert.include(res.response.outputSpeech.ssml,'That address is outside');
+    assert.include(res.response.outputSpeech.ssml,'cannot be delivered');
   })
 
   function itIs(requestFile, cb) {

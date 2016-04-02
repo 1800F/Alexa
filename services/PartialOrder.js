@@ -10,6 +10,7 @@ var Flowers = require('./Flowers.js')
   , verbose = config.verbose
   , ContactBook = require('./ContactBook.js')
   , Catalog = require('./Catalog.js')
+  , address = require('../skill/address.js')
 ;
 
 /* TERMS
@@ -139,6 +140,10 @@ PartialOrder.prototype.acceptCandidateContact = function() {
   this.possibleRecipient = null;
   this.contactCandidates = null;
   this.recipientChoices = null;
+}
+
+PartialOrder.prototype.isContactCandidateDeliverable = function() {
+  return address.isDeliverable(address.fromPipes(this.getContactCandidate().address));
 }
 
 /// ***** Arrangement Descriptions ***** ///

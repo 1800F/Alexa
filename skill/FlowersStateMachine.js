@@ -195,15 +195,27 @@ module.exports = StateMachine({
         .then(function(po){
           if (request.intent.name == 'AMAZON.YesIntent') {
             //TODO: Determine if this address is deliverable. If not, QueryAddress.AddressNotDeliverable, and go to next address
+            if (!(po.isContactCandidateDeliverable())) {
+              return replyWith('QueryAddress.AddressNotDeliverable', 'query-address-continue', request, po);
+            }
             po.acceptCandidateContact();
             return replyWith('QueryAddress.RecipientValidation','options-review',request,po);
           }else if (request.intent.name == 'AMAZON.NoIntent') {
-            po.nextContactCandidate();
-            if(!po.hasContactCandidate()) return replyWith('QueryAddress.SendToSomeoneElse', 'clear-and-query-options-again', request, po);
-            return replyWith('QueryAddress.NextAddress', 'query-address', request, po);
+            return replyWith(null, 'query-address-continue', request, po);
           }
 
         });
+      }
+    },
+    "query-address-continue": {
+      enter: function enter(request) {
+        return this.Access(request)
+          .then(function(api){ return PartialOrder.fromRequest(api,request); })
+          .then(function(po) {
+            po.nextContactCandidate();
+            if(!po.hasContactCandidate()) return replyWith('QueryAddress.SendToSomeoneElse', 'clear-and-query-options-again', request, po);
+            return replyWith('QueryAddress.NextAddress', 'query-address', request, po);
+          });
       }
     },
     "query-arrangement-type": {
@@ -326,7 +338,7 @@ module.exports = StateMachine({
         .then(function(po){
           if (request.intent.name == 'AMAZON.YesIntent') {
             return replyWith('QueryOptionsAgain.Validation','options-review',request,po);
-          }else if (request.intent.name == 'AMAZON.NoIntent') {
+          } else if (request.intent.name == 'AMAZON.NoIntent') {
             return replyWith('QueryOptionsAgain.Close','die',request,po);
           }
         });
