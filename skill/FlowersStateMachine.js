@@ -219,20 +219,20 @@ module.exports = StateMachine({
         .then(function(po){
           if (request.intent.name == 'DescriptionIntent') {
             po.setupArrangementDescriptions();
-            console.log('Current Arrangement ' + po.getArrangementDescription().name);
+            if (verbose) console.log('Current Arrangement ' + po.getArrangementDescription().name);
             return replyWith('QueryArrangementType.FirstArrangmentDescription', 'arrangement-descriptions', request, po);
           } else if (request.intent.name == 'AMAZON.NoIntent') {
             po.nextArrangementDescription();
             if (!po.hasArrangementDescription()) {
               return replyWith('ArrangementDescriptions.MoreArrangmentsOnline', 'query-continue-with-order', request, po);
             }
-            console.log('Current Arrangement ' + po.getArrangementDescription().name);
+            if (verbose) console.log('Current Arrangement ' + po.getArrangementDescription().name);
             return replyWith('ArrangementDescriptions.NextArrangmentDescription', 'arrangement-descriptions', request, po);
+          } else if (request.intent.name == 'AMAZON.YesIntent') {
+            request.intent.params.arrangementSlot = this.getArrangementDescription().name;
+            po.clearArrangementDescriptions();
+            return replyWith(null, 'arrangement-selection', request, po);
           }
-
-          // AMAZON.YesIntent
-          request.intent.params.arrangementSlot = po.getArrangementDescription().name;
-          return replyWith(null, 'arrangement-selection', request, po);
         });
       }
     },
@@ -241,8 +241,12 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          po.pickArrangement(request.intent.params.arrangementSlot);
-          return replyWith('ArrangementSelectionIntent.ArrangementValidation', 'options-review', request, po);
+          return po.pickArrangement(request.intent.params.arrangementSlot).then(function (success) {
+            if (!success) {
+              return replyWith('Errors.ErrorGeneral', 'die', request, po);
+            }
+            return replyWith('ArrangementSelectionIntent.ArrangementValidation', 'options-review', request, po);
+          });
         });
       }
     },
@@ -250,10 +254,8 @@ module.exports = StateMachine({
       enter: function enter (request) {
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
-        .then(function(po) { 
-          if (request.from == 'arrangement-descriptions') {
-            return replyWith('ArrangementDescriptions.ContinueWithOrder', 'query-options-again', request, po);
-          }
+        .then(function(po) {
+          return replyWith('ArrangementDescriptions.ContinueWithOrder', 'query-options-again', request, po);
         });
       }
     },
@@ -265,7 +267,26 @@ module.exports = StateMachine({
     },
     "size-descriptions": {
       enter: function enter(request) {
-        console.log('--> size-descriptions');
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          if (request.intent.name == 'DescriptionIntent') {
+            po.setupSizeDescriptions();
+            if (verbose) console.log('Current Size ' + po.getSizeDescription().name);
+            return replyWith('QuerySize.FirstSizeDescription', 'size-descriptions', request, po);
+          } else if (request.intent.name == 'AMAZON.NoIntent') {
+            po.nextSizeDescription();
+            if (!po.hasSizeDescription()) {
+              return replyWith('SizeDescriptions.ContinueWithOrder', 'query-options-again', request, po);
+            }
+            if (verbose) console.log('Current Size ' + po.getSizeDescription().name);
+            return replyWith('SizeDescriptions.NextSizeDescription', 'size-descriptions', request, po);
+          } else if (request.intent.name == 'AMAZON.YesIntent') {
+            request.intent.params.sizeSlot = po.getSizeDescription().name;
+            po.clearSizeDescriptions();
+            return replyWith(null, 'size-selection', request, po);
+          }
+        });
       }
     },
     "size-selection": {

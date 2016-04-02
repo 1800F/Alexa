@@ -10,11 +10,16 @@ describe('currency', function () {
   itIs('says cents', 2.45, '2 dollars and 45 cents');
   itIs('says singular cents', 2.01, '2 dollars and 1 cent');
   itIs('says real case', 278.96, '278 dollars and 96 cents');
+  itIs('says common case with cents', 45.99, '45 99', true);
+  itIs('says common case with cero cents', 45.0, '45', true);
+  itIs('says common case with no cents at all', 45, '45', true);
 });
 
-function itIs(testName, amount, shouldBe) {
+function itIs(testName, amount, shouldBe, inBlocks) {
+  var inBlocks = inBlocks || false;
   it(testName, function () {
-    var actual = currency.say(amount, 'USD');
+    var actual = inBlocks ? currency.sayInBlocks(amount) : currency.say(amount, 'USD');
+    console.log(actual);
     assert.equal(actual, shouldBe);
   });
 }
