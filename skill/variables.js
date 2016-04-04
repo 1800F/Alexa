@@ -56,15 +56,18 @@ exports.deliveryDateOffers = function(po) {
 // Arrangement sizes
 
 exports.largePrice = function (po) {
-  return '';
+  var price = po.getSizePriceByName('large');
+  return currency.sayInBlocks(price);
 };
 
 exports.mediumPrice = function (po) {
-  return '';
+  var price = po.getSizePriceByName('medium');
+  return currency.sayInBlocks(price);
 };
 
 exports.smallPrice = function (po) {
-  return '';
+  var price = po.getSizePriceByName('small');
+  return currency.sayInBlocks(price);
 };
 
 // To Review Order
@@ -74,7 +77,7 @@ exports.arrangementSize = function (po) {
 };
 
 exports.arrangementType = function (po) {
-  return po.arrangement;
+  return po.arrangement.name;
 };
 
 exports.recipient = function (po) {
@@ -101,17 +104,20 @@ exports.arrangementName = function(po) {
   return arrangement.name;
 }
 
-exports.arrangement = function (po) {
-  return '';
-}
-
 exports.sizeDescription = function (po) {
-  return '';
+  var size = po.getSizeDescription();
+  return size.description;
 }
 
-exports.size = function (po) {
-  return '';
+exports.sizeName = function (po) {
+  var size = po.getSizeDescription();
+  return size.name;
 };
+
+exports.sizePrice = function (po) {
+  var price = po.getSizePrice();
+  return currency.say(price, 'USD');
+}
 
 // OKay
 

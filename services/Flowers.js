@@ -34,7 +34,6 @@ var Flowers = module.exports = function Flowers(options, tokens) {
   }, 'app');
 
   function login(username, password) {
-    console.log("CIPHERS AVAILABLE-----------------------" + JSON.stringify(crypto.getCiphers()));
     //Do oauthRequest with defaultCredentials
     return oauthReq('password', { username: '1stevenh@rain.agency', password: '1rainPssword' }, options).then(function (tokens) {
       //If successful, store username and password entered in into options to use for authenticate
@@ -228,7 +227,22 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
         "contid":customerID
       }
     };
-    return userrequest('POST', '/getRecipientAddress', {}, body, null, "account");
+    return userrequest('POST', '/getRecipientAddress', {}, body, null, "account")
+    .then(function(addressEnvelope){
+      var addr = addressEnvelope.MDMRecipientAddressesResponse.MDMRecipientAddresses.MDMRecipientAddress;
+      var address = {
+        firstName: addr.FirstName,
+        lastName: addr.LastName,
+        addr1: addr.LineOne,
+        addr2: addr.LineTwo,
+        city: addr.City,
+        state: addr.StateProvince,
+        postalCode: addr.PostalCode,
+        country: addr.CountryCode,
+      };
+      return address;
+    });
+
   }
 
   function getProfile(systemID) {
@@ -387,7 +401,6 @@ var Product = module.exports.Product = function Product(options, productSKU) {
 };
 
 var Purchase = module.exports.Purchase = function Purchase(options) {
-  //options = _.assign({ version: 'alexa/uat/account/v1' }, options);
   options.transform = options.transform || _.identity;
 
   return options.transform({
@@ -412,7 +425,7 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
     });
   }
 
-  function getLogicalOrderShippingCharge(product, recipient, delivery) {
+  function getLogicalOrderShippingCharge(product, recipient, deliveryDate) {
     /* The product object must have:
           productSku, prodType (from getProductDetails), itemPrice
 
@@ -444,7 +457,7 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
                    "postalCode": recipient.postalCode,
                    "country": recipient.country,
                    "locationType": "1",
-                   "deliveryDate": delivery.shortDate,
+                   "deliveryDate": moment(deliveryDate).format('DD-MMM-YYYY'),
                    "deliveryWindow": "1",
                    "itemPrice": product.itemPrice,
                    "brandCode": "1001",
@@ -616,7 +629,7 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
                 "ord:tokenDetails2": "",
               },
               "ord:soldTo": {
-                "ord:cifId": user.systemID, 
+                "ord:cifId": user.systemID,
                 "ord:houseAccountNumber": "",
                 "ord:title": "",
                 "ord:firstName": user.firstName,

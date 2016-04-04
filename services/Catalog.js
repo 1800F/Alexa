@@ -10,6 +10,9 @@
  */
 'use strict';
 
+var _ = require('lodash')
+;
+
 exports.choices = [
   {
     'name': 'Mothers Day'
@@ -35,22 +38,22 @@ exports.choices = [
   }
   , {
     'name': 'Birthday'
-    , 'sku': '91333'
+    , 'sku': '91576'
     , 'description': "This hand-crafted arrangement features hot-pink roses, purple carnations, hot-pink mini carnations, yellow daisy poms, purple alstroemeria, athos poms, solidago and salal, all gathered in a stylish, 8-inch glass vase tied with colorful ribbon. It comes with an 18-inch Mylar birthday balloon."
     , 'sizes': [
       {
         'name': 'small'
-        , 'suffix': 'SHB'
+        , 'sku': '91333SHB'
         , 'description': "The small arrangement is about 14 inches high, including the eight-inch vase, and it is about 10 inches in diameter."
       }
       , {
         'name': 'medium'
-        , 'suffix': 'MHB'
+        , 'sku': '91333MHB'
         , 'description': "The medium arrangement is about 15 inches high, including the eight-inch vase, and it is about 11.5 inches in diameter."
       }
       , {
         'name': 'large'
-        , 'suffix': 'LHB'
+        , 'sku': '91333LHB'
         , 'description': "The large arrangement is about 16 inches high, including the eight-inch vase, and it is about 13 inches in diameter."
       }
     ]
@@ -101,6 +104,9 @@ exports.choices = [
   }
 ];
 
-exports.sizesByArrangement = function(arrangement) {
-
+exports.findByName = function(name) {
+  return _(this.choices)
+  	.find(function(entry){
+    	return RegExp(name, 'i').test(entry.name);
+  	});
 }

@@ -2,6 +2,7 @@
 
 var Flowers = require('./Flowers.js')
   , FlowersUser = Flowers.FlowersUser
+  , Product = Flowers.Product
   , config = require('../config')
   , _ = require('lodash')
   , moment = require('moment')
@@ -19,8 +20,10 @@ var Flowers = require('./Flowers.js')
  * contactCandidates: When the user gives us a possible recipient, and we're validating, we pick all the contacts that
  *                   are close to the possibleRecipient. Each of these is a contactCandidate.
  * recipient: The actual recipient that has been selected and validated by the user to send flowers to. This is the real deal.
- * arrangementDescriptions: When the user ask us for the arrangement's descriptions, we describe them to the user.
+ * arrangementDescriptionOffset: When the user ask us for the arrangement's descriptions, we keep track of the current
+                                 arrangement offset
  * arrangement: The actual arrangement that has been selected by the user.
+ * sizeDescriptionOffset: When user ask us for size's descriptions, we keep track of the current  arrangement offset
  */
 
 // Mostly used for testing
@@ -39,6 +42,10 @@ exports.empty = function (api) {
   return new PartialOrder(api, {});
 };
 
+/**
+ * q: { } set of promises that are getting data :), such as:
+ *    - product
+ */
 function PartialOrder(api, data) {
   data = data || {};
   this.q = {};
@@ -139,6 +146,10 @@ PartialOrder.prototype.acceptCandidateContact = function() {
   this.recipientChoices = null;
 }
 
+PartialOrder.prototype.isContactCandidateDeliverable = function() {
+  return address.isDeliverable(address.fromPipes(this.getContactCandidate().address));
+}
+
 /// ***** Arrangement Descriptions ***** ///
 /// These are the arrangement (Name & Description) that user can order. We describe them to the user
 /// in a series, and they can pick one that will become the final arrangement.
@@ -159,10 +170,35 @@ PartialOrder.prototype.getArrangementDescription = function() {
   return Catalog.choices[this.arrangementDescriptionOffset];
 }
 
-PartialOrder.prototype.acceptArrangement = function() {
-  this.pickArrangement(this.getArrangementDescription().name);
-  // Clear out this junk just to make the session smaller
+PartialOrder.prototype.clearArrangementDescriptions = function() {
+  //Clear out this junk just to make the session smaller
   this.arrangementDescriptionOffset = null;
+}
+
+PartialOrder.prototype.pickArrangement = function(arrangementName) {
+  var self = this;
+  if (!arrangementName) {
+    self.arrangement = null;
+    return;
+  }
+  var arrangement = Catalog.findByName(arrangementName);
+  self.arrangement = {
+    name: arrangement.name,
+    sku: arrangement.sku,
+  };
+  return self.getArrangementPrices().then(function (prices) {
+    if (!prices || prices.length <= 0) {
+      self.arrangement = null;
+      return false;
+    } else {
+      self.arrangement.prices = prices;
+      return true;
+    }
+  });
+}
+
+PartialOrder.prototype.hasArrangement = function() {
+  return !!this.arrangement;
 }
 
 /// ***** Size Descriptions ***** ///
@@ -170,49 +206,77 @@ PartialOrder.prototype.acceptArrangement = function() {
 /// We describe them to the user in serios, and they can pick one that will become the final size.
 
 PartialOrder.prototype.setupSizeDescriptions = function() {
-  this.sizeDescriptions = {
-    offset: 0,
-    choices: Catalog.sizesByArrangement(this.arrangement)
-  };
+  this.sizeDescriptionOffset = 0;
 }
 
-PartialOrder.prototype.hasSizeDescriptions = function() {
-  return this.sizeDescriptions && this.sizeDescriptions.offset < this.sizeDescriptions.choices.length;
+PartialOrder.prototype.hasSizeDescription = function() {
+  return this.sizeDescriptionOffset && this.sizeDescriptionOffset < this.getSizeDetails().length;
 }
 
 PartialOrder.prototype.nextSizeDescription = function() {
-  return this.sizeDescriptions.offset++;
+  return this.sizeDescriptionOffset++;
 }
 
 PartialOrder.prototype.getSizeDescription = function() {
-  return this.sizeDescriptions.choices[this.sizeDescriptions.offset];
+  return this.getSizeDetails()[this.sizeDescriptionOffset];
 }
 
-PartialOrder.prototype.acceptSize = function() {
-  this.pickSize(this.getSizeDescription().name);
+PartialOrder.prototype.getSizePrice = function() {
+  var self = this;
+  var size = self.getSizeDescription();
+  var sku = size.sku ? size.sku : (self.arrangement.sku + size.suffix);
+  var price = self.arrangement.prices[sku];
+  return price;
+}
+
+PartialOrder.prototype.clearSizeDescriptions = function() {
   // Clear out this junk just to make the session smaller
-  this.sizeDescriptions = null;
-}
-
-PartialOrder.prototype.pickArrangement = function(arrangementName) {
-  this.arrangement = arrangementName;
+  this.sizeDescriptionOffset = null;
 }
 
 PartialOrder.prototype.pickSize = function(sizeName) {
   this.size = sizeName;
 }
 
-PartialOrder.prototype.hasArrangement = function() {
-  return !!this.arrangement;
-}
-
 PartialOrder.prototype.hasSize = function() {
   return !!this.size;
 }
 
-PartialOrder.prototype.hasDeliveryDate = function() {
-  return !!this.deliveryDate;
+PartialOrder.prototype.getSizeDetails = function() {
+  return Catalog.findByName(this.arrangement.name).sizes;
 }
+
+PartialOrder.prototype.getSizeByName = function(name) {
+  var self = this;
+  var sizes = self.getSizeDetails();
+  return _(sizes).find(function (entry) {
+    return RegExp(name, 'i').test(entry.name);
+  });
+}
+
+PartialOrder.prototype.getSizePriceByName = function (name) {
+  var self = this;
+  var size = self.getSizeByName(name);
+  var sku = size.sku ? size.sku : (self.arrangement.sku + size.suffix);
+  return self.arrangement.prices[sku];
+}
+
+// Cache products
+PartialOrder.prototype.getArrangementPrices = function() {
+  var self = this;
+  self.q.prices = self.q.prices || {};
+  return self.q.prices[self.arrangement.sku] = self.q.prices[self.arrangement.sku] || Promise.try(function () {
+    return Product(config.flowers, self.arrangement.sku).getProductDetails().then(function (details) {
+      var skus = details.product.skuList.sku.reduce(function(o, sku, i) {
+          o[sku.productSku] = sku.skuOfferPrice;
+          return o;
+        }, {});
+      return skus;
+    });
+  });
+}
+
+/// ***** Delivery Date ***** ///
 
 PartialOrder.prototype.hasDeliveryDate = function() {
   return !!this.deliveryDate;
@@ -221,24 +285,19 @@ PartialOrder.prototype.hasDeliveryDate = function() {
 PartialOrder.prototype.getCatalogEntry = function() {
   var self = this;
   if(!this.arrangement || !this.size) return null;
-  var category = _.find(Catalog.choices,function(cat){
-    return cat.name.toLowerCase() == self.arrangement;
-  });
-  var size = _.find(category.sizes,function(size){
-    return size.name.toLowerCase() == self.size.toLowerCase();
-  });
-  var sku = category.sku + size.suffix;
+  var size = self.getSizeByName(self.size);
+  var sku = size.sku ? size.sku : (self.arrangement.sku + size.suffix);
 
   return {
     product: Flowers.Product(config.flowers,sku),
-    category: category,
+    category: self.arrangement,
     size: size
   };
 }
 
 PartialOrder.prototype.acceptPossibleDeliveryDate = function(date) {
   var self = this
-    , mDate = moment(date = date || self.possibleDeliveryDate) //It's already been validated
+    , mDate = moment(date || self.possibleDeliveryDate) //It's already been validated
   ;
   self.deliveryDate = mDate.toISOString();
 }
@@ -247,7 +306,7 @@ PartialOrder.prototype.isDateDeliverable = function(date, product) {
   var self = this;
   return Promise.try(function(){
     var mDate = moment(date);
-   //No past deliver dates allowed, but TZs are tricky, to fudge a day and let the API handle TZs.
+    // No past deliver dates allowed, but TZs are tricky, to fudge a day and let the API handle TZs.
     if(!date || !mDate.isValid || mDate.isBefore(moment().add(-1,'day'))) return false;
     product = product || self.getCatalogEntry();
     return product.product.getDeliveryCalendar(self.getRecipientAddress().zip,null,mDate.toISOString())
@@ -277,4 +336,45 @@ PartialOrder.prototype.findDeliveryDateOffers = function(date) {
       return self.deliveryDateOffers;
     });
   });
+}
+
+PartialOrder.prototype.prepOrderForPlacement = function(){
+  // 0. Get Product prices
+  // 1. Get Recipient Address
+  // 2. Get Shipping prices
+  // 3. Get Tax information
+  // 4. Aggregate prices
+  // 5. Select payment method
+  //
+  var productPrice = self.arrangement.price
+    , purchase = Flowers.Purchase(config.flowers)
+  ;
+  return Promise.all([
+    this.user.getRecipientAddress(self.recipient.demoId,self.recipient.id),
+    purchase.login() //TODO Reuse the auth token found in Flowers by extending the scope to include purchasing
+  ])
+  .spread(function(address){
+    return purchase.getShipping({
+      productSku: self.arrangement.sku,
+      productType: self.arrangement.prodType, // TODO: check if it should be productType or another.
+      itemPrice: self.arrangement.price,
+    },address,self.deliveryDate);
+  }).then(function(shipping){
+
+  })
+  /*
+    login: login,
+    getShipping: getLogicalOrderShippingCharge,
+    getOrderNumber: getNextOrderNumber,
+    getTaxes: getTaxes,
+    tokenizeCC: tokenizeCC,
+    authorizeCC: authorizeCC,
+    createOrder: createOrderObject,
+  */
+}
+
+PartialOrder.prototype.placeOrder = function(){
+  //0. Get order Number
+  //1. Authorize CC
+  //2. create order
 }

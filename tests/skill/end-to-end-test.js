@@ -8,7 +8,17 @@ var fs = require('fs')
 describe('end to end',function(){
   this.timeout(1000000);
   itIs('undeliverable-address',function(res){
-    assert.include(res.response.outputSpeech.ssml,'That address is outside');
+    assert.include(res.response.outputSpeech.ssml,'cannot be delivered');
+  })
+
+  itIs('sunday-undeliverable-date',function(res){
+    assert.match(res.response.outputSpeech.ssml,/Would you like to deliver on .*/i);
+    assert.equal(res.sessionAttributes.state,'query-date');
+  })
+
+  itIs('past-undeliverable-date',function(res){
+    assert.match(res.response.outputSpeech.ssml,/Would you like to deliver on .*/i);
+    assert.equal(res.sessionAttributes.state,'query-date');
   })
 
   itIs('sunday-undeliverable-date',function(res){

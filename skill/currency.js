@@ -1,5 +1,8 @@
 'use strict';
 
+var _ = require('lodash')
+;
+
 var codes = { //Right now we're US only :)
   'USD': {
     whole: ['dollar', 'dollars'],
@@ -36,4 +39,11 @@ exports.say = function (amount, currencyCode) {
 function pluralize(amount, units) {
   if (amount == 1) return amount + ' ' + units[0];
   return amount + ' ' + units[1];
+}
+
+exports.sayInBlocks = function (amount) {
+  var whole = Math.floor(amount),
+      fractional = Math.round((amount - whole) * 100),
+      pieces = _.compact([whole, fractional]);
+  return pieces.length ? pieces.join(' ') : '';
 }

@@ -58,7 +58,8 @@ var responses = function () {
         reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
       },
       OrderReview: {
-        ask: "To review: I have a {arrangementSize} {arrangementType} arrangement to be delivered to {recipient} on {deliveryDate}. Is that right?",
+        ask: "To review: I have a {arrangementSize} {arrangementType} arrangement to be delivered to {recipient} on {deliveryDate}. " +
+          " Is that right?",
         reprompt: "Would you like to place your order?"
       },
     },
@@ -181,8 +182,8 @@ var responses = function () {
 
     QuerySize: {
       FirstSizeDescription: {
-        ask: "{sizeDescription} Would you like to buy a {size} arrangement for {price} before tax and delivery fees?",
-        reprompt: "Would you like to buy a {size} arrangement for {price} before tax and delivery fees?"
+        ask: "{sizeDescription} Would you like to buy a {sizeName} arrangement for {sizePrice} before tax and delivery fees?",
+        reprompt: "Would you like to buy a {sizeName} arrangement for {sizePrice} before tax and delivery fees?"
       },
       ContinueWithOrder: {
         ask: "Would you like to continue with your order?",
@@ -192,8 +193,8 @@ var responses = function () {
 
     SizeDescriptions: {
       NextSizeDescription: {
-        ask: "{sizeDescription} Would you like a {size} arrangement for {price} before tax and delivery fee?",
-        reprompt: "Would you like to send a {size} arrangement?"
+        ask: "{sizeDescription} Would you like a {sizeName} arrangement for {sizePrice} before tax and delivery fee?",
+        reprompt: "Would you like to send a {sizeName} arrangement?"
       },
       ContinueWithOrder: {
         ask: "Would you like to continue with your order?",
@@ -262,11 +263,7 @@ var responses = function () {
     CancelOrderConfirmation: {
       canceled: {
         tell: "Okay, your order has been canceled.",
-      },
-      OrderReviewReprompt: {
-        ask: "Your order total is {price} including taxes and delivery fee, to be billed to your {paymentType}. Should I place the order?",
-        reprompt: "Should I place your order for {price}?"
-      },
+      }
     },
 
     BadInput: {

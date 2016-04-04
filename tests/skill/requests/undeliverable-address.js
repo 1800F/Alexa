@@ -32,7 +32,7 @@ module.exports = {
     "requestId": "EdwRequestId.6890243f-c14c-4098-82e0-849658d28029",
     "timestamp": "2016-03-30T23:24:58Z",
     "intent": {
-      "name": "YesIntent",
+      "name": "AMAZON.YesIntent",
       "slots": {}
     }
   },
