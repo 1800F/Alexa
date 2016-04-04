@@ -67,11 +67,8 @@ ContactBook.prototype.range = function(offset, take) {
 }
 
 ContactBook.prototype.searchByName = function(name) {
-  return this.contacts.filter(function(contact) {
-    return (
-      (metaphone.compare(contact.firstName, name)) ||
-        (metaphone.compare(contact.lastName, name)) ||
-        (metaphone.compare(contact.firstName + " " + contact.lastName, name))
-    );
+  return _(this.contacts)
+    .filter(function(contact) {
+      return (metaphone.compare(contact.name, name));
     });
 }
