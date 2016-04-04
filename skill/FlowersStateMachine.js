@@ -186,7 +186,7 @@ module.exports = StateMachine({
         .then(function(po){
           po.setupContactCandidates();
           if(!po.hasContactCandidate()) {
-            return replyWith('ValidatePossibleRecipient.NotInAddressBook', 'query-options-again', request, po);
+            return replyWith('ValidatePossibleRecipient.NotInAddressBook', 'clear-and-query-options-again', request, po);
           }
           return replyWith('ValidatePossibleRecipient.FirstAddress', 'query-address', request, po);
         });
