@@ -95,7 +95,7 @@ RecipientSelectionIntent These are for {recipientSlot}
 RecipientSelectionIntent Please send them to {recipientSlot}
 RecipientSelectionIntent Can I send flowers to {recipientSlot}
 RecipientSelectionIntent I need flowers for {recipientSlot}
-RecipientSelectionIntent let’s send to {recipientSlot}
+RecipientSelectionIntent let's send to {recipientSlot}
 
 
 SizeSelectionIntent {sizeSlot}
@@ -150,46 +150,26 @@ DescriptionIntent What difference is there
 DescriptionIntent What difference is there between the sizes
 
 DescriptionIntent What's in the {sizeSlot}
-DescriptionIntent What's in the {sizeSlot} {bouquet}
 DescriptionIntent Tell me about the {sizeSlot}
-DescriptionIntent Tell me about the {sizeSlot} {bouquet}
 DescriptionIntent Tell me more about {sizeSlot}
-DescriptionIntent Tell me more about {sizeSlot}
-DescriptionIntent What’s in {sizeSlot}
-DescriptionIntent What’s in {sizeSlot} {bouquet}
-DescriptionIntent What’s in the {sizeSlot}
-DescriptionIntent What’s in the {sizeSlot} {bouquet}
+DescriptionIntent What's in {sizeSlot}
+DescriptionIntent What's in the {sizeSlot}
 DescriptionIntent What about {sizeSlot}
-DescriptionIntent What about {sizeSlot} {bouquet}
 DescriptionIntent What about the {sizeSlot}
-DescriptionIntent What about the {sizeSlot} {bouquet}
 DescriptionIntent Describe {sizeSlot}
-DescriptionIntent Describe {sizeSlot} {bouquet}
 DescriptionIntent Describe the {sizeSlot}
-DescriptionIntent Describe the {sizeSlot} {bouquet}
 DescriptionIntent I want to hear about the {sizeSlot}
-DescriptionIntent I want to hear about the {sizeSlot} {bouquet}
 
 DescriptionIntent What's in the {arrangementSlot}
-DescriptionIntent What's in the {arrangementSlot} {bouquet}
 DescriptionIntent Tell me about the {arrangementSlot}
-DescriptionIntent Tell me about the {arrangementSlot} {bouquet}
 DescriptionIntent Tell me more about {arrangementSlot}
-DescriptionIntent Tell me more about {arrangementSlot}
-DescriptionIntent What’s in {arrangementSlot}
-DescriptionIntent What’s in {arrangementSlot} {bouquet}
-DescriptionIntent What’s in the {arrangementSlot}
-DescriptionIntent What’s in the {arrangementSlot} {bouquet}
+DescriptionIntent What's in {arrangementSlot}
+DescriptionIntent What's in the {arrangementSlot}
 DescriptionIntent What about {arrangementSlot}
-DescriptionIntent What about {arrangementSlot} {bouquet}
 DescriptionIntent What about the {arrangementSlot}
-DescriptionIntent What about the {arrangementSlot} {bouquet}
 DescriptionIntent Describe {arrangementSlot}
-DescriptionIntent Describe {arrangementSlot} {bouquet}
 DescriptionIntent Describe the {arrangementSlot}
-DescriptionIntent Describe the {arrangementSlot} {bouquet}
 DescriptionIntent I want to hear about the {arrangementSlot}
-DescriptionIntent I want to hear about the {arrangementSlot} {bouquet}
 
 DescriptionIntent Who can I send flowers to
 DescriptionIntent What are my options
@@ -199,8 +179,8 @@ DescriptionIntent tell me who
 DescriptionIntent tell me who I can send flowers to
 DescriptionIntent tell me my options
 DescriptionIntent who are my contacts
-DescriptionIntent who’s in my contact book
-DescriptionIntent who’s in my address book
+DescriptionIntent who's in my contact booak
+DescriptionIntent who's in my address book
 
 
 
@@ -528,3 +508,4 @@ AMAZON.HelpIntent what do i do
 AMAZON.HelpIntent what do i do next
 AMAZON.HelpIntent what do you do
 AMAZON.HelpIntent what questions can i ask
+
