@@ -116,7 +116,7 @@ router.post('/', function (req, res, next) {
     })
   }).catch(function (err) {
     //process.stdout.write("Error logging in: " + err + "\r");
-    res.render('home/index', {
+    raes.render('home/index', {
       page: 'homepage',
       title: '1800flowers',
       badPassword: true
@@ -195,7 +195,7 @@ router.post('/create', function (req, res, next) {
           });
         }
       });
-      
+
       // flowers.login(email, password).then(function (flowersUser) {
       //   flowersUser.getProfile(user.registerNewCustomerResponse.customerData.systemID).then( function (userProfile) {
       //     console.log("System ID: " + user.registerNewCustomerResponse.customerData.systemID);
@@ -229,7 +229,7 @@ router.post('/create', function (req, res, next) {
       errorMessage: err
     });
   });
-});  
+});
 
 router.get('/success', function (req, res, next) {
   res.render('home/success', {
@@ -298,7 +298,7 @@ router.get('/privacy-policy', function (req, res, next) {
   //     console.log("Taxes: " + taxes);
   //   }
   // });
-  
+
   // purchase.getOrderNumber().then(function (orderNum) {
   //   if (orderNum.error) {
   //     console.log("Error getting order number: " + orderNum.error);

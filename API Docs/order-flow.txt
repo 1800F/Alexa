@@ -1,0 +1,11 @@
+Sorry guys... I keep forgetting to send this.  The API flow for an order would be:
+1.  getCustomerDetails (FlowersUser.getProfile)
+2.  Get recipient information (FlowersUser.getRecipients)
+3.  After they select a recipient, get the recipient address (FlowersUser.getRecipientAddress)
+4.  Select the arrangement to purchase, and get it's pricing and other information (Product.getProductDetails)
+5.  Get the delivery date (Product.getDeliveryCalendar)
+6.  Get shipping charges (Product.getShipping)
+7.  Get taxes (Product.getTaxes)
+8.  Get Payment Information (FlowersUser.getPaymentMethods)
+9.  Authorize purchase (Purchase.authorizeCC) -- the credit card is returned encrypted and tokenized in the getPaymentMethods call.
+10.  Send the order (FlowersUser.submitOrder)

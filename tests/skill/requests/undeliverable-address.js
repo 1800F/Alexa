@@ -1,4 +1,4 @@
-{
+module.exports = {
   "session": {
     "sessionId": "SessionId.6c81ec8a-06aa-48ca-b873-a77b8d00d635",
     "application": { },

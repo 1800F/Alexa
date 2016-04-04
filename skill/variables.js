@@ -47,6 +47,12 @@ exports.contactCandidateAddress = function (po) {
   return address.say(address.fromPipes(po.getContactCandidate().address));
 };
 
+exports.deliveryDateOffers = function(po) {
+  return lang.enumerateOr(po.deliveryDateOffers.map(function(date){
+    return moment(date).format('MMMM Do');
+  }))
+}
+
 // Arrangement sizes
 
 exports.largePrice = function (po) {
@@ -83,7 +89,7 @@ exports.possibleRecipient = function (po) {
 };
 
 exports.deliveryDate = function (po) {
-  return '';
+  return moment(po.deliveryDate).format('MMMM Do');
 };
 
 // Query arrangement, size

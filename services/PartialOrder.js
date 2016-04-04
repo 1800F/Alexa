@@ -86,6 +86,10 @@ PartialOrder.prototype.getContactBook = function() {
 PartialOrder.prototype.hasRecipient = function() {
   return !!this.recipient;
 }
+
+PartialOrder.prototype.getRecipientAddress = function() {
+  return address.fromPipes(this.recipient.address);
+}
 //
 /// ***** Recipient Choices ***** ///
 // These are unique names in the user's contact book that we mention to the user
@@ -168,7 +172,7 @@ PartialOrder.prototype.getArrangementDescription = function() {
 
 PartialOrder.prototype.clearArrangementDescriptions = function() {
   //Clear out this junk just to make the session smaller
-  self.arrangementDescriptionOffset = null;
+  this.arrangementDescriptionOffset = null;
 }
 
 PartialOrder.prototype.pickArrangement = function(arrangementName) {
@@ -270,4 +274,107 @@ PartialOrder.prototype.getArrangementPrices = function() {
       return skus;
     });
   });
+}
+
+/// ***** Delivery Date ***** ///
+
+PartialOrder.prototype.hasDeliveryDate = function() {
+  return !!this.deliveryDate;
+}
+
+PartialOrder.prototype.getCatalogEntry = function() {
+  var self = this;
+  if(!this.arrangement || !this.size) return null;
+  var size = self.getSizeByName(self.size);
+  var sku = size.sku ? size.sku : (self.arrangement.sku + size.suffix);
+
+  return {
+    product: Flowers.Product(config.flowers,sku),
+    category: self.arrangement,
+    size: size
+  };
+}
+
+PartialOrder.prototype.acceptPossibleDeliveryDate = function(date) {
+  var self = this
+    , mDate = moment(date = date || self.possibleDeliveryDate) //It's already been validated
+  ;
+  self.deliveryDate = mDate.toISOString();
+}
+
+PartialOrder.prototype.isDateDeliverable = function(date, product) {
+  var self = this;
+  return Promise.try(function(){
+    var mDate = moment(date);
+    // No past deliver dates allowed, but TZs are tricky, to fudge a day and let the API handle TZs.
+    if(!date || !mDate.isValid || mDate.isBefore(moment().add(-1,'day'))) return false;
+    product = product || self.getCatalogEntry();
+    return product.product.getDeliveryCalendar(self.getRecipientAddress().zip,null,mDate.toISOString())
+    .then(function(res){
+      return res.getDlvrCalResponse.responseStatus == 'SUCCESS';
+    })
+  });
+}
+
+PartialOrder.prototype.findDeliveryDateOffers = function(date) {
+  var self = this;
+  return Promise.try(function(){
+    var mDate = moment(date)
+      , product = self.getCatalogEntry()
+      , options = [];
+    if(!mDate.isValid || mDate.isBefore(moment().add(-1,'day'))) options = [moment().add(1,'day'),moment().add(2,'day')];
+    else options = [moment(mDate).add(-1,'day'), moment(mDate).add(1,'day')];
+    if(verbose) console.log('Offering alternative dates: ', options.map(function(d){ return d.format('YYYY-MM-DD'); }))
+
+    return Promise.all(options.map(function(date){ return self.isDateDeliverable(date,product); }))
+    .then(function(valids){
+      self.deliveryDateOffers = _(options)
+        .zip(valids)
+        .filter('1')
+        .map(function(d){ return d[0].toISOString(); })
+        .value();
+      return self.deliveryDateOffers;
+    });
+  });
+}
+
+PartialOrder.prototype.prepOrderForPlacement = function(){
+  // 0. Get Product prices
+  // 1. Get Recipient Address
+  // 2. Get Shipping prices
+  // 3. Get Tax information
+  // 4. Aggregate prices
+  // 5. Select payment method
+  //
+  var productPrice = self.arrangement.price
+    , purchase = Flowers.Purchase(config.flowers)
+  ;
+  return Promise.all([
+    this.user.getRecipientAddress(self.recipient.demoId,self.recipient.id),
+    purchase.login() //TODO Reuse the auth token found in Flowers by extending the scope to include purchasing
+  ])
+  .spread(function(address){
+    return purchase.getShipping({
+      productSku: self.arrangement.sku,
+      productType: self.arrangement.prodType, // TODO: check if it should be productType or another.
+      itemPrice: self.arrangement.price,
+    },address,self.deliveryDate);
+  }).then(function(shipping){
+
+  })
+  /*
+    login: login,
+    getShipping: getLogicalOrderShippingCharge,
+    getOrderNumber: getNextOrderNumber,
+    getTaxes: getTaxes,
+    tokenizeCC: tokenizeCC,
+    authorizeCC: authorizeCC,
+    createOrder: createOrderObject,
+  */
+}
+
+PartialOrder.prototype.placeOrder = function(){
+  //0. Get order Number
+  //1. Authorize CC
+  //2. create order
 }

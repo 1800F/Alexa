@@ -12,8 +12,8 @@ An Amazon Alexa skill for ordering flowers via 1-800-Flowers
 
 2. Development
 
-* To run nodejs server and watch for changes run `npm run watch` or `gulp watchi`
-* To test run 
+* To run nodejs server and watch for changes run `npm run watch` or `gulp watch`
+* To test run `npm run test`
 
 3. Directory Structure
 
