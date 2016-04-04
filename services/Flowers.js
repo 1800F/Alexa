@@ -216,7 +216,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
       }
     };
     return userrequest('POST', '/getRecipients', {}, body, null, "account").then(function (body) {
-      return body.MDMRecipientsResponse.MDMRecipients.MDMRecipient
+      return body.MDMRecipientsResponse.MDMRecipients.MDMRecipient;
     });
   }
 

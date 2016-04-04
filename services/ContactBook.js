@@ -42,7 +42,16 @@ ContactBook.prototype.build = function(contacts){
         lastName: contact.LastName,
         address: contact.NickName // Insanely, the API stores addresses in the Nickname field
       };
-    });
+    })
+    .groupBy('firstName')   
+    .map(function(contacts,name){   
+      return {    
+        name: name,   
+        contacts: contacts    
+      };    
+    })    
+    .sortBy('name')   
+    .value();
 }
 
 ContactBook.prototype.serialize = function(){
