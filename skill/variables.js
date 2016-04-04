@@ -139,21 +139,9 @@ exports.price = function (po) {
   return '';
 };
 
-exports.date = function (po) {
-  return '';
+exports.possibleDeliveryDate = function (po) {
+  return moment(po.possibleDeliveryDate).format('MMMM Do');
 };
-
-exports.dateMinusOne = function (po) {
-  return '';
-}
-
-exports.datePlusOne = function (po) {
-  return '';
-}
-
-exports.nextDate = function (po) {
-  return '';
-}
 
 exports.paymentType = function (po) {
   return '';

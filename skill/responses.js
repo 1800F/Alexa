@@ -230,7 +230,7 @@ var responses = function () {
       },
       NotAValidDate: {
         //For developer ... please ensure the logic of this phrase makes sense with the code you create (dateMinusOne should never bring up a non-available date).
-        ask: "{date} is not available for delivery. Would you like to deliver on {deliveryDateOffers}?",
+        ask: "{possibleDeliveryDate} is not available for delivery. Would you like to deliver on {deliveryDateOffers}?",
         reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
       }
     },
