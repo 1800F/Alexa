@@ -87,13 +87,12 @@ function respondAuthFailure(response) {
 function respondBadResponse(stateMachine, request, response) {
   var _this = this;
 
-  var reply = new Reply();
   Promise.try(function () {
     return _this._StateMachine.onBadResponse(request);
-  }).then(function (errorMsg) {
-    if (errorMsg) {
+  }).then(function (reply) {
+    if (reply) {
       if (verbose) console.log('Got an error response, and it was handled by a custom handler');
-      new Reply(errorMsg).write(response);
+      reply.write(response);
     } else {
       respondError(stateMachine, request, response)();
     }

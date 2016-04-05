@@ -261,7 +261,7 @@ var responses = function () {
     },
 
     CancelOrderConfirmation: {
-      canceled: {
+      Canceled: {
         tell: "Okay, your order has been canceled.",
       }
     },

@@ -32,13 +32,17 @@ module.exports = StateMachine({
     request.session.attributes.reprompt = null;
   },
   onBadResponse: function onBadResponse(request) {
+    var reply = new Reply();
     var reprompt = request.session.attributes.reprompt;
     // The user said something unexpected, replay the last reprompt
     if (reprompt) {
-      return { ask: reprompt };
+      reply.append(_.at(responses, 'BadInput.RepeatLastAskReprompt')[0]);
+      reply.append({ ask: reprompt });
+    } else {
+      reply.append(_.at(responses, 'Errors.ErrorNonPlannedAtLaunch')[0]);
     }
 
-    return _.at(responses, 'Errors.ErrorNonPlannedAtLaunch')[0];
+    return reply;
   },
   onAuthError: function onAuthError() {
     return new Reply(_.at(responses, 'Errors.NotConnectedToAccount')[0]);
