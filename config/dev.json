@@ -12,9 +12,15 @@
     "logsAreInsensitive": true,
     "callsPerSecond": 50,
     "platform": "echo",
-    "paymentUser": "test",
-    "paymentPass": "test",
     "encryptKey": "18F-SuperSekritSki11Inf!"
+    "paymentCredentials": {
+      "user": "test",
+      "password": "test"
+    },
+    "defaultCredentials": {
+      "username": "1stevenh@rain.agency",
+      "password": "1rainPssword"
+    }
   },
   "alexa": {
     "auth": {
@@ -26,11 +32,7 @@
     "appId": "amzn1.echo-sdk-ams.app.f3046058-e528-4531-b6ed-31448206b503"
   },
   "skill": {
-    "recipientChoiceCount": 4,
-    "defaultCredentials": {
-      "username": "1stevenh@rain.agency",
-      "password": "1rainPssword"
-    }
+    "recipientChoiceCount": 4
   },
   "googleAnalytics": {
     "trackingCode": "XXX"

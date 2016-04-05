@@ -239,7 +239,6 @@ PartialOrder.prototype.getSizeDetailsByName = function (name) {
   var self = this;
   name = name || self.size;
   var size = self.getSizeByName(name);
-  console.log('Got: ',name,size, self.arrangement.details.items);
   return _.find(self.arrangement.details.items,function(item){ return item.sku == size.sku });
 }
 
@@ -269,7 +268,7 @@ PartialOrder.prototype.getArrangementDetails = function(arrangement) {
 PartialOrder.prototype.getProduct = function() {
   var self = this;
   var size = self.getSizeByName(self.size);
-  return Flowers.Product(config.flowers,size.sku);
+  return Product(config.flowers,size.sku);
 }
 
 /// ***** Delivery Date ***** ///
@@ -331,15 +330,12 @@ PartialOrder.prototype.prepOrderForPlacement = function(){
   var self = this
     , purchase = Purchase(config.flowers)
     , item = self.getSizeDetailsByName()
-    , token = null
   ;
   return Promise.all([
     this.user.getRecipientAddress(self.recipient.demoId,self.recipient.id),
-    purchase.login(), //TODO Reuse the auth token found in Flowers by extending the scope to include purchasing
-    self.user.getPaymentMethods(self.user.systemID)
+    self.user.getPaymentMethods()
   ])
-  .spread(function(address, purchaseTokens, cards){
-    token = purchaseTokens.access_token;
+  .spread(function(address, cards){
     self.order = {
       address: address,
       card: alexaFlowers.pickCard(cards),
@@ -361,7 +357,6 @@ PartialOrder.prototype.prepOrderForPlacement = function(){
     charges.total = charges.item + charges.shippingTotal;
   })
   .then(function(){
-    console.log("Address",self.order);
     return purchase.getTaxes(item.sku, self.order.address.postalCode, item.price, self.order.charges.total);
   }).then(function(txs){
     self.order.charges.taxes = +txs;

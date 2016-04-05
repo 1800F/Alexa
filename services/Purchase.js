@@ -6,11 +6,12 @@ var Promise = require('bluebird')
   , post = Promise.promisify(require('request').post)
 ;
 
-var Purchase = module.exports= function Purchase(options) {
+var Purchase = module.exports= function Purchase(options,tokens) {
+  tokens = tokens || {};
   options.transform = options.transform || _.identity;
+  var qAuthReq = null;
 
   return options.transform({
-    login: login,
     getShipping: getLogicalOrderShippingCharge,
     getOrderNumber: getNextOrderNumber,
     getTaxes: getTaxes,
@@ -18,14 +19,6 @@ var Purchase = module.exports= function Purchase(options) {
     authorizeCC: authorizeCC,
     createOrder: createOrderObject,
   }, 'purchase');
-
-  function login() {
-    return oauthReq('password', { username: '1stevenh@rain.agency', password: '1rainPssword' }, options,'payment').then(function (tokens) {
-      //If successful, store username and password entered in into options to use for authenticate
-      if (tokens.error) return Promise.reject(tokens.error);
-      return tokens;
-    });
-  }
 
   function getLogicalOrderShippingCharge(product, recipient, deliveryDate) {
     /* The product object must have:
@@ -71,6 +64,7 @@ var Purchase = module.exports= function Purchase(options) {
           }
        }
     };
+
     return purchaseRequest('POST', '/getLogicalOrderShippingCharge', {}, body, "product").then(function(shipping){
       if (shipping.getLogicalOrderAndShippingChargeResponse.responseStatus == "SUCCESS") {
         return shipping.getLogicalOrderAndShippingChargeResponse.orderItemsGroupingResult.orderLinesResult.orderLineResult;
@@ -142,7 +136,7 @@ var Purchase = module.exports= function Purchase(options) {
      }
     };
 
-    return purchaseRequest('POST', '/tokenizeCC', {}, body, "payment", token).then(function(token){
+    return purchaseRequest('POST', '/tokenizeCC', {}, body, "payment").then(function(token){
       console.log("Tokenization Result: " + JSON.stringify(token));
       if (token.errorCode != "0") {
         return {error:token.errorDescription};
@@ -151,7 +145,7 @@ var Purchase = module.exports= function Purchase(options) {
     });
   }
 
-  function authorizeCC(token, paymentInfo, amount, user) {
+  function authorizeCC(paymentInfo, amount, user) {
     var body = {
       "paymentRequest": {
           "authorization": {
@@ -200,7 +194,7 @@ var Purchase = module.exports= function Purchase(options) {
        }
     };
 
-    return purchaseRequest('POST', '/authorizeCC', {}, body,  "payment", token).then(function(authorization){
+    return purchaseRequest('POST', '/authorizeCC', {}, body,  "payment").then(function(authorization){
       var authResult = authorization;
       console.log("CC Auth Result: " + JSON.stringify(authResult));
       if (authResult.errorCode != "0") {
@@ -521,23 +515,36 @@ var Purchase = module.exports= function Purchase(options) {
     });
   }
 
-  function purchaseRequest(method, path, queryString, body, apiType, token) {
-    if (typeof token === 'undefined' || token == null) token = null;
-    if (queryString && queryString.giveResponse) {
-      var giveResponse = true;
-      delete queryString.giveResponse;
-    }
-    return issue(method, token, path, queryString, body, options, apiType).then(function (res) {
-      console.log("----------------------------RESPONSE STATUS------------------------------");
-      console.log(res.statusCode);
-      if (res.statusCode < 200 || res.statusCode >= 300) return Promise.reject(res);
-      if (res.statusCode == 201 && !res.body) res.body = {};
-      if (giveResponse) res.body.response = res;
-      console.log("RES BODY: " + JSON.stringify(res.body));
-      return res.body;
+  function purchaseRequest(method, path, queryString, body, apiType) {
+    return getAuthToken().then(function (token) {
+      return issue(method, token, path, queryString, body, options, apiType).then(function (res) {
+        if (res.statusCode == 401) {
+          //Our token expired
+          if (!tokens.access_token) tokens.refresh_token = null; //Must have already tried a refresh, so this next time, go anew
+          tokens.access_token = null;
+          return apprequest.apply(self, args);
+        }
+        if (res.statusCode >= 400) return Promise.reject(res.body);
+        return res.body;
+      });
     });
   }
-};
+
+  function getAuthToken() {
+    if (tokens.access_token) return Promise.resolve(tokens.access_token);
+    if(qAuthReq) return qAuthReq;
+    return qAuthReq = oauthReq('password', options.defaultCredentials, options,'payment').then(function (toks) {
+      qAuthReq = null;
+      if(toks.error) return Promise.reject(toks.error);
+      tokens = toks;
+      return toks.access_token;
+    }).catch(function(e){
+      qAuthReq = null;
+      return Promise.reject(e);
+    });
+  }
+}
+
 
 function normalizeCountryCodes(code) {
   if(!code) return code;

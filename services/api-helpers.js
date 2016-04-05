@@ -17,8 +17,6 @@ function issue(method, token, path, queryString, body, options, apiType) {
       op = method == 'POST' ? post : get,
       url = URL + '?' + qs,
       startTime = +new Date();
-  console.log("ISSUE BODY:");
-  console.log(JSON.stringify(body));
   var req = {
     url: url,
     headers: {
@@ -33,23 +31,13 @@ function issue(method, token, path, queryString, body, options, apiType) {
      req.headers.Authorization = "Bearer " + token;
   }
   if (body && method != 'GET') {
-    console.log("BODY RECEIVED:");
-    console.log(JSON.stringify(body));
     req.json = true;
     req.body = body;
   }
-  if(options.verbose) {
-    console.log("REQUEST: " + url);
-    console.log("HEADERS:");
-    console.log(req.headers);
-    console.log("BODY:");
-    console.log(req.body);
-  }
+  if(options.verbose && false) console.log("REQUEST: " + url);
   return op(req).then(function (res) {
     if (options.verbose) {
       console.log("RESPONSE: " + url + " - " + res.statusCode + " - " + (new Date() - startTime) + 'ms');
-      console.log("RESPONSE BODY:");
-      console.log(JSON.stringify(res.body));
     }
     if (res.body && _.isString(res.body)) {
       try {
@@ -92,7 +80,7 @@ function oauthReq(grant_type, values, options,apiType) {
     proxy: options.proxy,
     strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false,
   }).then(function (res) {
-    if (options.verbose) console.log('Response', url, res.statusCode,+new Date() - startTime + 'ms');
+    if (options.verbose) console.log('RESPONSE: ', url, res.statusCode,+new Date() - startTime + 'ms');
     try {
       var tokens = JSON.parse(res.body);
     } catch (e) {
@@ -102,15 +90,4 @@ function oauthReq(grant_type, values, options,apiType) {
     if(options.verbose && options.logsAreInsensitive && false) console.log('Tokens:',tokens, grant_type);
     return tokens;
   });
-}
-
-function wrapPagingResult(body, reinvoke, args) {
-  var self = this;
-  body.paging.hasMore = body.paging.offset + body.paging.limit < body.paging.total;
-  body.paging.next = function () {
-    if (!body.paging.hasMore) return Promise.reject('Over paged');
-    var nextPage = { offset: body.paging.offset + body.paging.limit, limit: body.paging.limit };
-    return reinvoke.apply(self, args.concat(nextPage));
-  };
-  return body;
 }

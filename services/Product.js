@@ -86,12 +86,9 @@ var Product = module.exports= function Product(options, productSKU) {
       delete queryString.giveResponse;
     }
     return issue(method, null, path, queryString, body, options, apiType).then(function (res) {
-      console.log("----------------------------RESPONSE STATUS------------------------------");
-      console.log(res.statusCode);
       if (res.statusCode < 200 || res.statusCode >= 300) return Promise.reject(res);
       if (res.statusCode == 201 && !res.body) res.body = {};
       if (giveResponse) res.body.response = res;
-      console.log("RES BODY: " + JSON.stringify(res.body));
       return res.body;
     });
   }

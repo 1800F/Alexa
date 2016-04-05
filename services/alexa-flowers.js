@@ -19,29 +19,24 @@ var ERRORS = exports.ERRORS = _(['CARD', 'PAYMENTMETHOD', 'MOPHISTORY']).map(fun
  * Errors are entries in AlexaFlowers.ERRORS
  */
 exports.validate = function (flowersUser) {
-  return flowersUser.authenticate().then( function (authenticateUser) {
-    var systemID = authenticateUser.authenticateCustomerResponse.customerData.systemID;
-    return flowersUser.getCustomerDetails(systemID).then( function (userProfile) {
-      var customerId = userProfile.customerId;
-      return Promise.all([
-        flowersUser.getPaymentMethods(systemID)
-       ,flowersUser.getRecipients(customerId)
-      ]).spread(function (paymentMethods, recipients) {
-       var noCC = !exports.pickCard(paymentMethods)
-          , noBillingAddress =!userProfile.address
-          , noContacts = !recipients|| recipients.length < 1
-        ;
+  return flowersUser.getCustomerDetails().then( function (userProfile) {
+    return Promise.all([
+      flowersUser.getPaymentMethods()
+     ,flowersUser.getRecipients()
+    ]).spread(function (paymentMethods, recipients) {
+     var noCC = !exports.pickCard(paymentMethods)
+        , noBillingAddress =!userProfile.address
+        , noContacts = !recipients|| recipients.length < 1
+      ;
 
-        return {
-          systemID: systemID,
-          customerID: customerId,
-          noCC: noCC,
-          noContacts: noContacts,
-          noBillingAddress: noBillingAddress
-        };
-      });
+      return {
+        systemID: flowersUser.systemID,
+        customerID: flowersUser.customerID,
+        noCC: noCC,
+        noContacts: noContacts,
+        noBillingAddress: noBillingAddress
+      };
     });
-
   });
 };
 
