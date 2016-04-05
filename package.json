@@ -17,6 +17,7 @@
   "license": "UNLIECENSED",
   "dependencies": {
     "basic-auth": "^1.0.3",
+    "basic-auth-token": "^0.4.2",
     "bluebird": "^3.3.1",
     "body-parser": "^1.14.2",
     "csv-parse": "^1.0.2",

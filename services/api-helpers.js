@@ -2,6 +2,7 @@ var Promise = require('bluebird')
   , _ = require('lodash')
   , post = Promise.promisify(require('request').post)
   , get = Promise.promisify(require('request').get)
+  , basicAuthToken = require('basic-auth-token')
 ;
 
 exports.issue = issue;
@@ -25,7 +26,7 @@ function issue(method, token, path, queryString, body, options, apiType) {
       "X-IBM-Client-Secret": options.secret,
       "Accept": 'application/json'
     },
-    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : true,
+    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false,
     proxy: options.proxy,
   };
   if (apiType == 'account' || apiType == 'payment') {
@@ -73,7 +74,7 @@ function oauthReq(grant_type, values, options,apiType) {
   }, values),
   startTime = +new Date(),
   headers = {
-      "Authorization": "Basic " + options.basicAuth,
+    "Authorization": "Basic " + basicAuthToken(options.key, options.secret),
       "Accept": 'application/json'
     }
   ;
