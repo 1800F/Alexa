@@ -27,8 +27,7 @@ var _1steven = '4b890c26-0a48-4291-8cdb-654d7d1588be'
 
 var flowers = Flowers(config.flowers)
   , user = null
-  , systemId = mitchellkharris
-  , customerId = null
+  , systemID = mitchellkharris
   , customerDetails = null
   , card = null
   , recipients = null
@@ -38,25 +37,23 @@ var flowers = Flowers(config.flowers)
   , arrangementDetails = null
   , item = null
   , purchase = null
-  , purchaseToken = null
   , charges = null
   , taxes = null
   , charges = null
 ;
 
-flowers.login(config.skill.defaultCredentials.username,config.skill.defaultCredentials.password)
+flowers.buildUser(systemID)
 .then(function(usr){ user = usr; })
+.then(function(){ return user.getCustomerDetails(); }) //We've got to get this to fetch the customerID
+.then(function(profile){
+  customerDetails = profile;
+})
 .then(function(){
-  return user.getPaymentMethods(systemId);
+  return user.getPaymentMethods();
 }).then(function(payMethods){
   card = alexaFlowers.pickCard(payMethods);
 })
-.then(function(){ return user.getCustomerDetails(systemId); })
-.then(function(profile){
-  customerDetails = profile;
-  customerId = profile.customerId;
-})
-.then(function(){ return user.getRecipients(customerId); })
+.then(function(){ return user.getRecipients(); })
 .then(function(recp){
   recipients = recp;
   recipient = recp[0];
@@ -75,10 +72,6 @@ flowers.login(config.skill.defaultCredentials.username,config.skill.defaultCrede
 })
 .then(function(){
   purchase = Purchase(config.flowers);
-  return purchase.login();
-})
-.then(function(tokens){
-  purchaseToken = tokens.access_token;
 })
 .then(function(){
   return purchase.getShipping({
@@ -103,7 +96,7 @@ flowers.login(config.skill.defaultCredentials.username,config.skill.defaultCrede
   charges.total +=  +txs;
 })
 .then(function(){
-  return purchase.authorizeCC(purchaseToken, card, charges.total, customerDetails);
+  return purchase.authorizeCC(card, charges.total, customerDetails);
 })
 .then(function(auth){
   console.log('Auth');

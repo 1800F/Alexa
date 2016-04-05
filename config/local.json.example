@@ -13,8 +13,14 @@
     "logsAreInsensitive": true,
     "callsPerSecond": 50,
     "platform": "echo",
-    "paymentUser": "test",
-    "paymentPass": "test"
+    "paymentCredentials": {
+      "user": "test",
+      "password": "test"
+    },
+    "defaultCredentials": {
+      "username": "1stevenh@rain.agency",
+      "password": "1rainPssword"
+    }
   },
   "alexa": {
     "auth": {
@@ -26,11 +32,7 @@
     "appId": "[CHANGE-THIS]"
   },
   "skill": {
-    "recipientChoiceCount": 4,
-    "defaultCredentials": {
-      "username": "1stevenh@rain.agency",
-      "password": "1rainPssword"
-    }
+    "recipientChoiceCount": 4
   },
   "googleAnalytics": {
     "trackingCode": "[CHANGE-THIS]"

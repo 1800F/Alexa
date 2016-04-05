@@ -84,8 +84,8 @@ router.post('/', function (req, res, next) {
       });
     })
   }).catch(function (err) {
-    //process.stdout.write("Error logging in: " + err + "\r");
-    raes.render('home/index', {
+    console.error(err.stack || err);
+    res.render('home/index', {
       page: 'homepage',
       title: '1800flowers',
       badPassword: true
@@ -164,30 +164,6 @@ router.post('/create', function (req, res, next) {
           });
         }
       });
-
-      // flowers.login(email, password).then(function (flowersUser) {
-      //   flowersUser.getCustomerDetails(user.registerNewCustomerResponse.customerData.systemID).then( function (userProfile) {
-      //     console.log("System ID: " + user.registerNewCustomerResponse.customerData.systemID);
-      //     console.log("Customer ID: " + userProfile.Get18FCustomerByAdminSysKeyResponse.result.response.idPK);
-      //     var authCode = oauthhelper.encryptTokens({"systemID":user.registerNewCustomerResponse.customerData.systemID, "customerID":userProfile.Get18FCustomerByAdminSysKeyResponse.result.response.idPK});
-      //     res.render('home/success-needs-more', {
-      //         page: "success",
-      //         title: "1800flowers - Account Created",
-      //         auth_code: authCode,
-      //         noCC: true,
-      //         noContacts: true,
-      //         created: true
-      //     });
-      //   }).catch(function (profileError) {
-      //     console.log("PROFILE ERROR: ", profileError);
-      //       res.render('home/create', {
-      //       page: 'create',
-      //       title: '1800flowers',
-      //       errorCreating: true,
-      //       errorMessage: profileError
-      //     });
-      //   });
-      // });
     }
   }).catch(function (err) {
     process.stdout.write("Error Creating User: " + err + "\r");

@@ -1,21 +1,20 @@
 var Promise = require('bluebird')
   , _ = require('lodash')
   , issue = require('./api-helpers.js').issue
-  , oauthReq = require('./api-helpers.js').oauthReq
   , parseString = require('xml2js').parseString
   , moment = require('moment')
   , js2xmlparser = require("js2xmlparser")
   , post = Promise.promisify(require('request').post)
 ;
 
-var FlowersUser = module.exports = function FlowersUser(options, tokens) {
+var FlowersUser = module.exports = function FlowersUser(options, tokens, systemID, customerID) {
   options.transform = options.transform || _.identity;
   if (_.isString(tokens)) tokens = { access_token: tokens };
 
   return options.transform({
-    get tokens() {
-      return tokens;
-    },
+    get tokens() { return tokens; },
+    get systemID() { return systemID; },
+    get customerID() { return customerID; },
     authenticate: authenticate,
     getPaymentMethods: getPaymentMethods,
     getRecipients: getRecipients,
@@ -24,21 +23,23 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens) {
     submitOrder: submitOrder // Why is this in the order and not in Purchase?
   }, 'user');
 
-  function authenticate() {
+  function authenticate(username, password) {
     var body = {
       "authenticateCustomer": {
         "customerDetail": {
-          "customerID": options.username,
-          "password": options.password,
+          "customerID": username,
+          "password": password,
           "saltId": "",
           "sourceSystem": "FDWEB"
         }
       }
     };
-    return userrequest('POST', '/authenticateUser', {}, body, "account");
+    return userrequest('POST', '/authenticateUser', {}, body, "account").then(function(authenticateUser){
+      systemID = authenticateUser.authenticateCustomerResponse.customerData.systemID;
+    });
   }
 
-  function getPaymentMethods(systemID) {
+  function getPaymentMethods() {
     var body = {
       "GetSavedCardsForCustomer":{
         "control":{
@@ -64,10 +65,10 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens) {
     });
   }
 
-  function getRecipients(customerID) {
+  function getRecipients() {
     var body = {
       "getMDMRecipients":{
-        "contid":customerID
+        "contid": customerID
       }
     };
     return userrequest('POST', '/getRecipients', {}, body, "account").then(function (body) {
@@ -75,11 +76,11 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens) {
     });
   }
 
-  function getRecipientAddress(demographicsID, customerID) {
+  function getRecipientAddress(demographicsID) {
     var body = {
       "getMDMRecipientAddresses":{
-        "demographicsID":demographicsID,
-        "contid":customerID
+        "demographicsID": demographicsID,
+        "contid": customerID
       }
     };
     return userrequest('POST', '/getRecipientAddress', {}, body, "account")
@@ -100,7 +101,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens) {
 
   }
 
-  function getCustomerDetails(systemID) {
+  function getCustomerDetails() {
     var body = {
       "Get18FCustomerByAdminSysKey":{
         "control":{
@@ -118,8 +119,9 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens) {
     .then(function(body){
       if(!body.Get18FCustomerByAdminSysKeyResponse.result.status.processingStatus.value == 'SUCCESS') return Promise.reject(body);
       body = body.Get18FCustomerByAdminSysKeyResponse.result.response;
+      customerID = body.idPK;
       return {
-        customerId: body.idPK,
+        customerID: body.idPK,
         displayName: body.displayName,
         address: processAddress(body.address),
         phone: processPhone(body.contactMethod)
@@ -170,8 +172,6 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens) {
     .then(function (token) {
       return issue(method, token, path, queryString, body, options, apiType);
     }).then(function (res) {
-      console.log("----------------------------RESPONSE STATUS------------------------------");
-      console.log(res.statusCode);
       if (res.statusCode < 200 || res.statusCode >= 300) return Promise.reject(res);
       if (res.statusCode == 201 && !res.body) res.body = {};
       if (giveResponse) res.body.response = res;

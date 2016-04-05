@@ -4,7 +4,6 @@ var StateMachine = require('./StateMachine.js'),
     currency = require('./currency.js'),
     Reply = require('./reply.js'),
     Flowers = require('../services/Flowers.js'),
-    FlowersUser = Flowers.FlowersUser,
     config = require('../config'),
     StateMachineSkill = require('./StateMachineSkill.js'),
     _ = require('lodash'),
@@ -460,36 +459,15 @@ module.exports = StateMachine({
     var self = this;
     if (this.access) return Promise.resolve(this.access);
     if (!request || !request.user || !request.user.accessToken) {
-      //Allow logging in with fake credentials for debugging
-      if (!config.skill.fakeCredentials) {
-        analytics(request).event('Main Flow', 'Exit from not authorized').send();
-        return Promise.reject(StateMachineSkill.ERRORS.AUTHORIZATION);
-      }
-      return Promise.try(function () {
-        flowers = flowers || Flowers(config.flowers);
-        console.log('Using faked credentials. This should never happen in live!');
-        return flowers.login(config.skill.fakeCredentials.username, config.skill.fakeCredentials.password).then(function (user) {
-          self.access = {
-            user: user,
-            flowers: flowers,
-            analytics: analytics(request)
-          };
-          return self.access;
-        });
-      });
+      analytics(request).event('Main Flow', 'Exit from not authorized').send();
+      return Promise.reject(StateMachineSkill.ERRORS.AUTHORIZATION);
     }
     //HERE IS WHERE WE WILL GET AN OAUTH ACCESSTOKEN USING THE DEFAULT CREDENTIALS
     //THEN WE WILL PULL USER DATA BASED ON SYSTEMID STORED IN THE ALEXA REQUEST IN PartialOrder.build()
     return Promise.try(function () {
       flowers = flowers || Flowers(config.flowers);
-      console.log('Logging in using default credentials.');
-      // TODO We're going to need to make this something that doesn't make a request each time, since it's called often when flowing
-      // between states
-      return flowers.login(config.skill.defaultCredentials.username, config.skill.defaultCredentials.password).then(function (user) {
-        //Store the systemID and customerID that should be in the request.user.accessToken to the user object
-        var tokens = oauthhelper.decryptCode(request.user.accessToken);
-        user.systemID = tokens.systemID;
-        user.customerID = tokens.customerID;
+      var tokens = oauthhelper.decryptCode(request.user.accessToken);
+      return flowers.buildUser(tokens.systemID, tokens.customerID).then(function (user) {
         self.access = {
           user: user,
           flowers: flowers,

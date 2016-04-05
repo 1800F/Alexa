@@ -11,11 +11,10 @@ var Promise = require('bluebird')
   ;
 
 // Get rid of hard coded creds
-// Move tokens around more naturally
+// Purchase stores token instead of passing it
 // FlowersUser represents the user, not this intermediate thing
+// Token refresh flow for Flowers
 // Rename endpoints to be more relevant to flowers
-// Tokens for purchase
-// Token refresh flow
 
 var Flowers = module.exports = function Flowers(options, tokens) {
   options.transform = options.transform || _.identity;
@@ -24,19 +23,24 @@ var Flowers = module.exports = function Flowers(options, tokens) {
 
   return options.transform({
     login: login,
+    buildUser: buildUser,
     createCustomer: createCustomer,
     addCustomerDetails:addCustomerDetails,
   }, 'app');
 
+  function buildUser(systemID, customerID) {
+    return getAuthToken().then(function(tokens){
+      return FlowersUser(options, tokens, systemID, customerID);
+    });
+  }
+
   function login(username, password) {
-    //Do oauthRequest with defaultCredentials
-    return oauthReq('password', { username: '1stevenh@rain.agency', password: '1rainPssword' }, options,'account').then(function (tokens) {
-      //If successful, store username and password entered in into options to use for authenticate
+    // This BRILLIANT API does not actually validate the username and password with the authenticate
+    // endpoint
+    return getSpecificAuthToken(username,password).then(function(tokens){
       if (tokens.error) return Promise.reject(tokens.error);
-      options.username = username;
-      options.password = password;
-      if(options.verbose && false) console.log("LOGIN OPTIONS: ",options);
-      return FlowersUser(options, tokens);
+      var user = FlowersUser(options, tokens);
+      return user.authenticate(username,password).then(_.constant(user));
     });
   }
 
@@ -121,13 +125,21 @@ var Flowers = module.exports = function Flowers(options, tokens) {
   function getAuthToken() {
     if (tokens.access_token) return Promise.resolve(tokens.access_token);
     if(qAuthReq) return qAuthReq;
-    return qAuthReq = oauthReq('client_credentials', {}, options,'account').then(function (toks) {
-      tokens = toks;
+    return qAuthReq = oauthReq('password' ,options.defaultCredentials , options,'account').then(function (toks) {
       qAuthReq = null;
+      if(toks.error) return Promise.reject(toks.error);
+      tokens = toks;
       return toks.access_token;
     }).catch(function(e){
       qAuthReq = null;
       return Promise.reject(e);
+    });
+  };
+
+  function getSpecificAuthToken(username, password) {
+    return oauthReq('password' ,{username: username , password: password} , options,'account').then(function (toks) {
+      if(toks.error) return Promise.reject(toks.error);
+      return toks.access_token;
     });
   };
 };
