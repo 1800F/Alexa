@@ -23,6 +23,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
     submitOrder: submitOrder // Why is this in the order and not in Purchase?
   }, 'user');
 
+  // Beware. While this endpoint accepts a user, it doesn't actually validate it
   function authenticate(username, password) {
     var body = {
       "authenticateCustomer": {

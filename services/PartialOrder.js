@@ -239,7 +239,6 @@ PartialOrder.prototype.getSizeDetailsByName = function (name) {
   var self = this;
   name = name || self.size;
   var size = self.getSizeByName(name);
-  console.log('Got: ',name,size, self.arrangement.details.items);
   return _.find(self.arrangement.details.items,function(item){ return item.sku == size.sku });
 }
 
@@ -269,7 +268,7 @@ PartialOrder.prototype.getArrangementDetails = function(arrangement) {
 PartialOrder.prototype.getProduct = function() {
   var self = this;
   var size = self.getSizeByName(self.size);
-  return Flowers.Product(config.flowers,size.sku);
+  return Product(config.flowers,size.sku);
 }
 
 /// ***** Delivery Date ***** ///
