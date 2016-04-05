@@ -204,7 +204,7 @@ function soapRequest(token, uri, sendObject, options) {
       "SOAPAction": "submitOrderFile"
     },
     body: body,
-    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false,
+    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : true,
     proxy: options.proxy,
   };
   if(options.verbose) {

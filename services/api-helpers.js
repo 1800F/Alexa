@@ -25,7 +25,7 @@ function issue(method, token, path, queryString, body, options, apiType) {
       "X-IBM-Client-Secret": options.secret,
       "Accept": 'application/json'
     },
-    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false,
+    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : true,
     proxy: options.proxy,
   };
   if (apiType == 'account' || apiType == 'payment') {
