@@ -1,4 +1,6 @@
 var Flowers = require('../services/Flowers')
+  , Product = require('../services/Product')
+  , Purchase = require('../services/Purchase')
   , config = require('../config')
   , moment = require('moment')
   , _ = require('lodash')
@@ -20,11 +22,12 @@ var Flowers = require('../services/Flowers')
 
 var _1steven = '4b890c26-0a48-4291-8cdb-654d7d1588be'
   , juangtest = 'b7c2d8ba-50dc-4d6c-a4e4-90f51817d859'
+  , mitchellkharris = '1314833911'
 ;
 
 var flowers = Flowers(config.flowers)
   , user = null
-  , systemId = juangtest
+  , systemId = mitchellkharris
   , customerId = null
   , customerDetails = null
   , card = null
@@ -62,7 +65,7 @@ flowers.login(config.skill.defaultCredentials.username,config.skill.defaultCrede
 .then(function(addr){
   address = addr;
 })
-.then(function(){ return Flowers.Product(config.flowers, arrangementBaseSku).getProductDetails() })
+.then(function(){ return Product(config.flowers, arrangementBaseSku).getProductDetails() })
 .then(function(details){
   arrangementDetails = {
     prodType: details.product.prodType,
@@ -71,7 +74,7 @@ flowers.login(config.skill.defaultCredentials.username,config.skill.defaultCrede
   item = arrangementDetails.items[0];
 })
 .then(function(){
-  purchase = Flowers.Purchase(config.flowers);
+  purchase = Purchase(config.flowers);
   return purchase.login();
 })
 .then(function(tokens){
@@ -100,16 +103,6 @@ flowers.login(config.skill.defaultCredentials.username,config.skill.defaultCrede
   charges.total +=  +txs;
 })
 .then(function(){
-  //TODO: Stop faking addresses
-  customerDetails.address = {
-    addr1: "1748 W 150 S",
-    addr2: null,
-    city: "Lehi",
-    state: "UT",
-    postalCode: "84043",
-    country: "US"
-  };
-  console.log(card);
   return purchase.authorizeCC(purchaseToken, card, charges.total, customerDetails);
 })
 .then(function(auth){

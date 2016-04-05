@@ -2,7 +2,8 @@
 
 var Flowers = require('./Flowers.js')
   , FlowersUser = Flowers.FlowersUser
-  , Product = Flowers.Product
+  , Product = require('./Product.js')
+  , Purchase = require('./Purchase.js')
   , config = require('../config')
   , _ = require('lodash')
   , moment = require('moment')
@@ -328,7 +329,7 @@ PartialOrder.prototype.prepOrderForPlacement = function(){
   // 4. Aggregate prices
   // 5. Select payment method
   var self = this
-    , purchase = Flowers.Purchase(config.flowers)
+    , purchase = Purchase(config.flowers)
     , item = self.getSizeDetailsByName()
     , token = null
   ;
