@@ -43,7 +43,7 @@ var responses = function () {
 
     Options: {
       RecipientSelection: {
-        ask: "Hi there. Who would you like to send flowers to?",
+        ask: "Who would you like to send flowers to?",
         reprompt: "What's the first name of the person you want to send flowers to?"
       },
       ArrangementList: {
