@@ -105,8 +105,8 @@ exports.choices = [
 ];
 
 exports.findByName = function(name) {
-  return _(this.choices)
-  	.find(function(entry){
-    	return RegExp(name, 'i').test(entry.name);
-  	});
+  return _(exports.choices)
+    .find(function(entry){
+      return entry.name.toLowerCase() == name.toLowerCase();
+    });
 }

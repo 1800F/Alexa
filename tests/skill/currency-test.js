@@ -19,7 +19,6 @@ function itIs(testName, amount, shouldBe, inBlocks) {
   var inBlocks = inBlocks || false;
   it(testName, function () {
     var actual = inBlocks ? currency.sayInBlocks(amount) : currency.say(amount, 'USD');
-    console.log(actual);
     assert.equal(actual, shouldBe);
   });
 }

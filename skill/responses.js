@@ -246,15 +246,13 @@ var responses = function () {
     },
 
     QueryBuyConfirmation: {
-      PurchaseValidation: {
-        say: "I've sent your order. There is a review card in the alexa app and you will receive an email confirmation shortly.",
-      },
       CancelOrder: {
         ask: "Would you like to cancel your order?",
         reprompt: "Did you want to cancel your order?",
       },
       SendToSomeoneElse: {
-        ask: "Would you like to send flowers to someone else?",
+        ask: "I've sent your order. There is a review card in the Alexa app and you will receive an email confirmation shortly. \n" +
+             "Would you like to send flowers to someone else?",
         reprompt: "To send flowers to someone just say their name."
       },
     },

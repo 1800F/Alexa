@@ -21,14 +21,15 @@ describe('end to end',function(){
     assert.equal(res.sessionAttributes.state,'query-date');
   })
 
-  itIs('sunday-undeliverable-date',function(res){
-    assert.match(res.response.outputSpeech.ssml,/Would you like to deliver on .*/i);
-    assert.equal(res.sessionAttributes.state,'query-date');
+  itIs('direct-pick-arrangement',function(res){
+    assert.match(res.response.outputSpeech.ssml,/thank you/i);
+    assert.match(res.response.outputSpeech.ssml,/We have a large/i);
+    assert.equal(res.sessionAttributes.state,'query-size');
   })
 
-  itIs('past-undeliverable-date',function(res){
-    assert.match(res.response.outputSpeech.ssml,/Would you like to deliver on .*/i);
-    assert.equal(res.sessionAttributes.state,'query-date');
+  itIs('buy-confirmation',function(res){
+    assert.match(res.response.outputSpeech.ssml,/Your order total is/i);
+    assert.equal(res.sessionAttributes.state,'query-buy-confirmation');
   })
 
   function itIs(requestFile, cb) {
@@ -47,4 +48,3 @@ describe('end to end',function(){
     });
   }
 });
-

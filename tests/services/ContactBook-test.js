@@ -7,14 +7,14 @@ var assert = require('chai').assert
 ;
 
 
-var contactBook = ContactBook.fromData({}, {contacts: [
-  {firstName: 'Mark', lastName: 'Smith',  firstPhonetic: 'MRK', lastPhonetic: 'SM0', id: 1},
-  {firstName: 'Mary', lastName: 'Smith', firstPhonetic: 'MR', lastPhonetic: 'SM0', id: 2},
-  {firstName: 'Mark', lastName: 'Brown', firstPhonetic: 'MRK', lastPhonetic: 'BRN', id: 3},
-  {firstName: 'Daniel', lastName: 'Smith', firstPhonetic: 'TNL', lastPhonetic: 'SM0', id: 4},
-  {firstName: 'Jen', lastName: 'Alpha',  firstPhonetic: 'JN', lastPhonetic: 'ALF', id: 5},
-  {firstName: 'John', lastName: 'Beta',  firstPhonetic: 'JN', lastPhonetic: 'BT', id: 6}
-]});
+var contactBook = ContactBook.fromContacts({}, [
+  {firstName: 'Mark', lastName: 'Smith',   id: 1},
+  {firstName: 'Mary', lastName: 'Smith', id: 2},
+  {firstName: 'Mark', lastName: 'Brown',  id: 3},
+  {firstName: 'Daniel', lastName: 'Smith', id: 4},
+  {firstName: 'Jen', lastName: 'Alpha',  id: 5},
+  {firstName: 'John', lastName: 'Beta',  id: 6}
+]);
 
 itIs('mark', [1,3]);
 itIs('Smith', [1,2,4]);

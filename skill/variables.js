@@ -49,18 +49,18 @@ exports.deliveryDateOffers = function(po) {
 // Arrangement sizes
 
 exports.largePrice = function (po) {
-  var price = po.getSizePriceByName('large');
-  return currency.sayInBlocks(price);
+  var details = po.getSizeDetailsByName('large');
+  return currency.sayInBlocks(details.price);
 };
 
 exports.mediumPrice = function (po) {
-  var price = po.getSizePriceByName('medium');
-  return currency.sayInBlocks(price);
+  var details = po.getSizeDetailsByName('medium');
+  return currency.sayInBlocks(details.price);
 };
 
 exports.smallPrice = function (po) {
-  var price = po.getSizePriceByName('small');
-  return currency.sayInBlocks(price);
+  var details = po.getSizeDetailsByName('small');
+  return currency.sayInBlocks(details.price);
 };
 
 // To Review Order
@@ -108,8 +108,8 @@ exports.sizeName = function (po) {
 };
 
 exports.sizePrice = function (po) {
-  var price = po.getSizePrice();
-  return currency.say(price, 'USD');
+  var details = po.getSizeDetailsByName(this.getSizeDescription().name);
+  return currency.say(details.price, 'USD');
 }
 
 // OKay
@@ -129,7 +129,7 @@ exports.address = function (po) {
 };
 
 exports.price = function (po) {
-  return '';
+  return currency.say(po.order.charges.total,'USD');
 };
 
 exports.possibleDeliveryDate = function (po) {
@@ -137,5 +137,5 @@ exports.possibleDeliveryDate = function (po) {
 };
 
 exports.paymentType = function (po) {
-  return '';
+  return po.order.card.type.code;
 }

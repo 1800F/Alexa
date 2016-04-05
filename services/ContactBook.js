@@ -36,21 +36,21 @@ ContactBook.prototype.build = function(contacts){
   this.contacts = _(contacts)
     .map(function(contact){
       return {
-        id: contact.cont_id,
-        demoId: contact.demoGraphicsID,
-        firstName: contact.FirstName,
-        lastName: contact.LastName,
-        address: contact.NickName // Insanely, the API stores addresses in the Nickname field
+        id: contact.cont_id || contact.id,
+        demoId: contact.demoGraphicsID || contact.demoId,
+        firstName: contact.FirstName || contact.firstName,
+        lastName: contact.LastName || contact.lastName,
+        address: contact.NickName || contact.address // Insanely, the API stores addresses in the Nickname field
       };
     })
-    .groupBy('firstName')   
-    .map(function(contacts,name){   
-      return {    
-        name: name,   
-        contacts: contacts    
-      };    
-    })    
-    .sortBy('name')   
+    .groupBy('firstName')
+    .map(function(contacts,name){
+      return {
+        name: name,
+        contacts: contacts
+      };
+    })
+    .sortBy('name')
     .value();
 }
 

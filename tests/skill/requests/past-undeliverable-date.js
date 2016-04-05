@@ -95,7 +95,27 @@ module.exports = {
           "lastName": "Last",
           "address": "1234 Main St|#11||American Fork|UT|84003|US"
         },
-        "arrangement": "birthday",
+        "arrangement": {
+          "name": "Thank You",
+          "sku": "100299",
+          "details": {
+            "prodType": "FPT",
+            "items": [
+              {
+                "sku": "100299L",
+                "price": "69.99"
+              },
+              {
+                "sku": "100299M",
+                "price": "59.99"
+              },
+              {
+                "sku": "100299S",
+                "price": "49.99"
+              }
+            ]
+          }
+        },
         "size": "small"
       },
       "state": "query-date",

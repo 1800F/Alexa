@@ -455,8 +455,6 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
     return oauthReq('password', { username: '1stevenh@rain.agency', password: '1rainPssword' }, options).then(function (tokens) {
       //If successful, store username and password entered in into options to use for authenticate
       if (tokens.error) return Promise.reject(tokens.error);
-      console.log("LOGIN OPTIONS: ");
-      console.log(options);
       return tokens;
     });
   }

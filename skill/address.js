@@ -18,7 +18,7 @@ exports.fromPipes = function(address){
     line2: parts[1],
     line3: parts[2],
     city: parts[3],
-    state: states[abbreviation],
+    state: states[abbreviation] || abbreviation,
     zip: parts[5],
     country: parts[6]
   };

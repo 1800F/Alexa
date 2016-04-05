@@ -393,6 +393,31 @@ module.exports = StateMachine({
         });
       }
     },
+    "query-buy-confirmation": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          if (request.intent.name == 'AMAZON.YesIntent') {
+            return po.placeOrder().then(function(isValid){
+              if(!isValid) return replyWith('Errors.ErrorAtOrder','die',request,po);
+              return replyWith('QueryBuyConfirmation.SendToSomeoneElse','clear-and-restart',request,po);
+            });
+          }else if (request.intent.name == 'AMAZON.NoIntent') {
+            return replyWith('QueryBuyConfirmation.CancelOrder','cancel-order-confirmation',request,po);
+          }
+        });
+      }
+    },
+    "clear-and-restart": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.empty(api); })
+        .then(function(po){
+          return replyWith(null,'query-options-again',request,po)
+        });
+      }
+    },
     "cancel-order-confirmation": {
       enter: function enter(request) {
         return this.Access(request)

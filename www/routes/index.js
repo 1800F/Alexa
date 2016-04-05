@@ -61,53 +61,22 @@ router.post('/', function (req, res, next) {
     alexaFlowers.validate(user).then(function (data) {
       console.log('--------------------------------------------------------------------VALIDATE DATA---------------------------------');
       console.log(data);
-      if (data.errors.length) {
-        res.render('home/account-error', {
-          page: 'account-error',
-          title: '1800flowers',
-          hasError: function hasError(error) {
-            return data.errors.indexOf(error) >= 0;
-          }
-        });
-      } else {
-        var authCode = oauthhelper.encryptTokens({"systemID":data.systemID, "customerID":data.customerID});
-        process.stdout.write('auth_code: ' + authCode + "\r");
-        if (data.noCC || data.noContacts) {
-          console.log("REDIRECT URL: " + oauthhelper.redirectTo(req.body.state, authCode));
-          res.render('home/success-needs-more', {
-            page: "success",
-            title: "1800flowers - Account Linked",
-            auth_code: authCode,
-            redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
-            nextSteps: lang.enumerate(_.compact([
-                data.noCC ? 'contacts' : ''
-              , data.noBillingAddress ? 'a billing address' : ''
-              , data.noContacts ? 'contacts' : ''
-            ])),
-            created: false
-          });
-        }
-        else {
-          console.log("REQ BODY:");
-          console.log(req.body);
-          console.log("REDIRECT URL: " + oauthhelper.redirectTo(req.body.state, authCode));
-          res.render('home/success', {
-            page: "success",
-            title: "1800flowers - Account Linked",
-            auth_code: authCode,
-            redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
-            nextSteps: lang.enumerate(_.compact([
-                data.noCC ? 'contacts' : ''
-              , data.noBillingAddress ? 'a billing address' : ''
-              , data.noContacts ? 'contacts' : ''
-            ])),
-            created: false
-          });
-        }
-      }
+      var authCode = oauthhelper.encryptTokens({"systemID":data.systemID, "customerID":data.customerID});
+      res.render( data.noCC || data.noContacts || data.noBillingAddress ?'home/success-needs-more' :'home/success'
+      , {
+        page: "success",
+        title: "1800flowers - Account Linked",
+        auth_code: authCode,
+        redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
+        nextSteps: lang.enumerate(_.compact([
+            data.noCC ? 'contacts' : ''
+          , data.noBillingAddress ? 'a billing address' : ''
+          , data.noContacts ? 'contacts' : ''
+        ])),
+        created: false
+      });
     }).catch(function (err) {
-      console.log("ERROR AUTHENTICATING----------------------------------------******************************----------------------:");
-      console.log(JSON.stringify(err));
+      console.error(err.stack);
       res.render('home/index', {
         page: 'homepage',
         title: '1800flowers',
