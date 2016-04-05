@@ -12,7 +12,7 @@
     "logsAreInsensitive": true,
     "callsPerSecond": 50,
     "platform": "echo",
-    "encryptKey": "18F-SuperSekritSki11Inf!"
+    "encryptKey": "18F-SuperSekritSki11Inf!",
     "paymentCredentials": {
       "user": "test",
       "password": "test"
