@@ -2,6 +2,7 @@
 
 var Promise = require('bluebird')
   , path = require('path')
+  , fs = require('fs')
   , _ = require('lodash')
   , moment = require('moment')
   , FlowersUser = require('./FlowersUser')
@@ -21,6 +22,9 @@ var Flowers = module.exports = function Flowers(options, tokens) {
   options.transform = options.transform || _.identity;
   tokens = tokens || {};
   var qAuthReq = null;
+
+  var httpOpts = require('https').globalAgent.options;
+  httpOpts.ca = (httpOpts.ca || []).concat(fs.readFileSync(__dirname + '/verisign.pem', 'utf8'));
 
   return options.transform({
     login: login,
