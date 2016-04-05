@@ -1,5 +1,5 @@
 Sorry guys... I keep forgetting to send this.  The API flow for an order would be:
-1.  getCustomerDetails (FlowersUser.getProfile)
+1.  getCustomerDetails (FlowersUser.getCustomerDetails)
 2.  Get recipient information (FlowersUser.getRecipients)
 3.  After they select a recipient, get the recipient address (FlowersUser.getRecipientAddress)
 4.  Select the arrangement to purchase, and get it's pricing and other information (Product.getProductDetails)

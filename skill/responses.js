@@ -31,8 +31,7 @@ var responses = function () {
         tell: "Hello, and welcome back to 1-800-Flowers. I'm sorry, I've encountered an issue and I'm unable to take orders at this time.\n          <break time=\"1s\"/>\n          Please check back soon, and thank you for visiting 1-800-Flowers."
       },
       ErrorAtOrder: {
-        // {userName} is the user's first name, e.g. Greg or Leigh Anne.
-        tell: "I'm sorry {userName}, but there was an error in processing your order and I'm unable to continue at this time.\n          <break time=\"1s\"/>\n          Please check back soon to try your order again, and thank you for visiting 1-800-Flowers."
+        tell: "I'm sorry, but there was an error in processing your order and I'm unable to continue at this time.\n          <break time=\"1s\"/>\n          Please check back soon to try your order again, and thank you for visiting 1-800-Flowers."
       },
       ErrorNonPlannedAtLaunch: {
         tell: "I'm sorry, I couldn't understand you. To launch this skill you can say, Alexa ask 1-800-Flowers to order flowers or simply say Alexa open 1-800-Flowers."

@@ -166,7 +166,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
     getPaymentMethods: getPaymentMethods,
     getRecipients: getRecipients,
     getRecipientAddress: getRecipientAddress,
-    getProfile: getProfile,
+    getCustomerDetails: getCustomerDetails,
     submitOrder: submitOrder
   }, 'user');
 
@@ -206,7 +206,15 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
         "InquiryLevel":"4"
       }
     };
-    return userrequest('POST', '/getSavedCC', {}, body, null, "account");
+    return userrequest('POST', '/getSavedCC', {}, body, null, "account").then(function(body){
+      var val = _.at(body,'GetSavedCardsForCustomerResponse.result.response.financialProfile.chargeCard');
+      if(!val.length) return null;
+      return _.map(val[0],function(card){
+        var card = _.pick(card,['idPK','number','type','cardExpiryDate','nameOnCard'])
+        card.id = card.idPK;
+        return card;
+      });
+    });
   }
 
   function getRecipients(customerID) {
@@ -245,7 +253,7 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
 
   }
 
-  function getProfile(systemID) {
+  function getCustomerDetails(systemID) {
     var body = {
       "Get18FCustomerByAdminSysKey":{
         "control":{
@@ -259,7 +267,35 @@ var FlowersUser = module.exports.FlowersUser = function FlowersUser(options, tok
         "InquiryLevel":"2"
       }
     };
-    return userrequest('POST', '/getCustomerDetails', {}, body, null, "account");
+    return userrequest('POST', '/getCustomerDetails', {}, body, null, "account")
+    .then(function(body){
+      if(!body.Get18FCustomerByAdminSysKeyResponse.result.status.processingStatus.value == 'SUCCESS') return Promise.reject(body);
+      body = body.Get18FCustomerByAdminSysKeyResponse.result.response;
+      return {
+        customerId: body.idPK,
+        displayName: body.displayName,
+        address: processAddress(body.address),
+        phone: processPhone(body.contactMethod)
+      };
+
+      function processPhone(contactMethod) {
+        if(!contactMethod || !contactMethod.contactMethod) return null;
+        contactMethod = contactMethod.contactMethod;
+        return contactMethod.referenceNumber;
+      }
+      function processAddress(address) {
+        if(!address || !address.address) return null;
+        address = address.address;
+        return {
+          addr1: address.addressLineOne,
+          addr2: null,
+          city: address.city,
+          state: address.stateProvince.code,
+          postalCode: address.zipPostalCode,
+          country: address.country.code
+        }
+      }
+    });
   }
 
   function submitOrder(product, recipient, user, payment, delivery) {
@@ -448,22 +484,22 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
                    "prodType": product.prodType,
                    "parentLine": "1",
                    "logicalOrder": "0",
-                   "fName": recipient.firstName,
-                   "lName": recipient.lastName,
                    "addr1": recipient.addr1,
                    "addr2": recipient.addr2,
                    "city": recipient.city,
                    "state": recipient.state,
                    "postalCode": recipient.postalCode,
-                   "country": recipient.country,
+                   "country": normalizeCountryCodes(recipient.country),
                    "locationType": "1",
-                   "deliveryDate": moment(deliveryDate).format('DD-MMM-YYYY'),
+                   "deliveryDate": moment(deliveryDate).format('DD-MMM-YY').toUpperCase(),
                    "deliveryWindow": "1",
+                   "shippingCharge": "0",
                    "itemPrice": product.itemPrice,
                    "brandCode": "1001",
                    "fsiFlag": "N",
                    "tryMe": "N",
                    "shipNow": "N",
+                   "flexOptionCode": "1",
                 }
              ]
           }
@@ -522,7 +558,7 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
       if (recResult.errorCode != "0") {
         return {error:recResult.errorDescription};
       }
-      else return recResult.taxAmount;
+      else return +recResult.taxAmount;
     });
   }
 
@@ -549,7 +585,7 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
     });
   }
 
-  function authorizeCC(token, paymentInfo, user) {
+  function authorizeCC(token, paymentInfo, amount, user) {
     var body = {
       "paymentRequest": {
           "authorization": {
@@ -562,13 +598,13 @@ var Purchase = module.exports.Purchase = function Purchase(options) {
              "creditCards": {
                 "creditCard": {
                    "creditCardPaymentInfo": {
-                      "cardNumber": paymentInfo.tokenizedCC,
+                      "cardNumber": paymentInfo.number,
                       "cardType": paymentInfo.type.value,
-                      "securityCode": "", //DO WE ASK THEM FOR THIS???
+                      "securityCode": "", //We don't collect this, but it's not required
                       "nameOnCard": paymentInfo.nameOnCard,
                       "cardExpDate": paymentInfo.cardExpiryDate,
                       "currencyCode": "840",
-                      "transactionAmount": paymentInfo.amount,
+                      "transactionAmount": amount.toFixed(2),
                       "divisionNumber": "104272",
                       "transactionType": "7"
                    },
@@ -975,7 +1011,7 @@ function oauthReq(grant_type, values, options) {
     headers: headers,
     form: body,
     proxy: options.proxy,
-    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false
+    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false,
   }).then(function (res) {
     if (options.verbose) console.log('Response', url, res.statusCode,+new Date() - startTime + 'ms');
     try {
@@ -1025,7 +1061,8 @@ function issue(method, token, path, queryString, body, paging, options, apiType)
       "X-IBM-Client-Secret": options.secret,
       "Accept": 'application/json'
     },
-    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false
+    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false,
+    proxy: options.proxy,
   };
   if (apiType == 'account' || apiType == 'payment') {
      req.headers.Authorization = "Bearer " + token;
@@ -1084,7 +1121,8 @@ function soapRequest(token, uri, sendObject, options) {
       "SOAPAction": "submitOrderFile"
     },
     body: body,
-    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false
+    strictSSL: _.has(options, 'strictSSL') ? options.strictSSL : false,
+    proxy: options.proxy,
   };
   if(options.verbose) {
     console.log("REQUEST: " + url);
@@ -1175,4 +1213,11 @@ function dateShortString(date) {
   }
 
   return day + "-" + monthNames[month] + "-" + year;
+}
+
+function normalizeCountryCodes(code) {
+  if(!code) return code;
+  // The address API gives back US, but the shipping API requires USA
+  if(code.toLowerCase() == 'us') return 'USA';
+  return code;
 }

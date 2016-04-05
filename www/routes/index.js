@@ -12,7 +12,9 @@ var router = exports.router = require('../infrastructure/mount.js')(__dirname),
     basicauth = require('basic-auth'),
     alexaFlowers = require('../../services/alexa-flowers.js'),
     _ = require('lodash'),
-    verbose = config.verbose;
+    verbose = config.verbose,
+    lang = require('../../skill/lang.js')
+    ;
 
 router.get('/fail', function (req, res, next) {
   res.redirect(oauthhelper.redirectTo(req.query.state, 'notvalid'));
@@ -77,13 +79,12 @@ router.post('/', function (req, res, next) {
             title: "1800flowers - Account Linked",
             auth_code: authCode,
             redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
-            noCC: data.noCC,
-            noContacts: data.noContacts,
+            nextSteps: lang.enumerate(_.compact([
+                data.noCC ? 'contacts' : ''
+              , data.noBillingAddress ? 'a billing address' : ''
+              , data.noContacts ? 'contacts' : ''
+            ])),
             created: false
-            // card: {
-            //   imgUrl: alexaFlowers.pickCardImage(data.card.imageUrls, 'ImageLarge'),
-            //   name: data.card.nickname
-            // }
           });
         }
         else {
@@ -95,13 +96,12 @@ router.post('/', function (req, res, next) {
             title: "1800flowers - Account Linked",
             auth_code: authCode,
             redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
-            noCC: data.noCC,
-            noContacts: data.noContacts,
+            nextSteps: lang.enumerate(_.compact([
+                data.noCC ? 'contacts' : ''
+              , data.noBillingAddress ? 'a billing address' : ''
+              , data.noContacts ? 'contacts' : ''
+            ])),
             created: false
-            // card: {
-            //   imgUrl: alexaFlowers.pickCardImage(data.card.imageUrls, 'ImageLarge'),
-            //   name: data.card.nickname
-            // }
           });
         }
       }
@@ -197,7 +197,7 @@ router.post('/create', function (req, res, next) {
       });
 
       // flowers.login(email, password).then(function (flowersUser) {
-      //   flowersUser.getProfile(user.registerNewCustomerResponse.customerData.systemID).then( function (userProfile) {
+      //   flowersUser.getCustomerDetails(user.registerNewCustomerResponse.customerData.systemID).then( function (userProfile) {
       //     console.log("System ID: " + user.registerNewCustomerResponse.customerData.systemID);
       //     console.log("Customer ID: " + userProfile.Get18FCustomerByAdminSysKeyResponse.result.response.idPK);
       //     var authCode = oauthhelper.encryptTokens({"systemID":user.registerNewCustomerResponse.customerData.systemID, "customerID":userProfile.Get18FCustomerByAdminSysKeyResponse.result.response.idPK});

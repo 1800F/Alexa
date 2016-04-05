@@ -20,13 +20,6 @@ var _ = require('lodash'),
     address = require('./address.js')
     ;
 
-exports.userName = function (po) {
-  if(!po) return '';
-  return po.getProfile().then(function (profile) {
-    return profile.name;
-  })
-};
-
 // Recipients
 
 exports.recipientChoices = function (po) {

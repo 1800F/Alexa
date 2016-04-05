@@ -2,12 +2,14 @@
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var Promise = require('bluebird'),
-    _ = require('lodash'),
-    Flowers = require('./Flowers.js'),
-    url = require('url'),
-    _ = require('lodash'),
-    path = require('path');
+var Promise = require('bluebird')
+  , _ = require('lodash')
+  , Flowers = require('./Flowers.js')
+  , url = require('url')
+  , _ = require('lodash')
+  , path = require('path')
+  , moment = require('moment')
+;
 
 var ERRORS = exports.ERRORS = _(['CARD', 'PAYMENTMETHOD', 'MOPHISTORY']).map(function (x) {
   return [x, x];
@@ -22,10 +24,11 @@ exports.validate = function (flowersUser) {
   return flowersUser.authenticate().then( function (authenticateUser) {
     var systemID = authenticateUser.authenticateCustomerResponse.customerData.systemID;
     process.stdout.write('authenticateError: ' + authenticateUser.authenticateCustomerResponse.error + "\rauthenticateSystemID: " + systemID + "\r");
-    return flowersUser.getProfile(systemID).then( function (userProfile) {
-      var customerID = userProfile.Get18FCustomerByAdminSysKeyResponse.result.response.idPK;
-      process.stdout.write("customerID: " + customerID + "\r");
-      return Promise.all([flowersUser.getPaymentMethods(systemID), flowersUser.getRecipients(customerID)
+    return flowersUser.getCustomerDetails(systemID).then( function (userProfile) {
+      var customerId = userProfile.customerId;
+      return Promise.all([
+        flowersUser.getPaymentMethods(systemID)
+       ,flowersUser.getRecipients(customerId)
       ]).spread(function (paymentMethods, recipients) {
         var _ref;
         process.stdout.write('Validate Reached:\r');
@@ -33,34 +36,32 @@ exports.validate = function (flowersUser) {
         console.log("payment length: " + JSON.stringify(paymentMethods.GetSavedCardsForCustomerResponse.result.response));
         console.log("CONTACTS: " + JSON.stringify(recipients));
 
-        var errors = [], noCC = false, noContacts = false;
-        //Check to see if there are valid payment methods
-        if (!paymentMethods || !paymentMethods.GetSavedCardsForCustomerResponse || !paymentMethods.GetSavedCardsForCustomerResponse.result || !paymentMethods.GetSavedCardsForCustomerResponse.result.response || paymentMethods.GetSavedCardsForCustomerResponse.result.response.financialProfile.chargeCard.length < 1 ) {
-          //errors.push(ERRORS.CARD);
-          noCC = true;
-        }
-        //Check to see if there are recipients
-        if (!recipients|| recipients.length < 1) {
-          //errors.push(ERRORS.CARD);
-          noContacts = true;
-        }
+        var errors = []
+          , noCC = !exports.pickCard(paymentMethods)
+          , noBillingAddress =!userProfile.address
+          , noContacts = !recipients|| recipients.length < 1
+        ;
 
         return _ref = {
           systemID: systemID,
-          customerID: customerID,
+          customerID: customerId,
           noCC: noCC,
-          noContacts: noContacts
+          noContacts: noContacts,
+          noBillingAddress: noBillingAddress
           }, _defineProperty(_ref, 'errors', errors), _ref;
       });
     });
 
   });
-
 };
 
-exports.isValidPaymentMethod = function (method) {
-  var now = new Date(),
-      nowYear = now.getFullYear(),
-      nowMonth = now.getMonth() + 1;
-  return method.expirationYear > nowYear || method.expirationYear == nowYear && method.expirationMonth >= nowMonth;
+exports.pickCard = function (cards) {
+  return _.find(cards,function(card){
+    return moment(card.cardExpiryDate).isSameOrAfter(moment()) && !cardBlackList[card.id];
+  });
+};
+
+var cardBlackList = {
+  '510145981460446452': true,
+  '761145982066627277': true
 };

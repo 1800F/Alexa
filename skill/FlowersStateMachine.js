@@ -455,7 +455,6 @@ module.exports = StateMachine({
     }
     //HERE IS WHERE WE WILL GET AN OAUTH ACCESSTOKEN USING THE DEFAULT CREDENTIALS
     //THEN WE WILL PULL USER DATA BASED ON SYSTEMID STORED IN THE ALEXA REQUEST IN PartialOrder.build()
-    //FIRST CALL flowers.getProfile, THEN flowers.getRecipients, THEN flowers.getPaymentMethods
     return Promise.try(function () {
       flowers = flowers || Flowers(config.flowers);
       console.log('Logging in using default credentials.');

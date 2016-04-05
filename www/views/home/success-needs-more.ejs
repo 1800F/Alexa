@@ -8,10 +8,7 @@
         <h4>Almost Done!</h4>
         <p>You have successfully <%= created ? "created an account. " : "linked your account. " %> 
           <strong>
-            <%= (noContacts && noCC) ? "You must add contacts and payment information" : "" %>
-            <%= (noContacts && !noCC) ? "You must add contacts" : "" %>
-            <%= (noCC && !noContacts) ? "You must add payment information" : "" %>
-            <%= (!noCC && !noContacts) ? "You have all you need" : "" %>
+            <%= (nextSteps.length  ? "You must add " + nextSteps : "You have all you need" %>
           </strong> in order to send flowers using the 1-800-Flowers Alexa Skill.
         </p>
       </div>

@@ -276,12 +276,6 @@ PartialOrder.prototype.getArrangementPrices = function() {
   });
 }
 
-/// ***** Delivery Date ***** ///
-
-PartialOrder.prototype.hasDeliveryDate = function() {
-  return !!this.deliveryDate;
-}
-
 PartialOrder.prototype.getCatalogEntry = function() {
   var self = this;
   if(!this.arrangement || !this.size) return null;
@@ -293,6 +287,12 @@ PartialOrder.prototype.getCatalogEntry = function() {
     category: self.arrangement,
     size: size
   };
+}
+
+/// ***** Delivery Date ***** ///
+
+PartialOrder.prototype.hasDeliveryDate = function() {
+  return !!this.deliveryDate;
 }
 
 PartialOrder.prototype.acceptPossibleDeliveryDate = function(date) {
@@ -356,11 +356,18 @@ PartialOrder.prototype.prepOrderForPlacement = function(){
   .spread(function(address){
     return purchase.getShipping({
       productSku: self.arrangement.sku,
-      productType: self.arrangement.prodType, // TODO: check if it should be productType or another.
+      prodType: self.arrangement.prodType,
       itemPrice: self.arrangement.price,
     },address,self.deliveryDate);
   }).then(function(shipping){
-
+    charges = {
+      item: +item.skuOfferPrice,
+      shippingBase: +shipping[0].baseCharge,
+      surcharge: +shipping[0].totSurcharge,
+      upcharge: +shipping[0].upCharge,
+    };
+    charges.shippingTotal = charges.shippingBase + charges.surcharge + charges.upcharge;
+    charges.total = charges.item + charges.shippingTotal;
   })
   /*
     login: login,
@@ -374,6 +381,7 @@ PartialOrder.prototype.prepOrderForPlacement = function(){
 }
 
 PartialOrder.prototype.placeOrder = function(){
+  //-1. Pick a credit card
   //0. Get order Number
   //1. Authorize CC
   //2. create order

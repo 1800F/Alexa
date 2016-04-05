@@ -7,7 +7,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class NewCrypto
 {
 
-	
+
     private static Cipher enCipher = null;
     private static Cipher deCipher = null;
     private static byte baOurKey[] = null;
@@ -64,13 +64,13 @@ public class NewCrypto
 
     public static void main(String args[])
     {
-     String encrytrecard = encryptCreditCard("5454545454545454", "18F-SuperSekritSki11Inf!");
-     System.out.println(encrytrecard);  
-      
-        
- //String encrytrecard="B5E2DB015B587FD2";//         
-			                     //
-     
+     String encrytrecard = encryptCreditCard("411111111111111", "18F-SuperSekritSki11Inf!");
+     System.out.println(encrytrecard);
+
+
+ //String encrytrecard="B5E2DB015B587FD2";//
+                           //
+
      //
      //
 
@@ -78,12 +78,12 @@ public class NewCrypto
    System.out.println(decrytrecard);
    //
    //
-        
+
     }
-    
-    
-    
-    
+
+
+
+
     private static boolean init()
     {
         boolean bRet = true;
@@ -180,7 +180,7 @@ public class NewCrypto
             return null;
         }
         String pseudo[] = {
-            "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", 
+            "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
             "A", "B", "C", "D", "E", "F"
         };
         StringBuffer out = new StringBuffer(in.length * 2);
