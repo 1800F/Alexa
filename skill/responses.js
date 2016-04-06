@@ -46,6 +46,10 @@ var responses = function () {
         ask: "Who would you like to send flowers to?",
         reprompt: "What's the first name of the person you want to send flowers to?"
       },
+       RecipientSelectionAlt: {
+        ask: "{okay}, who are the flowers for?",
+        reprompt: "What's the first name of the person you want to send flowers to?"
+      },
       ArrangementList: {
         ask: "I have four types of arrangements available: Mothers Day, Birthday, \"Love and Romance\", and, Thank you. <break time=\"500ms\"/>Which would you like?",
         reprompt: "Did you want an arrangement for someone's birthday, <break time=\"350ms\"/>Mothers Day,<break time=\"350ms\"/> \"Love and Romance\", <break time=\"350ms\"/>or, to say<break time=\"10ms\"/>Thank you?"
