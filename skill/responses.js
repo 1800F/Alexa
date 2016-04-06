@@ -243,7 +243,7 @@ var responses = function () {
         reprompt: "Should I place your order for {price}?"
       },
       CancelOrder: {
-        ask: "Would you like to cancel your order?",
+        ask: "{okay}, what change would you like to make?}",
         reprompt: "Did you want to cancel your order?",
       },
     },
