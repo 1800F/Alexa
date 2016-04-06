@@ -256,7 +256,15 @@ var responses = function () {
       SendToSomeoneElse: {
         ask: "I've sent your order. There is a review card in the Alexa app and you will receive an email confirmation shortly. \n" +
              "Would you like to send flowers to someone else?",
-        reprompt: "To send flowers to someone just say their name."
+        reprompt: "To send flowers to someone just say their name.",
+        card: {
+          type: 'Simple',
+          title: 'You bought flowers!',
+          content: 'Your {arrangementSize} {arrangementType} order has been placed!\n' +
+            '{recipient}\n{address}\n' +
+            'Delivery Date: {deliveryDate}\n' +
+            'Order Total: {price}'
+        }
       },
     },
 
@@ -276,10 +284,10 @@ var responses = function () {
     Help: {
       HelpStartMenu: {
         tell: "Okay, I'd be happy to help.    <break time=\"1s\"/>\n "
-          + "You can send flowers to you contacts in your 1-800 Flowers account."
+          + "You can send flowers to your contacts in your 1 800 Flowers account. "
           + "Just say their name to send them flowers.   <break time=\"1s\"/>\n "
-          + "You can add contacts and updates addresses on 1-800 Flowers.com.   <break time=\"1s\"/>\n "
-          + "You can select the type of arrangement like; Mother's Day, Birthday, Thank You, or Love and Romance."
+          + "You can add contacts and update addresses on 1 800 Flowers.com.   <break time=\"1s\"/>\n "
+          + "You can select the type of arrangement like; Mother's Day, Birthday, Thank You, or Love and Romance. "
           + "You can also choose between small, medium, and large arrangement sizes.    <break time=\"1s\"/>\n "
           + "Lastly, tell me what day you would like the flowers delivered and I will make sure they get there.",
       },

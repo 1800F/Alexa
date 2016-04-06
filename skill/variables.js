@@ -125,7 +125,7 @@ exports.okay = function (po) {
 // Confirm
 
 exports.address = function (po) {
-  return '';
+  return po.getRecipientAddress();
 };
 
 exports.price = function (po) {
