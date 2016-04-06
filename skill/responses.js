@@ -84,7 +84,7 @@ var responses = function () {
         say: "{okay}.",
       },
       Close: {
-        tell: "Okay, for more floral needs visit 1-800-Flowers.com.",
+        tell: "Okay, for more of your floral needs visit 1-800-Flowers.com.",
       },
     },
 
