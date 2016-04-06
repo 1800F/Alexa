@@ -138,7 +138,7 @@ var responses = function () {
       AddOrUpdateAddressesOnline: {
       },
       SendToSomeoneElse: {
-        ask: "You can only send flowers to contacts in your 1 800 Flowers address book. Go to 1-800-Flowers.com to add more contacts. " +
+        ask: "That is all the addresses i have for {recipient}. Go to 1-800-Flowers.com to update your contacts. " +
           "Would you like to send flowers to someone else?",
         reprompt: "To send flowers to someone just say their name."
       },
