@@ -24,7 +24,7 @@
   },
   "alexa": {
     "auth": {
-      "redirectUrl": "https://pitangui.amazon.com/spa/skill/account-linking-status.html?vendorId=M6ZHH7PH52R7T",
+      "redirectUrl": "https://pitangui.amazon.com/api/skill/link/M6ZHH7PH52R7T",
       "clientId": "alexa-skill",
       "clientSecret": "ihaveasecret",
       "codeKey": "used-to-mangle-codes"
