@@ -370,6 +370,11 @@ PartialOrder.prototype.placeOrder = function(){
   //0. Get order Number
   //1. Authorize CC
   //2. create order
+  var self = this
+    , purchase = Purchase(config.flowers)
+  ;
 
-  return Promise.resolve(true);
+  return purchase.getOrderNumber().then(function(orderNumber) {
+    console.log('Order number ' + orderNumber + ' ' + JSON.stringify(self.order.card));
+  });
 }
