@@ -193,6 +193,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
           }
        }
     };
+    console.log(JSON.stringify(body));
 
     return purchaseRequest('POST', '/authorizeCC', {}, body,  "payment").then(function(authorization){
       var authResult = authorization;
@@ -204,9 +205,9 @@ var Purchase = module.exports= function Purchase(options,tokens) {
     });
   }
 
-  function createOrderObject(product, user, recipient, payment, delivery) {
+  function createOrderObject(product, user, recipient, payment) {
     return getNextOrderNumber().then(function (orderNumber) {
-      var testOrder = {
+      var order = {
           // '@': {
           //   "xmlns:ord": "http://1800flowers.com/BTOP/OrderFile"
           // },
@@ -245,7 +246,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                   "ord:type": "HP",
                   "ord:telephoneNumber": user.phone,
                 },
-                "ord:emailAddress": "",
+                "ord:emailAddress": user.email,
                 "ord:optInFlag": "",
                 "ord:gender": "",
                 "ord:specialFlag": "",
@@ -316,7 +317,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                 "ord:title": "",
                 "ord:firstName": recipient.firstName,
                 "ord:lastName": recipient.lastName,
-                "ord:emailAddress": recipient.email,
+                "ord:emailAddress": "",
                 "ord:address": {
                   "ord:streetAddress1": recipient.addr1,
                   "ord:streetAddress2": recipient.addr2,
@@ -511,7 +512,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
             "ord:errorFlag": ""
           }]
       };
-      return testOrder;
+      return order;
     });
   }
 

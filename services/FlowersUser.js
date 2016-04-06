@@ -5,6 +5,7 @@ var Promise = require('bluebird')
   , moment = require('moment')
   , js2xmlparser = require("js2xmlparser")
   , post = Promise.promisify(require('request').post)
+  , Purchase = require('./Purchase.js')
 ;
 
 var FlowersUser = module.exports = function FlowersUser(options, tokens, systemID, customerID) {
@@ -124,8 +125,11 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
       return {
         customerID: body.idPK,
         displayName: body.displayName,
+        firstName: body.name.givenNameOne,
+        lastName: body.name.lastName,
         address: processAddress(body.address),
-        phone: processPhone(body.contactMethod)
+        phone: processPhone(body.contactMethod),
+        email: body.identification.number
       };
 
       function processPhone(contactMethod) {
@@ -148,19 +152,53 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
     });
   }
 
-  function submitOrder(product, recipient, user, payment, delivery) {
-    var purchase = Flowers.Purchase(options);
-    return purchase.createOrder(product, recipient, user, payment, delivery).then( function(testOrder) {
-      return getUserAuthToken().then(function (token) {
-        return soapRequest(token, 'https://ecommerce.800-flowers.net/alexa/uat/submitOrder/v1', testOrder, options).then(function(order) {
-          console.log("ORDER PROCESSED: " + JSON.stringify(order));
-          if (order[0].flwsErrors[0].flwsError[0].errorMessage[0]) {
-            return {error: order[0].flwsErrors[0].flwsError[0].errorMessage[0]};
+  function submitOrder(product, recipient, user, payment) {
+    var purchase = Purchase(options)
+      , user = {
+          displayName: null
+          , address: {
+            addr1: null
+            , addr2: null
+            , city: null
+            , state: null
+            , country: null
+            , postalCode: null
           }
-          else
-            return order[0];
+          , phone: null
+          , email: null
+        }
+      ;
+    return this.getCustomerDetails().then(function(userProfile) {
+      user.displayName = userProfile.displayName;
+      user.phone = userProfile.phone;
+      user.email = userProfile.email;
+      if (userProfile.address) {
+        user.address.addr1 = userProfile.address.addr1;
+        user.address.addr2 = userProfile.address.addr2;
+        user.address.city = userProfile.address.city;
+        user.address.state = userProfile.address.state;
+        user.address.country = userProfile.address.country;
+        user.address.postalCode = userProfile.address.postalCode;
+      }
+      return purchase.authorizeCC(payment, product.total, user)
+        .then(function(authorization) {
+          console.log('AUTHORIZATION ' + JSON.stringify(authorization));
+          return purchase.createOrder(product, user, recipient, payment)
+            .then( function(order) {
+              return getUserAuthToken()
+                .then(function (token) {
+                  return soapRequest(token, 'submitOrder', order, options)
+                    .then(function(order) {
+                      console.log("ORDER PROCESSED: " + JSON.stringify(order));
+                      if (order[0].flwsErrors[0].flwsError[0].errorMessage[0]) {
+                        return {error: order[0].flwsErrors[0].flwsError[0].errorMessage[0]};
+                      } else {
+                        return order[0];
+                      }
+                    });
+                });
+            });
         });
-      });
     });
   }
 
@@ -188,7 +226,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
 function soapRequest(token, uri, sendObject, options) {
   var method = 'POST',
       op = method == 'POST' ? post : get,
-      url = uri,
+      url = options.endpoint + '/' + uri + '/' + options.version,
       js2XMLParseOptions = {declaration: {'include': false},prettyPrinting: {'enabled': true}},
       myxml = js2xmlparser('ord:orderFile', sendObject, js2XMLParseOptions),
       startTime = +new Date(),
