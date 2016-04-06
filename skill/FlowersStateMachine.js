@@ -237,9 +237,13 @@ module.exports = StateMachine({
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
           if (request.intent.name == 'DescriptionIntent') {
-            po.setupArrangementDescriptions();
+            po.setupArrangementDescriptions(request.intent.params.arrangementSlot);
             if (verbose) console.log('Current Arrangement ' + po.getArrangementDescription().name);
-            return replyWith('QueryArrangementType.FirstArrangmentDescription', 'arrangement-descriptions', request, po);
+            if (request.intent.params.arrangementSlot) {
+              return replyWith('QueryArrangementType.FirstArrangmentDescription', 'clear-arrangement-description-and-restart', request, po);
+            } else {
+              return replyWith('QueryArrangementType.FirstArrangmentDescription', 'arrangement-descriptions', request, po);
+            }
           } else if (request.intent.name == 'AMAZON.NoIntent') {
             po.nextArrangementDescription();
             if (!po.hasArrangementDescription()) {
@@ -253,6 +257,22 @@ module.exports = StateMachine({
             return replyWith(null, 'arrangement-selection', request, po);
           }
         });
+      }
+    },
+    "clear-arrangement-description-and-restart": {
+      enter: function enter(request) {
+        return this.Access(request)
+          .then(function(api){ return PartialOrder.fromRequest(api,request); })
+          .then(function(po) {
+            var arrangementSlot = po.getArrangementDescription().name;
+            po.clearArrangementDescriptions();
+            if (request.intent.name == 'AMAZON.YesIntent') {
+              request.intent.params.arrangementSlot = arrangementSlot;
+              return replyWith(null, 'arrangement-selection', request, po);
+            } else if (request.intent.name == 'AMAZON.NoIntent') {
+              return replyWith(null, 'options-review', request, po);
+            }
+          });
       }
     },
     "arrangement-selection": {

@@ -110,3 +110,11 @@ exports.findByName = function(name) {
       return entry.name.toLowerCase() == name.toLowerCase();
     });
 }
+
+exports.indexByName = function(name) {
+  return _(exports.choices)
+    .map(function(entry) {
+      return entry.name.toLowerCase();
+    })
+    .indexOf(name.toLowerCase());
+}

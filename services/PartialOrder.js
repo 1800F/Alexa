@@ -147,8 +147,10 @@ PartialOrder.prototype.isContactCandidateDeliverable = function() {
 /// in a series, and they can pick one that will become the final arrangement, or we just
 /// let them say the name of the arrangement directly.
 
-PartialOrder.prototype.setupArrangementDescriptions = function() {
-  this.arrangementDescriptionOffset = 0;
+PartialOrder.prototype.setupArrangementDescriptions = function(name) {
+  var index = 0;
+  if (name) index = Catalog.indexByName(name);
+  this.arrangementDescriptionOffset = index;
 }
 
 PartialOrder.prototype.hasArrangementDescription = function() {
