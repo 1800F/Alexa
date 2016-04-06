@@ -1,0 +1,41 @@
+{
+  "server": {
+    "port": 3000,
+    "hostSkill": true
+  },
+  "flowers": {
+    "key": "c4078e06-7f12-442f-ae72-def09015a4f8",
+    "secret": "rT6kX2qU3iS3pH5aQ6iV6sQ4pK1yV1aB4dP5yU5jU6nE0bT5iM",
+    "endpoint": "https://ecommerce.800-flowers.net/alexa/uat",
+    "version": "v1",
+    "verbose": true,
+    "logsAreInsensitive": true,
+    "callsPerSecond": 50,
+    "platform": "echo",
+    "encryptKey": "18F-SuperSekritSki11Inf!",
+    "paymentCredentials": {
+      "user": "test",
+      "password": "test"
+    },
+    "defaultCredentials": {
+      "username": "1stevenh@rain.agency",
+      "password": "1rainPssword"
+    }
+  },
+  "alexa": {
+    "auth": {
+      "redirectUrl": "[CHANGE-THIS]",
+      "clientId": "alexa-skill",
+      "clientSecret": "ihaveasecret",
+      "codeKey": "used-to-mangle-codes"
+    },
+    "appId": "[CHANGE-THIS]"
+  },
+  "skill": {
+    "recipientChoiceCount": 4
+  },
+  "googleAnalytics": {
+    "trackingCode": "[CHANGE-THIS]"
+  },
+  "verbose": true
+}

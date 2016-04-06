@@ -1,161 +1,141 @@
+/**
+ * Copyright (C) Crossborders LLC - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ *
+ * Variables use with responses.
+ *
+ * Written by Christian Torres <christiant@rain.agency>, March 2016
+ */
+
 'use strict';
 
 var _ = require('lodash'),
     Promise = require('bluebird'),
-    zipToTZ = require('../services/zip-to-tz.js'),
     lang = require('./lang.js'),
     currency = require('./currency.js'),
     moment = require('moment'),
-    phonetic = require('./phonetic.js')
+    phonetic = require('./phonetic.js'),
+    _ = require('lodash'),
+    address = require('./address.js')
     ;
 
-exports.userName = function (po) {
-  if(!po) return '';
-  return po.getProfile().then(function (profile) {
-    return profile.name;
-  })
+// Recipients
+
+exports.recipientChoices = function (po) {
+  var choices = po.getRecipientChoices();
+  return lang.enumerate(_.map(choices,'name'));
 };
 
-exports.greetingDayReference = function (po) {
-  return po.getProfile().then(function (profile) {
-    if (profile.timeOfDay == 'day' || profile.timeOfDay == 'night') return 'Hello';
-    if (profile.timeOfDay) return 'Good ' + profile.timeOfDay;
-    return 'Hello';
-  });
+exports.numberOfRecipientsLeft = function (po) {
+  return '';
 };
 
-exports.goodbyeDayReference = function (po) {
-  if(!po) return 'great day';
-  return po.getProfile().then(function (profile) {
-    if (profile.timeOfDay) return 'great ' + profile.timeOfDay;
-    return 'great day';
-  });
+exports.contactCandidateName = function (po) {
+  var candidate = po.getContactCandidate();
+  return _.compact([candidate.firstName, candidate.lastName]).join(' ');
 };
 
-exports.orderItem = function (po) {
-  return po.getProductNames().then(function () {
-    var item = po.items[0];
-    return phonetic.replace(lang.quantify(item.quantity, item.name));
-  });
+exports.contactCandidateAddress = function (po) {
+  return address.say(address.fromPipes(po.getContactCandidate().address));
 };
 
-exports.orderItemToRemove = function (po) {
-  var item = po.getOrderAdjustItem();
-  if (item.quantity > 1) return phonetic.replace(lang.quantify(item.quantity, item.name));
-  return phonetic.replace(item.name);
+exports.deliveryDateOffers = function(po) {
+  return lang.enumerateOr(po.deliveryDateOffers.map(function(date){
+    return moment(date).format('MMMM Do');
+  }))
+}
+
+// Arrangement sizes
+
+exports.largePrice = function (po) {
+  var details = po.getSizeDetailsByName('large');
+  return currency.sayInBlocks(details.price);
 };
 
-exports.orderLocation = function (po) {
-  return po.getStoreData(po.store).then(function (storeData) {
-    return storeData.name;
-  });
+exports.mediumPrice = function (po) {
+  var details = po.getSizeDetailsByName('medium');
+  return currency.sayInBlocks(details.price);
 };
 
-exports.orderLocationFullAddress = function (po) {
-  return po.getStoreData(po.store).then(function (storeData) {
-    var addr = storeData.address || {};
-    return _.compact([addr.streetAddressLine1, addr.streetAddressLine2, addr.city + ', ' + addr.countrySubdivisionCode + ' ' + addr.postalCode]).join('\n');
-  });
+exports.smallPrice = function (po) {
+  var details = po.getSizeDetailsByName('small');
+  return currency.sayInBlocks(details.price);
 };
 
-exports.totalLocAdjustLocations = function (po) {
-  return po.locAdjust.stores.length;
+// To Review Order
+
+exports.arrangementSize = function (po) {
+  return po.size;
 };
 
-exports.locAdjustOrderLocation = function (po) {
-  return po.getStoreData(po.getLocAdjustLoc()).then(function (storeData) {
-    return storeData.name;
-  });
+exports.arrangementType = function (po) {
+  return po.arrangement.name;
 };
 
-exports.currentBalance = function (po) {
-  return po.getBalance().then(function (balance) {
-    return currency.say(balance.balance, balance.currencyCode);
-  });
+exports.recipient = function (po) {
+  return _.compact([po.recipient.firstName, po.recipient.lastName]).join(' ');
 };
 
-exports.currentBalanceTextFormatted = function (po) {
-  return '$' + po.balance.balance.toFixed(2);
-};
-exports.reloadAmount = function (po) {
-  return currency.say(po.pricing.reloadAmount, po.balance.currencyCode);
+exports.possibleRecipient = function (po) {
+  return po.possibleRecipient;
 };
 
-exports.reloadAmountTextFormatted = function (po) {
-  return '$' + po.pricing.reloadAmount.toFixed(2);
+exports.deliveryDate = function (po) {
+  return moment(po.deliveryDate).format('MMMM Do');
 };
 
-exports.orderItemsListTextFormatted = function (po) {
-  return _.map(po.items, display).join('\n');
-  function display(item) {
-    return '- (' + item.quantity + ') ' + item.name;
-  }
+// Query arrangement, size
+
+exports.arrangementDescription = function(po) {
+  var arrangement = po.getArrangementDescription();
+  return arrangement.description;
 };
 
-exports.anOrderItemList = function (po) {
-  return po.getProductNames().then(function () {
-    return phonetic.replace(lang.enumerate(_.map(po.items, function (item) {
-      return lang.quantify(item.quantity, item.name);
-    })));
-  });
+exports.arrangementName = function(po) {
+  var arrangement = po.getArrangementDescription();
+  return arrangement.name;
+}
+
+exports.sizeDescription = function (po) {
+  var size = po.getSizeDescription();
+  return size.description;
+}
+
+exports.sizeName = function (po) {
+  var size = po.getSizeDescription();
+  return size.name;
 };
 
-exports.orderItemList = function (po) {
-  return po.getProductNames().then(function () {
-    return phonetic.replace(lang.enumerate(_.map(po.items, function (item) {
-      return lang.quantify(item.quantity, item.name, { articles: false });
-    })));
-  });
+exports.sizePrice = function (po) {
+  var details = po.getSizeDetailsByName(this.getSizeDescription().name);
+  return currency.say(details.price, 'USD');
+}
+
+// OKay
+
+exports.okay = function (po) {
+  return _.sample([
+    'Okay',
+    'Great',
+    'Excellent'
+  ]);
 };
 
-exports.fallbackItems = function (po) {
-  return phonetic.replace(lang.enumerate(_.map(po.fallback.originalOrder.items, function (item) {
-    return lang.quantify(item.quantity, item.name, { articles: false });
-  })));
+// Confirm
+
+exports.address = function (po) {
+  return '';
 };
 
-exports.fallbackItemsIsAre = function (po) {
-  return po.fallback.originalOrder.items.length <= 1 ? 'is' : 'are';
+exports.price = function (po) {
+  return currency.say(po.order.charges.total,'USD');
 };
 
-exports.orderItemNotAvailable = function (po) {
-  return phonetic.replace(lang.enumerate(_.map(po.pruned, function (item) {
-    if (item.quantity > 1) return lang.quantify(item.quantity, item.name);
-    return item.name;
-  })));
+exports.possibleDeliveryDate = function (po) {
+  return moment(po.possibleDeliveryDate).format('MMMM Do');
 };
 
-exports.prunedItemsIsOrAre = function (po) {
-  return po.pruned.length > 1 ? 'are' : 'is';
-};
-
-exports.prunedItemsThatItemOrThoseItems = function (po) {
-  return po.pruned.length > 1 ? 'those items' : 'that item';
-};
-
-exports.orderPrice = function (po) {
-  return currency.say(po.pricing.totalAmount, po.pricing.currencyCode);
-};
-
-exports.orderPriceTextFormatted = function (po) {
-  return '$' + po.pricing.totalAmount.toFixed(2);
-};
-
-exports.totalItems = function (po) {
-  return po.items.length;
-};
-
-exports.pickupTime = function (po) {
-  return po.pickup.minimumWait + ' to ' + po.pickup.maximumWait;
-};
-
-exports.orderLocationOpenHour = function (po) {
-  var myStore = po.noStoreAvailableExplanation.myStore,
-      localTime = moment(myStore.localTime),
-      nextOpen = moment(myStore.nextOpen),
-      gap = moment.duration(moment(nextOpen).startOf('day').diff(moment(localTime).startOf('day'))),
-      timeOfDay = nextOpen.format('h:mm a');
-  if (gap.asDays() < 1) return timeOfDay;
-  if (gap.asDays() < 2) return timeOfDay + ' tomorrow';
-  return timeOfDay + ' on ' + nextOpen.format('dddd');
-};
+exports.paymentType = function (po) {
+  return po.order.card.type.code;
+}

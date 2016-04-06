@@ -13,6 +13,7 @@ module.exports = function OAuthHelper(options) {
   };
   return {
     redirectTo: function redirectTo(state, code) {
+      console.log("redirect to 1");
       return exports.redirectTo(state, code, options.redirectUrl, cipher());
     },
     encryptTokens: function encryptTokens(tokens) {
@@ -45,7 +46,9 @@ exports.decryptCode = function (code, decipher) {
 };
 
 exports.redirectTo = function (state, code, redirectUrl) {
+  console.log('redirect to');
   var uri = url.parse(redirectUrl, true);
+  console.log('parse');
   delete uri.search;
   uri.query.state = state;
   uri.query.code = code;

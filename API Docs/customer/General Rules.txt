@@ -1,0 +1,5 @@
+Identify your application using
+Client ID and secret  -    Use your application's client ID and client secret to access this API
+
+
+/customer/v1

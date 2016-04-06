@@ -9,7 +9,7 @@ var _ = require('lodash'),
     Promise = require('bluebird');
 
 /**
- * Starbucks is a child of AlexaSkill.
+ * 1-800-Flowers is a child of AlexaSkill.
  */
 var StateMachineSkill = module.exports = function (appId, StateMachine) {
   this._StateMachine = StateMachine;
@@ -26,13 +26,13 @@ var ERRORS = module.exports.ERRORS = {
 };
 
 StateMachineSkill.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
-  console.log("Starbucks onSessionStarted requestId: " + sessionStartedRequest.requestId + ", sessionId: " + session.sessionId);
+  console.log("1-800-Flowers onSessionStarted requestId: " + sessionStartedRequest.requestId + ", sessionId: " + session.sessionId);
   var handler = this._StateMachine.onSessionStart;
   if (handler) handler(new Request(sessionStartedRequest, session));
 };
 
 StateMachineSkill.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
-  console.log("Starbucks onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
+  console.log("1-800-Flowers onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
   var intent = this._StateMachine.openIntent;
   this.eventHandlers.onIntent.call(this,{
     "type": "IntentRequest",
@@ -47,7 +47,7 @@ StateMachineSkill.prototype.eventHandlers.onLaunch = function (launchRequest, se
 };
 
 StateMachineSkill.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
-  console.log("Starbucks onSessionEnded requestId: " + sessionEndedRequest.requestId + ", sessionId: " + session.sessionId);
+  console.log("1-800-Flowers onSessionEnded requestId: " + sessionEndedRequest.requestId + ", sessionId: " + session.sessionId);
   var handler = this._StateMachine.onSessionEnd;
   if (handler) handler(new Request(sessionEndedRequest, session));
 };
@@ -87,13 +87,12 @@ function respondAuthFailure(response) {
 function respondBadResponse(stateMachine, request, response) {
   var _this = this;
 
-  var reply = new Reply();
   Promise.try(function () {
     return _this._StateMachine.onBadResponse(request);
-  }).then(function (errorMsg) {
-    if (errorMsg) {
+  }).then(function (reply) {
+    if (reply) {
       if (verbose) console.log('Got an error response, and it was handled by a custom handler');
-      new Reply(errorMsg).write(response);
+      reply.write(response);
     } else {
       respondError(stateMachine, request, response)();
     }

@@ -5,8 +5,9 @@
   "main": "gulpfile.js",
   "scripts": {
     "compile": "node node_modules/gulp/bin/gulp.js compile",
+    "watch": "node node_modules/gulp/bin/gulp.js watch",
     "start": "node node_modules/gulp/bin/gulp.js",
-    "test": "mocha --harmony tests/**/*-test.js"
+    "test": "mocha tests/**/*-test.js"
   },
   "repository": "https://github.com/mediarain/1800flowers-alexa-skill",
   "author": "Rain",
@@ -16,20 +17,21 @@
   "license": "UNLIECENSED",
   "dependencies": {
     "basic-auth": "^1.0.3",
+    "basic-auth-token": "^0.4.2",
     "bluebird": "^3.3.1",
     "body-parser": "^1.14.2",
-    "csv-parse": "^1.0.2",
     "ejs": "^2.4.1",
     "express": "^4.13.4",
+    "js2xmlparser": "^1.0.0",
     "lodash": "^4.2.1",
-    "md5": "^2.0.0",
     "moment": "^2.11.2",
-    "moment-timezone": "^0.5.0",
     "morgan": "^1.6.1",
+    "natural": "^0.4.0",
     "request": "^2.69.0",
     "serve-static": "^1.10.2",
     "string": "^3.3.1",
-    "universal-analytics": "^0.3.10"
+    "universal-analytics": "^0.3.10",
+    "xml2js": "^0.4.15"
   },
   "devDependencies": {
     "chai": "^3.5.0",

@@ -1,14 +1,32 @@
 'use strict';
 
-var alexaStarbucks = require('./alexa-starbucks.js'),
-    Starbucks = require('./Flowers.js'),
-    StarbucksUser = Starbucks.StarbucksUser,
-    config = require('../config'),
-    _ = require('lodash'),
-    moment = require('moment'),
-    Promise = require('bluebird'),
-    verbose = config.verbose,
-    zipToTZ = require('../services/zip-to-tz.js');
+var Flowers = require('./Flowers.js')
+  , FlowersUser = Flowers.FlowersUser
+  , Product = require('./Product.js')
+  , Purchase = require('./Purchase.js')
+  , config = require('../config')
+  , _ = require('lodash')
+  , moment = require('moment')
+  , Promise = require('bluebird')
+  , verbose = config.verbose
+  , ContactBook = require('./ContactBook.js')
+  , Catalog = require('./Catalog.js')
+  , address = require('../skill/address.js')
+  , alexaFlowers = require('./alexa-flowers.js')
+;
+
+/* TERMS
+ * possibleRecipient: The name of a person the user wants to send flowers to. It's not yet validated. Always a string or null
+ * recipientChoice: An offering to the user of a name that they could say. When the user says the name, it'll be a
+ *                  possibleRecipient, then validated
+ * contactCandidates: When the user gives us a possible recipient, and we're validating, we pick all the contacts that
+ *                   are close to the possibleRecipient. Each of these is a contactCandidate.
+ * recipient: The actual recipient that has been selected and validated by the user to send flowers to. This is the real deal.
+ * arrangementDescriptionOffset: When the user ask us for the arrangement's descriptions, we keep track of the current
+                                 arrangement offset
+ * arrangement: The actual arrangement that has been selected by the user.
+ * sizeDescriptionOffset: When user ask us for size's descriptions, we keep track of the current  arrangement offset
+ */
 
 // Mostly used for testing
 exports.fromData = function (api, data) {
@@ -26,662 +44,337 @@ exports.empty = function (api) {
   return new PartialOrder(api, {});
 };
 
-// Makes a new PO and populates with the starting point order information
-exports.build = function (api) {
-  var po = new PartialOrder(api);
-  return po.build();
-};
-
-/* Returns a promise of 4 different possibilities.
- * 1) Null. No valid previous order could be found.
- * 2) items & store. We got a valid previous order. Yay!
- * 3) items & no store. The item works, but has not good stores. Go to detached mode
- * 4) items & store & fallback. We had to fall back
- *
-{
-  items: [{
-    quantity: NUMBER,
-    commerce: { sku: STRING },
-    productType: NUMBER,
-    name: STRING, // What this product is called (by SKU)
-  }],
-  history: {
-    offset: NUMBER //How far we've paged into prior order history
-    lastPull: {} // The last store we've pulled. This value is NOT persisted
-    seenStores: {}, // Set of all stores that we've encountered before from paging through history
-  },
-  store: storeNumber
-  fallback: {
-    original: [],
-    reason: why,
-  },
-  isDetached: BOOLEAN,
-  profile: {},
-  balance: {},
-  pricing: {},
-  pruned: [], //Items deemed unavailable
-  flags: {},
-  q: {} //Set of promises that are getting data
-}
+/**
+ * q: { } set of promises that are getting data :), such as:
+ *    - product
  */
 function PartialOrder(api, data) {
+  data = data || {};
   this.q = {};
   _.assign(this, api);
   _.assign(this, data);
-  this.history = this.history || {
-    offset: -1,
-    seenStores: {}
-  };
+  if(data.contactBook) this.contactBook = ContactBook.fromData(api,data.contactBook);
 }
 
-PartialOrder.prototype.getFlag = function (name) {
-  if (!this.flags) return null;
-  return this.flags[name];
-};
-
-PartialOrder.prototype.setFlag = function (name, value) {
-  this.flags = this.flags || {};
-  this.flags[name] = value;
-};
-
-PartialOrder.prototype.validateAndEditOrder = function () {
-  var user = this.user,
-      po = this;
-  return getProductAvailability(po.starbucks, po.store, po.items).then(function (prdAvailability) {
-    po.items = prdAvailability.availables;
-    po.pruned = prdAvailability.unavailables;
-    return {
-      anyRemoved: !!prdAvailability.unavailables.length
-    };
-  });
-};
-
-PartialOrder.prototype.startOrderAdjust = function (cardId) {
-  var self = this;
-  self.orderAdjust = {
-    savedItems: _.cloneDeep(self.items),
-    removedItems: [],
-    cursor: 0
-  };
-};
-
-PartialOrder.prototype.revertOrderAdjust = function (cardId) {
-  var self = this;
-  self.analytics.event('Main Flow', 'Revert Order Adjustments').send();
-  self.items = self.orderAdjust.savedItems;
-  this.startOrderAdjust();
-};
-
-PartialOrder.prototype.commitOrderAdjust = function (cardId) {
-  var self = this,
-      removed = self.orderAdjust.removedItems;
-  self.analytics.event('Main Flow', 'Accept Order Adjustments', 'Removed Count', removed.length).event('Main Flow', 'Accept Order Adjustments', 'Retained Count', self.items.length).send();
-  delete self.orderAdjust;
-};
-
-PartialOrder.prototype.hasMoreOrderAdjustItem = function (cardId) {
-  var self = this;
-  return self.items.length > self.orderAdjust.cursor;
-};
-
-PartialOrder.prototype.nextOrderAdjustItem = function (cardId) {
-  var self = this;
-  self.orderAdjust.cursor++;
-};
-
-PartialOrder.prototype.hasOrderChangedInOrderAdjust = function (cardId) {
-  var self = this;
-  return !!self.orderAdjust.removedItems.length;
-};
-
-PartialOrder.prototype.currentOrderAdjustItemIsForced = function (cardId) {
-  var self = this;
-  return self.items.length == 1 && self.orderAdjust.cursor == 0;
-};
-
-PartialOrder.prototype.removeAndNextOrderAdjustItem = function (cardId) {
-  var self = this,
-      removed = self.items.splice(self.orderAdjust.cursor, 1);
-  self.analytics.event('Main Flow', 'Item Removed', 'SKU', removed[0].commerce.sku).send();
-  self.orderAdjust.removedItems = self.orderAdjust.removedItems.concat(removed);
-  //We don't change the cursor, because it's implicitly moved forward by removing an item
-};
-
-PartialOrder.prototype.getOrderAdjustRemovedItems = function (cardId) {
-  var self = this;
-  return self.orderAdjust.removedItems || [];
-};
-
-PartialOrder.prototype.getOrderAdjustItem = function (cardId) {
-  var self = this;
-  return self.items[self.orderAdjust.cursor];
-};
-
-PartialOrder.prototype.startLocAdjust = function (altStores) {
-  var self = this;
-
-  return (altStores ? Promise.resolve(altStores) : getStoreAlternatives(this)).then(function (stores) {
-    if(self.store) stores = _.without(stores,self.store).concat([self.store]) //Re-order stores so that the current store is last
-    if(verbose) console.log('Alternative stores are:',stores)
-    self.locAdjust = {
-      stores: stores,
-      cursor: 0
-    };
-    return stores;
-  });
-};
-
-PartialOrder.prototype.hasMoreLocAdjustLocs = function () {
-  var self = this;
-  return self.locAdjust.stores.length > self.locAdjust.cursor;
-};
-
-PartialOrder.prototype.isOnLastLocAdjustLoc = function () {
-  var self = this;
-  return self.locAdjust.cursor == self.locAdjust.stores.length - 1;
-};
-
-PartialOrder.prototype.nextLocAdjustLoc = function () {
-  var self = this;
-  self.locAdjust.cursor++;
-};
-
-PartialOrder.prototype.getLocAdjustLoc = function () {
-  var self = this;
-  return self.locAdjust.stores[self.locAdjust.cursor];
-};
-
-PartialOrder.prototype.acceptLocAdjust = function () {
-  var self = this,
-      prevStore = self.store;
-  self.store = self.locAdjust.stores[self.locAdjust.cursor];
-  self.analytics.event('Main Flow', 'Location Changed', 'Changed To', self.store).event('Main Flow', 'Location Changed', 'Changed From', prevStore).send();
-  self.locAdjust = null;
-};
-
-PartialOrder.prototype.discardLocAdjust = function () {
-  var self = this;
-  self.locAdjust = null;
-};
-
-PartialOrder.prototype.planReload = function (cardId) {
-  var self = this;
-  return this.getBalance(cardId).then(function (balance) {
-    self.pricing.reloadAmount = alexaStarbucks.getReloadAmount(balance.balance, self.pricing.totalAmount);
-  });
-};
-
-PartialOrder.prototype.reloadAndOrder = function () {
-  var self = this,
-      user = self.user;
-  self.analytics.event('Main Flow', 'Reload', 'Reload Amount', self.pricing.reloadAmount).send();
-  return Promise.all([user.getPrimaryCard(), alexaStarbucks.getPaymentMethodId(user)]).spread(function (cardData, paymentId) {
-    return user.reloadCard(cardData.cardId, self.pricing.reloadAmount, paymentId).then(function () {
-      return self.placeOrder(cardData);
-    });
-  });
-};
-
-PartialOrder.prototype.clearBalance = function () {
-  this.q.balance = null;
-  this.balance = null;
-};
-
-PartialOrder.prototype.placeOrder = function (cardData) {
-  var user = this.user,
-      po = this;
-
-  return (cardData ? Promise.resolve(cardData) : user.getPrimaryCard()).then(function (cardData) {
-    return user.submitOrder(po.store, po.pricing.orderToken, cardData.cardId, po.pricing.totalAmount, po.pricing.signature).then(function (orderSuccess) {
-      po.pickup = orderSuccess.serviceTime;
-      po.clearBalance();
-      po.analytics.event('Main Flow', 'Order Placed').send();
-
-      var trans = po.analytics.transaction(po.pricing.orderToken, po.pricing.totalAmount, po.pricing.taxAmount);
-      po.items.forEach(function (item) {
-        return trans = trans.item(item.price, item.quantity, item.commerce.sku, item.name);
-      });
-      trans.send();
-
-      return po.getBalance(cardData.cardId).then(function () {
-        return true;
-      });
-    }).catch(function (err) {
-      if (verbose) console.log('Error placing order', err.body);
-      if (err.statusCode && err.statusCode == 400 && err.body && err.body.code == Starbucks.ERROR_CODES.InsufficientBalance) {
-        return po.planReload(cardData.cardId).then(function () {
-          return false;
-        });
-      }
-      throw err;
-    });
-  });
-};
-//
-//Fetches store names. Caches the store name in history.seenStores
-PartialOrder.prototype.getBalance = function (cardId) {
-  var self = this,
-      user = self.user;
-  return self.q.balance = self.q.balance || Promise.try(function () {
-    if (self.balance) return self.balance;
-    return (cardId ? Promise.resolve({ cardId: cardId }) : user.getPrimaryCard()).then(function (card) {
-      return self.user.getCardBalanceRealTime(card.cardId);
-    }).then(function (data) {
-      var balance = {
-        balance: data.balance,
-        currencyCode: data.balanceCurrencyCode
-      };
-      self.balance = balance;
-      return balance;
-    });
-  });
-};
-
-//Fetches store names. Caches the store name in history.seenStores
-PartialOrder.prototype.getStoreData = function (storeNumber) {
-  var self = this;
-  self.q.stores = self.q.stores || {};
-  return self.q.stores[storeNumber] = self.q.stores[storeNumber] || Promise.try(function () {
-    var storeData = self.history.seenStores[storeNumber];
-    if (storeData && _.isObject(storeData)) return storeData;
-    //TODO Cache this
-    return self.starbucks.getStoreByNumber(storeNumber).then(function (data) {
-      var storeData = {
-        name: data.address.streetAddressLine1,
-        address: data.address,
-        availability: parseStoreAvailability(data)
-      };
-      self.history.seenStores[storeNumber] = storeData;
-      return storeData;
-    });
-  });
-};
-
-PartialOrder.prototype.getPricing = function () {
-  var self = this;
-  return self.q.getPricing = self.q.getPricing || Promise.try(function () {
-    var pricing = self.pricing;
-    if (pricing) return pricing;
-    return self.user.getOrderStore(self.store, self.items).then(function (data) {
-      var pricing = _.assign({
-        signature: data.signature,
-        orderToken: data.orderToken,
-        currencyCode: data.store.localCurrencyCode
-      }, data.summary);
-      self.pricing = pricing;
-      _.forEach(data.cart.items, function (item, i) {
-        return self.items[i].price = item.price;
-      });
-      return pricing;
-    });
-  });
-};
-
-PartialOrder.prototype.getProfile = function () {
-  var self = this;
-  return self.q.getProfile = self.q.getProfile || Promise.try(function () {
-    var profile = self.profile;
-    if (profile) return profile;
-    return self.user.getProfile().then(function (data) {
-      var profile = {
-        name: data.user.firstName || data.user.lastName,
-        timeOfDay: getTimeOfDay(_(data.addresses).map('postalCode').compact().first())
-      };
-      self.profile = profile;
-      return profile;
-    });
-  });
-};
-//
-// Fetches product pronunciation. Mutates each item to add pronunciation
-PartialOrder.prototype.getProductNames = function (items) {
-  var self = this,
-      items = items || this.items;
-  if (!items) console.log('No items!!!', self);
-  return Promise.all(items.map(getProductName));
-
-  function getProductName(item) {
-    //TODO Cache all of this in a very long term cache
-    if (item.name) return Promise.resolve(item.name);
-    item.q = item.q || {};
-    return item.q.prodDetails = item.q.prodDetails || self.starbucks.getProductBySku(item.commerce.sku, item.productType).then(function (productDetails) {
-      var name = productDetails.skuName;
-      item.name = name;
-      return name;
-    });
-  }
-};
-
 PartialOrder.prototype.serialize = function () {
-  var ret = _.omit(this, 'user', 'q', 'pruned', 'user', 'starbucks', 'analytics');
+  var ret = _.omit(this, 'user', 'q', 'pruned', 'user', 'flowers', 'analytics');
   if (ret.history) delete ret.history.lastPull;
   if (ret.items) _.forEach(ret.items, function (item) {
     delete item.q;
   });
+  if(ret.contactBook) ret.contactBook = ret.contactBook.serialize();
   return ret;
 };
 
-PartialOrder.prototype.seeStore = function (storeNumber) {
-  this.history.seenStores[storeNumber] = true;
-};
-
-PartialOrder.prototype.hasNoItems = function () {
-  return !this.items || !this.items.length;
-};
-
-PartialOrder.prototype.hasMultipleItems = function () {
-  return this.items && this.items.length > 1;
-};
-
-PartialOrder.prototype.enterDetachedMode = function (order) {
-  if (verbose) console.log('Store not available. Going detached');
+PartialOrder.prototype.getContactBook = function() {
   var self = this;
-  _.assign(self, order, { mode: 'detached' });
-
-  return getStoreAlternatives(this).then(function (stores) {
-    if (!stores.length) {
-      var seenStores = _.keys(self.history.seenStores);
-      return Promise.all([
-        Promise.all(seenStores.map(function (store) { return getStoreAvailability(store, self); }))
-        , self.getProductNames()])
-      .spread(function (storeAvailability, names) {
-        if (verbose) console.log('store avail', storeAvailability);
-        var allHours = storeAvailability.every(function (avail) {
-          return !avail.isOpen && 'hours' == avail.closedDueTo;
-        }),
-            allInactive = storeAvailability.every(function (avail) {
-          return !avail.isOpen && 'inactive' == avail.closedDueTo;
-        });
-        self.pruned = self.items;
-        console.log('Why', allHours, allInactive);
-        self.noStoreAvailableExplanation = {
-          reason: allHours ? 'closed' : allInactive ? 'inactive' : 'no-fit',
-          myStore: storeAvailability[seenStores.indexOf(self.store)]
-        };
-        return self;
-      });
-    } else {
-      self.analytics.event('Main Flow', 'Order Started').send();
-      return self.startLocAdjust(stores).then(function () {
-        return self;
-      });
-    }
-  });
-};
-
-PartialOrder.prototype.enterFallbackMode = function (firstFoundHistoricalOrder, order) {
-  if (verbose) console.log('Entering fallback mode');
-  _.assign(this, order, { mode: 'fallback', fallback: { originalOrder: order } });
-  var partialOrder = this,
-      qUnavailableExplanation = explainOrderUnavailability(partialOrder.starbucks, order.items).then(function (explanations) {
-    if (verbose) console.log('Unavailable explanations', explanations);
-    if (explanations.some(function (x) {
-      return x == 'seasonal';
-    })) partialOrder.fallback.explanation = 'seasonal';else if (explanations.every(function (x) {
-      return x == 'permanent';
-    })) partialOrder.fallback.explanation = 'permanent';else partialOrder.fallback.explanation = 'temporary';
-  }),
-      qOrdernames = this.getProductNames(this.fallback.originalOrder.items),
-      firstFoundHistoricalOrder = null;
-  // 1) Explain why it's unavailable
-  // 2) Keep scanning
-  return scan().then(function () {
-    return Promise.all([qUnavailableExplanation, qOrdernames]).then(function () {
-      return partialOrder;
-    });
-  });
-
-  function scan() {
-    if (verbose) console.log('Scanning for next order in fallback');
-    return nextHistoricalOrder(partialOrder).then(function (historicalOrder) {
-      firstFoundHistoricalOrder = firstFoundHistoricalOrder || historicalOrder;
-      if (isNoMore(historicalOrder)) return partialOrder.enterNoneFoundMode(transHistoricalOrderToOrder(firstFoundHistoricalOrder));
-      if (isIgnorableHistoricalOrder(historicalOrder)) {
-        if (verbose) console.log('Order is ignorable', summarizeOrder(transHistoricalOrderToOrder(historicalOrder)));
-        return scan();
-      }
-      var order = transHistoricalOrderToOrder(historicalOrder);
-      return getProductAvailability(partialOrder.starbucks, order.store, order.items).then(function (prdAvailability) {
-        if (!prdAvailability.anyAvailable) return scan();
-        partialOrder.analytics.event('Main Flow', 'Order Started').send();
-        _.assign(partialOrder, order);
-      });
-    });
-  }
-};
-
-PartialOrder.prototype.enterNoneFoundMode = function (order) {
-  _.assign(this, order, { mode: 'none-found' });
-  return this;
-};
-
-PartialOrder.prototype.enterFoundOrderMode = function (order) {
-  _.assign(this, order, { mode: 'order-found' });
-  this.analytics.event('Main Flow', 'Order Started').send();
-  return this;
-};
-
-PartialOrder.prototype.build = function () {
-  var partialOrder = this,
-      user = partialOrder.user,
-      firstFoundHistoricalOrder = null;
-  return scan();
-
-  function scan() {
-    if (verbose) console.log('Scanning for next order');
-    return nextHistoricalOrder(partialOrder).then(function (historicalOrder) {
-      firstFoundHistoricalOrder = firstFoundHistoricalOrder || historicalOrder;
-      if (isNoMore(historicalOrder)) return partialOrder.enterNoneFoundMode(transHistoricalOrderToOrder(firstFoundHistoricalOrder));
-      if (isIgnorableHistoricalOrder(historicalOrder)) {
-        if (verbose) console.log('Order is ignorable', summarizeOrder(transHistoricalOrderToOrder(historicalOrder)));
-        return scan();
-      }
-
-      var order = transHistoricalOrderToOrder(historicalOrder);
-      return getStoreAvailability(historicalOrder.inStoreOrder.storeNumber, partialOrder).then(function (strAvailablility) {
-        if (verbose) console.log('Store availbility: ', strAvailablility);
-        if (!strAvailablility.isOpen) {
-          return partialOrder.enterDetachedMode(order);
-        }
-        //TODO: We need a way to cache product availability by store
-        return getProductAvailability(partialOrder.starbucks, order.store, order.items).then(function (prdAvailability) {
-          if (!prdAvailability.anyAvailable) return partialOrder.enterFallbackMode(firstFoundHistoricalOrder, order);
-          return partialOrder.enterFoundOrderMode(order);
-        });
-      });
-    });
-  }
-};
-
-/*
- * Finds a list of stores that it's possible to order at least some of the items at.
- */
-function getStoreAlternatives(po) {
-  // We'll try N stores. That doesn't mean N stores will work
-  var alternativeStores = config.skill.alternativeStores;
-  return pullAnotherStore();
-
-  function pullAnotherStore() {
-    var stores = _.keys(po.history.seenStores);
-    if (stores.length >= alternativeStores) return considerStores(stores);
-    return nextHistoricalOrder(po).then(function (order) {
-      if (isNoMore(order)) return considerStores(stores);
-      return pullAnotherStore();
-    });
-  }
-
-  function considerStores(stores) {
-    return Promise.all([
-      Promise.all(stores.map(function (store) {return getProductAvailability(po.starbucks, store, po.items);})),
-      Promise.all(stores.map(function (store) {return getStoreAvailability(store,po);})),
-    ]).spread(function (prdAvails, storeAvails) {
-      return _(prdAvails).zip(storeAvails).map(function (avail, i) {
-        return avail[0].anyAvailable && avail[1].isOpen ? stores[i] : null;
-      }).compact().value();
-    });
-  }
+  if(self.contactBook) return Promise.resolve(self.contactBook);
+  return self.q.contactBook = (self.q.contactBook || self.user.getRecipients(self.user.customerID).then(function(contacts){
+    self.contactBook = ContactBook.fromContacts({user: self.user, flowers: self.flowers},contacts);
+    return self.contactBook;
+  }));
 }
 
-function summarizeOrder(order) {
-  return JSON.stringify(order, null, 2);
+PartialOrder.prototype.hasRecipient = function() {
+  return !!this.recipient;
 }
 
-function getStoreAvailability(storeNumber, po) {
-  return po.getStoreData(storeNumber).then(function (x) {
-    return x.availability;
-  });
+PartialOrder.prototype.getRecipientAddress = function() {
+  return address.fromPipes(this.recipient.address);
 }
+//
+/// ***** Recipient Choices ***** ///
+// These are unique names in the user's contact book that we mention to the user
+// as a prompt for who to tell us to select
 
-function transHistoricalOrderToOrder(hist) {
-  if (!hist) return null;
-  return {
-    store: hist.inStoreOrder.storeNumber,
-    items: hist.basket.items.map(transItem)
+PartialOrder.prototype.setupRecipientChoices = function() {
+  return this.recipientChoices = {
+    offset: 0,
+    choices: this.contactBook.range(0,config.skill.recipientChoiceCount),
   };
-
-  function transItem(item) {
-    return {
-      quantity: item.quantity,
-      commerce: { sku: item.commerce.sku },
-      productType: item.product.productType
-    };
-  }
 }
 
-function getProductAvailability(starbucks, storeNumber, items) {
-  //if(verbose) console.log('getProductAvailability',storeNumber,items.length);
-  return starbucks.getProductStatus(storeNumber, items).then(function (status) {
-    var partition = _.partition(_.zip(items, status.items), function (zi) {
-      return isPurchasable(zi[1]);
-    }),
-        isAvailables = _.map(status.items).map(isPurchasable),
-        unavailables = partition[1];
-    return {
-      allAvailable: unavailables.length == 0,
-      anyAvailable: unavailables.length !== status.items.length,
-      isAvailables: isAvailables,
-      availables: _.map(partition[0], '0'),
-      unavailables: _.map(partition[1], '0')
-    };
-  });
-
-  function isPurchasable(item) {
-    return item.status == 'Purchasable';
-  }
+PartialOrder.prototype.getRecipientChoices = function() {
+  return this.recipientChoices.choices;
 }
 
-function nextHistoricalOrder(partialOrder) {
-  if (partialOrder.history.pulledAll) return NoMore();
-  var nextOffset = partialOrder.history.offset + 1,
-      pulledAll = partialOrder.history.pulledAll,
-      lastPull = partialOrder.history.lastPull,
-      needsNewPull = !lastPull || nextOffset >= lastPull.paging.offset + lastPull.paging.returned,
-      hasNextPull = !lastPull || lastPull.paging.hasMore,
-      hasMoreItems = !lastPull || nextOffset < lastPull.paging.total;
-  //if(verbose) console.log(`nextOffset: ${nextOffset}, needsNewPull ${needsNewPull} , paging ${lastPull ? JSON.stringify(lastPull.paging):null}`)
-  partialOrder.history.offset++;
-  if (needsNewPull && hasNextPull) {
-    if (verbose) console.log('Pulling next page of history');
-    return (lastPull ? lastPull.paging.next() : partialOrder.user.getOrders({ offset: nextOffset })).then(function (pull) {
-      partialOrder.history.lastPull = pull;
-      if (!pull.paging.total) return NoMore();
-      var order = pull.orderHistoryItems[0],
-          storeNumber = order.inStoreOrder.storeNumber;
-      partialOrder.seeStore(storeNumber);
-      return order;
-    });
-  } else if (!hasMoreItems) {
-    if (verbose) console.log('Out of historical orders');
-    return NoMore();
-  } else {
-    if (verbose) console.log('Moving to next in-page history item');
-    var index = nextOffset - lastPull.paging.offset,
-        order = lastPull.orderHistoryItems[index],
-        storeNumber = order.inStoreOrder.storeNumber;
-    partialOrder.seeStore(storeNumber);
-    return Promise.resolve(order);
-  }
+PartialOrder.prototype.nextRecipientChoices = function() {
+  this.recipientChoices.offset += config.skill.recipientChoiceCount;
+  this.recipientChoices.choices = this.contactBook.range(this.recipientChoices.offset,config.skill.recipientChoiceCount);
+}
 
-  function NoMore() {
-    partialOrder.history.pulledAll = true;
+PartialOrder.prototype.isLastRecipientChoiceOffer = function() {
+  return this.recipientChoices.offset + config.skill.recipientChoiceCount >= this.contactBook.contacts.length;
+}
+
+/// ***** Contact Candidates ***** ///
+// These are contacts (Names & Addresses) that match the user's queries. We offer them to the user in a
+// series, and they pick one that will become the final recipient.
+
+PartialOrder.prototype.setupContactCandidates = function() {
+  this.contactCandidates = {
+    offset: 0,
+    choices: this.contactBook.searchByName(this.possibleRecipient)
+  };
+}
+
+PartialOrder.prototype.hasContactCandidate = function() {
+  return this.contactCandidates && this.contactCandidates.offset < this.contactCandidates.choices.length;
+}
+
+PartialOrder.prototype.nextContactCandidate = function() {
+  return this.contactCandidates.offset++;
+}
+
+PartialOrder.prototype.getContactCandidate = function() {
+  return this.contactCandidates.choices[this.contactCandidates.offset];
+}
+
+PartialOrder.prototype.acceptCandidateContact = function() {
+  this.recipient = this.getContactCandidate();
+  //Clear out this junk just to make the session smaller
+  this.possibleRecipient = null;
+  this.contactCandidates = null;
+  this.recipientChoices = null;
+}
+
+PartialOrder.prototype.isContactCandidateDeliverable = function() {
+  return address.isDeliverable(address.fromPipes(this.getContactCandidate().address));
+}
+
+/// ***** Arrangement Descriptions ***** ///
+/// These are the arrangement (Name & Description) that user can order. We describe them to the user
+/// in a series, and they can pick one that will become the final arrangement, or we just
+/// let them say the name of the arrangement directly.
+
+PartialOrder.prototype.setupArrangementDescriptions = function() {
+  this.arrangementDescriptionOffset = 0;
+}
+
+PartialOrder.prototype.hasArrangementDescription = function() {
+  return this.arrangementDescriptionOffset && this.arrangementDescriptionOffset < Catalog.choices.length;
+}
+
+PartialOrder.prototype.nextArrangementDescription = function() {
+  return this.arrangementDescriptionOffset++;
+}
+
+PartialOrder.prototype.getArrangementDescription = function() {
+  return Catalog.choices[this.arrangementDescriptionOffset];
+}
+
+PartialOrder.prototype.clearArrangementDescriptions = function() {
+  //Clear out this junk just to make the session smaller
+  this.arrangementDescriptionOffset = null;
+}
+
+PartialOrder.prototype.pickArrangement = function(arrangementName) {
+  var self = this;
+  if (!arrangementName) {
+    self.arrangement = null;
     return Promise.resolve(null);
   }
-}
-
-function isNoMore(historicalOrder) {
-  return !historicalOrder;
-}
-
-function isIgnorableHistoricalOrder(order) {
-  var isAllCoffee = !!order.basket.items.every(function (item) {
-    return item.product.productType == Starbucks.PRODUCTTYPES.coffee;
+  var entry = Catalog.findByName(arrangementName);
+  self.arrangement =_.pick(entry,['name','sku']);
+  return self.getArrangementDetails().then(function (details) {
+    var isValid =  details.items && details.items.length;
+    if(!isValid) self.arrangement = null;
+    return self.arrangement;
   });
-  return isAllCoffee;
 }
 
-function parseStoreAvailability(storeData) {
-  if (storeData.xopState != 'available') return { isOpen: false, localTime: null, nextOpen: null, closedDueTo: 'inactive' };
-  var today = storeData.today || { open: false, localTime: null };
-  var isOpen = today.open === true,
-      nextOpen = today.open ? null : !storeData.hoursNext7Days ? null : storeData.hoursNext7Days.reduce(function (memo, day) {
-    return memo || (day.open ? moment(day.date).add(moment.duration(day.openTime)).format('YYYY-MM-DDTHH:mm:ss.SSS') : null);
-  }, null),
-      closedDueTo = isOpen ? null : nextOpen == null ? 'inactive' : storeData.operatingStatus.operating && storeData.operatingStatus.status == 'ACTIVE' ? 'hours' : 'inactive';
-  return {
-    isOpen: today.open === true,
-    closedDueTo: closedDueTo,
-    localTime: today.localTime,
-    nextOpen: nextOpen
-  };
+PartialOrder.prototype.hasArrangement = function() {
+  return !!this.arrangement;
 }
 
-// Skus can be unavailable b/c they're seasonal, some permanent reason( e.g. withdrawn ),
-// or temporarily (a catch all for none of the above).
-// We know by getting the product details and scanning for it's availability data
-function explainOrderUnavailability(starbucks, items) {
-  return Promise.all(_.map(items, explainItemUnavailabilty));
+/// ***** Size Descriptions ***** ///
+/// These are the sizes (Name & Description) that user can order for the specific arrangement.
+/// We describe them to the user in series, and they can pick one that will become the final size,
+/// or the user can just pick the one they want directly.
 
-  function explainItemUnavailabilty(item) {
-    return starbucks.getProductDetailsBySku(item.commerce.sku, item.productType).then(function (data) {
-      return parseItemAvailbilityExplanation(item.commerce.sku, data);
+PartialOrder.prototype.setupSizeDescriptions = function() {
+  this.sizeDescriptionOffset = 0;
+}
+
+PartialOrder.prototype.hasSizeDescription = function() {
+  return this.sizeDescriptionOffset && this.sizeDescriptionOffset < this.getSizeDetails().length;
+}
+
+PartialOrder.prototype.nextSizeDescription = function() {
+  return this.sizeDescriptionOffset++;
+}
+
+PartialOrder.prototype.getSizeDescription = function() {
+  return this.getSizeDetails()[this.sizeDescriptionOffset];
+}
+
+PartialOrder.prototype.clearSizeDescriptions = function() {
+  // Clear out this junk just to make the session smaller
+  this.sizeDescriptionOffset = null;
+}
+
+PartialOrder.prototype.pickSize = function(sizeName) {
+  this.size = sizeName;
+}
+
+PartialOrder.prototype.hasSize = function() {
+  return !!this.size;
+}
+
+PartialOrder.prototype.getSizeDetails = function(name) {
+  return Catalog.findByName(name || this.arrangement.name).sizes;
+}
+
+PartialOrder.prototype.getSizeByName = function(name) {
+  var self = this;
+  var sizes = self.getSizeDetails();
+  var val = _(sizes).find(function (entry) {
+    return entry.name.toLowerCase() == name.toLowerCase();
+  });
+  if(val) val.sku = val.sku || self.arrangement.sku + val.suffix;
+  return val;
+}
+
+PartialOrder.prototype.getSizeDetailsByName = function (name) {
+  var self = this;
+  name = name || self.size;
+  var size = self.getSizeByName(name);
+  return _.find(self.arrangement.details.items,function(item){ return item.sku == size.sku });
+}
+
+// Cache products
+PartialOrder.prototype.getArrangementDetails = function(arrangement) {
+  var self = this
+    , arrangement = arrangement || self.arrangement;
+
+  if(arrangement.details) return Promise.resolve(arrangement.details);
+  self.q.products = self.q.products || {};
+  return self.q.products[arrangement.sku] = self.q.products[arrangement.sku] || Promise.try(function () {
+    return Product(config.flowers, arrangement.sku).getProductDetails().then(function (details) {
+      arrangement.details = {
+        prodType: details.product.prodType,
+        items: _.map(details.product.skuList.sku,function(item){
+          return {
+            sku: item.productSku,
+            price: item.skuOfferPrice
+          };
+        })
+      };
+      return arrangement.details;
     });
-  }
-}
-
-function parseItemAvailbilityExplanation(sku, data) {
-  sku = '' + sku;
-  var form = data.forms.filter(function (form) {
-    return _.map(form.sizes, 'commerce.sku').indexOf(sku) >= 0;
   });
-  if (!form || !form.length) return 'temporary';
-  form = form[0];
-  if (form.availability.status == 'SeasonallyUnavailable') return 'seasonal';
-  if (form.availability.status == 'Purchasable') return 'temporary'; //The product thinks it's available, but POS says you can't buy it. So we say it's a temporary issue
-  return 'permanent';
 }
 
-function getTimeOfDay(zip) {
-  if (!zip) return null;
-  var localTime = zipToTZ.getLocalTime(zip);
-  if (!localTime) return null;
-  var hoursIntoDay = localTime.get('hours');
-  if (hoursIntoDay < 2) return 'night';
-  if (hoursIntoDay < 11) return 'morning';
-  if (hoursIntoDay < 13) return 'day';
-  if (hoursIntoDay < 16) return 'afternoon';
-  if (hoursIntoDay < 18) return 'evening';
-  return 'night';
+PartialOrder.prototype.getProduct = function() {
+  var self = this;
+  var size = self.getSizeByName(self.size);
+  return Product(config.flowers,size.sku);
 }
 
-module.exports.isIgnorableHistoricalOrder = isIgnorableHistoricalOrder;
-module.exports.parseStoreAvailability = parseStoreAvailability;
-module.exports.parseItemAvailbilityExplanation = parseItemAvailbilityExplanation;
+/// ***** Delivery Date ***** ///
 
-/*
-var sbuser = StarbucksUser(config.starbucks,'2er5gem7djy62pu9xp88aqpc')
-exports.build(sbuser).then(function(po){
-  console.log('Built',po.serialize());
-}).catch(err => {
-  console.error('Failed to build po',err ? (err.stack || err.data || err) : 'unknown');
-});
-*/
+PartialOrder.prototype.hasDeliveryDate = function() {
+  return !!this.deliveryDate;
+}
+
+PartialOrder.prototype.acceptPossibleDeliveryDate = function(date) {
+  var self = this
+    , mDate = moment(date || self.possibleDeliveryDate) //It's already been validated
+  ;
+  self.deliveryDate = mDate.toISOString();
+}
+
+PartialOrder.prototype.isDateDeliverable = function(date, product) {
+  var self = this;
+  return Promise.try(function(){
+    var mDate = moment(date);
+    // No past deliver dates allowed, but TZs are tricky, to fudge a day and let the API handle TZs.
+    if(!date || !mDate.isValid || mDate.isBefore(moment().add(-1,'day'))) return false;
+    product = product || self.getProduct();
+    return product.getDeliveryCalendar(self.getRecipientAddress().zip,null,mDate.toISOString())
+    .then(function(res){
+      return res.getDlvrCalResponse.responseStatus == 'SUCCESS';
+    })
+  });
+}
+
+PartialOrder.prototype.findDeliveryDateOffers = function(date) {
+  var self = this;
+  return Promise.try(function(){
+    var mDate = moment(date)
+      , product = self.getProduct()
+      , options = [];
+    if(!mDate.isValid || mDate.isBefore(moment().add(-1,'day'))) options = [moment().add(1,'day'),moment().add(2,'day')];
+    else options = [moment(mDate).add(-1,'day'), moment(mDate).add(1,'day')];
+    if(verbose) console.log('Offering alternative dates: ', options.map(function(d){ return d.format('YYYY-MM-DD'); }))
+
+    return Promise.all(options.map(function(date){ return self.isDateDeliverable(date,product); }))
+    .then(function(valids){
+      self.deliveryDateOffers = _(options)
+        .zip(valids)
+        .filter('1')
+        .map(function(d){ return d[0].toISOString(); })
+        .value();
+      return self.deliveryDateOffers;
+    });
+  });
+}
+
+PartialOrder.prototype.prepOrderForPlacement = function(){
+  // 0. Get Product prices
+  // 1. Get Recipient Address
+  // 2. Get Shipping prices
+  // 3. Get Tax information
+  // 4. Aggregate prices
+  // 5. Select payment method
+  var self = this
+    , purchase = Purchase(config.flowers)
+    , item = self.getSizeDetailsByName()
+  ;
+  return Promise.all([
+    this.user.getRecipientAddress(self.recipient.demoId,self.recipient.id),
+    self.user.getPaymentMethods()
+  ])
+  .spread(function(address, cards){
+    self.order = {
+      address: address,
+      card: alexaFlowers.pickCard(cards),
+      charges: null
+    };
+    return purchase.getShipping({
+      productSku: item.sku,
+      prodType: self.arrangement.details.prodType,
+      itemPrice: item.price,
+    },address,self.deliveryDate);
+  }).then(function(shipping){
+    var charges = self.order.charges  = {
+      item: +item.price,
+      shippingBase: +shipping[0].baseCharge,
+      surcharge: +shipping[0].totSurcharge,
+      upcharge: +shipping[0].upCharge,
+    };
+    charges.shippingTotal = charges.shippingBase + charges.surcharge + charges.upcharge;
+    charges.total = charges.item + charges.shippingTotal;
+  })
+  .then(function(){
+    return purchase.getTaxes(item.sku, self.order.address.postalCode, item.price, self.order.charges.total);
+  }).then(function(txs){
+    self.order.charges.taxes = +txs;
+    self.order.charges.total +=  +txs;
+  }).then(function(){
+     return !!self.order && self.order.card && self.order.charges.total;
+  });
+}
+
+PartialOrder.prototype.placeOrder = function(){
+  //0. Get order Number
+  //1. Authorize CC
+  //2. create order
+  var self = this
+    , purchase = Purchase(config.flowers)
+  ;
+
+  return purchase.getOrderNumber().then(function(orderNumber) {
+    console.log('Order number ' + orderNumber + ' ' + JSON.stringify(self.order.card));
+  });
+}
