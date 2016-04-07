@@ -373,7 +373,7 @@ module.exports = StateMachine({
           if (po.hasRecipient() && po.hasArrangement() && po.hasSize()) {
             return replyWith(null, 'validate-possible-delivery-date', request, po);
           } else {
-            return replyWith(null, 'options-review', request, po); // TODO reply with correct response here when it is added
+            return replyWith('ValidatePossibleDeliveryDate.DateValidationAlt', 'options-review', request, po);
           }
         });
       }
