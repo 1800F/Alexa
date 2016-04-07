@@ -19,17 +19,17 @@ exports.choices = [
 			{
 				'name': 'small'
 				, 'suffix': 'S'
-				, 'description': "The small, 13-stem, Mother's Day arrangement is about 17 inches high, including the eight-inch pink vase, and it is about 14 inches in diameter. This arrangement includes one hybrid lily, four pink carnations, and two white snapdragons, with three pink alstroemeria and three salal tips."
+				, 'description': "The small, 13-stem Mother's Day arrangement is about 17 inches high, including the eight-inch pink vase. And it's about 14 inches in diameter."
 			}
 			, {
 				'name': 'medium'
 				, 'suffix': 'M'
-				, 'description': "The lovely medium Mother's Day arrangement stands about 18 inches high, including the eight-inch pink vase, and it is about 16 inches in diameter. This arrangement includes one Oriental lily, three pink roses, three white snapdragons, two pink stock, three pink alstroemeria and three salal tips, for a total of 15 stems."
+				, 'description': "The medium Mother's Day arrangement stands about 18 inches high, including the eight-inch pink vase. And it's about 16 inches in diameter."
 			}
 			, {
 				'name': 'large'
 				, 'suffix': 'L'
-				, 'description': "The beautiful 20-stem large Mother's Day arrangement stands about 19 inches high, including the eight-inch pink vase. It is about 18 inches in diameter. This arrangement includes two Oriental lilies, five pink roses, three white snapdragons, three pink stock, four pink alstroemeria and three salal tips."
+				, 'description': "The 20-stem large Mother's Day arrangement stands about 19 inches high, including the eight-inch pink vase. It's roughly 18 inches in diameter."
 			}
 		]
 	}
@@ -41,17 +41,17 @@ exports.choices = [
 			{
 				'name': 'small'
 				, 'suffix': 'SHB'
-				, 'description': "The small arrangement is about 14 inches high, including the eight-inch vase, and it is about 10 inches in diameter."
+				, 'description': "The small 11-stem \"birthday arrangement\" is about 14 inches high, including the stylish eight inch glass vase. It's about 10 inches in diameter."
 			}
 			, {
 				'name': 'medium'
 				, 'suffix': 'MHB'
-				, 'description': "The medium arrangement is about 15 inches high, including the eight-inch vase, and it is about 11.5 inches in diameter."
+				, 'description': "The 15-stem medium birthday arrangement is about 15 inches high, including the stylish, eight-inch vase, and it's about 11.5 inches in diameter."
 			}
 			, {
 				'name': 'large'
 				, 'suffix': 'LHB'
-				, 'description': "The large arrangement is about 16 inches high, including the eight-inch vase, and it is about 13 inches in diameter."
+				, 'description': "The large birthday arrangement has 18 stems and is about 16 inches high, including the stylish, eight-inch vase. It's roughly 13 inches in diameter."
 			}
 		]
 	}
@@ -63,17 +63,17 @@ exports.choices = [
 			{
 				'name': 'small'
 				, 'suffix': 'S'
-				, 'description': "The small arrangement is about 17 inches high, including the eight-inch vase, and it is about 13 inches in diameter."
+				, 'description': "The 12-stem small \"Love and <phoneme alphabet=\"ipa\" ph=\"ˈɹoʊ.mæns\">romance</phoneme>\" arrangement is about 17 inches high, including the eight-inch vase. And it's about 13 inches in diameter."
 			}
 			, {
 				'name': 'medium'
 				, 'suffix': 'M'
-				, 'description': "The medium arrangement is about 19 inches high, including the eight-inch vase, and it is about 14 inches in diameter."
+				, 'description': "The medium \"Love and <phoneme alphabet=\"ipa\" ph=\"ˈɹoʊ.mæns\">romance</phoneme>\" arrangement has 16 stems. It's about 19 inches high, including the eight-inch vase. And it's roughly 14 inches in diameter."
 			}
 			, {
 				'name': 'large'
 				, 'suffix': 'L'
-				, 'description': "The large arrangement is about 20 inches high, including the eight-inch vase, and it is about 16 inches in diameter."
+				, 'description': "The large \"Love and <phoneme alphabet=\"ipa\" ph=\"ˈɹoʊ.mæns\">romance</phoneme>\" arrangement has 20 stems and is about 20 inches high, including the eight-inch vase. And it's about 16 inches in diameter."
 			}
 		]
 	}
@@ -85,17 +85,17 @@ exports.choices = [
 			{
 				'name': 'small'
 				, 'suffix': 'S'
-				, 'description': "The small arrangement is about 11 inches high, including the eight-inch vase, and it is about 11 inches in diameter."
+				, 'description': "The small, 18-stem \"Thank You\" arrangement is about 11 inches high, including the cylindrical six-inch tall vase. It is about 11 inches in diameter."
 			}
 			, {
 				'name': 'medium'
 				, 'suffix': 'M'
-				, 'description': "The medium arrangement is about 12 inches high, including the eight-inch vase, and it is about 12 inches in diameter."
+				, 'description': "The medium \"Thank You\" arrangement is about 12 inches high, including the cylindrical, six-inch-tall vase. It has 21 stems and is about 12 inches in diameter."
 			}
 			, {
 				'name': 'large'
 				, 'suffix': 'L'
-				, 'description': "The large arrangement is about 13 inches high, including the eight-inch vase, and it is about 13 inches in diameter."
+				, 'description': "The large 25-stem \"Thank You\" arrangement is about 13 inches high, including the elegant, six-inch-tall vase. It is about 13 inches in diameter."
 			}
 		]
 	}
