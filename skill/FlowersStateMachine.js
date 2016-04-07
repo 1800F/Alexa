@@ -370,7 +370,11 @@ module.exports = StateMachine({
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
           po.possibleDeliveryDate = request.intent.params.deliveryDateSlot;
-          return replyWith(null, 'validate-possible-delivery-date', request, po);
+          if (po.hasRecipient() && po.hasArrangement() && po.hasSize()) {
+            return replyWith(null, 'validate-possible-delivery-date', request, po);
+          } else {
+            return replyWith(null, 'options-review', request, po); // TODO reply with correct response here when it is added
+          }
         });
       }
     },
@@ -389,6 +393,29 @@ module.exports = StateMachine({
             return replyWith('QueryDate.ContinueWithOrder','query-options-again',request,po);
           }
         });
+      }
+    },
+    "validate-delivery-date": {
+      enter: function enter(request) {
+        return this.Access(request)
+          .then(function(api) { return PartialOrder.fromRequest(api,request); })
+          .then(function(po) {
+            po.deliveryDateOffers = null;
+            return po.isDateDeliverable(po.possibleDeliveryDate)
+              .then(function(isDeliverable) {
+                if(isDeliverable) {
+                  po.acceptPossibleDeliveryDate();
+                  return replyWith(null, 'options-review', request,po);
+                }
+                else {
+                  return po.findDeliveryDateOffers(po.possibleDeliveryDate)
+                    .then(function(offers) {
+                      if(!offers) return replyWith('Error.ErrorGeneral', 'die', request,po);
+                      return replyWith('ValidatePossibleDeliveryDate.NotAValidDate', 'query-date', request,po);
+                    });
+                }
+              });
+          });
       }
     },
     "validate-possible-delivery-date": {
