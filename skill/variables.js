@@ -108,7 +108,7 @@ exports.sizeName = function (po) {
 };
 
 exports.sizePrice = function (po) {
-  var details = po.getSizeDetailsByName(this.getSizeDescription().name);
+  var details = po.getSizeDetailsByName(po.getSizeDescription().name);
   return currency.say(details.price, 'USD');
 }
 

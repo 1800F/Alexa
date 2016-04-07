@@ -194,8 +194,10 @@ PartialOrder.prototype.hasArrangement = function() {
 /// We describe them to the user in series, and they can pick one that will become the final size,
 /// or the user can just pick the one they want directly.
 
-PartialOrder.prototype.setupSizeDescriptions = function() {
-  this.sizeDescriptionOffset = 0;
+PartialOrder.prototype.setupSizeDescriptions = function(name) {
+  var index = 0;
+  if (name) index = this.sizeIndexByName(name);
+  this.sizeDescriptionOffset = index;
 }
 
 PartialOrder.prototype.hasSizeDescription = function() {
@@ -227,9 +229,21 @@ PartialOrder.prototype.getSizeDetails = function(name) {
   return Catalog.findByName(name || this.arrangement.name).sizes;
 }
 
+PartialOrder.prototype.sizeIndexByName = function(name) {
+  var self = this
+      , sizes = self.getSizeDetails()
+  ;
+  return _(sizes)
+    .map(function(entry) {
+      return entry.name.toLowerCase();
+    })
+    .indexOf(name.toLowerCase());
+}
+
 PartialOrder.prototype.getSizeByName = function(name) {
-  var self = this;
-  var sizes = self.getSizeDetails();
+  var self = this
+      , sizes = self.getSizeDetails()
+  ;
   var val = _(sizes).find(function (entry) {
     return entry.name.toLowerCase() == name.toLowerCase();
   });
