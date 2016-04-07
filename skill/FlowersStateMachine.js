@@ -228,7 +228,8 @@ module.exports = StateMachine({
     "query-arrangement-type": {
       to: {
         DescriptionIntent: 'arrangement-descriptions',
-        LaunchIntent: 'arrangement-selection'
+        LaunchIntent: 'arrangement-selection',
+        "AMAZON.RepeatIntent": 'options-review'
       }
     },
     "arrangement-descriptions": {
@@ -301,7 +302,8 @@ module.exports = StateMachine({
     "query-size": {
       to: {
         DescriptionIntent: 'size-descriptions',
-        LaunchIntent: 'size-selection'
+        LaunchIntent: 'size-selection',
+        "AMAZON.RepeatIntent": 'options-review'
       }
     },
     "size-descriptions": {
@@ -310,9 +312,13 @@ module.exports = StateMachine({
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
           if (request.intent.name == 'DescriptionIntent') {
-            po.setupSizeDescriptions();
+            po.setupSizeDescriptions(request.intent.params.sizeSlot);
             if (verbose) console.log('Current Size ' + po.getSizeDescription().name);
-            return replyWith('QuerySize.FirstSizeDescription', 'size-descriptions', request, po);
+            if (request.intent.params.sizeSlot) {
+              return replyWith('QuerySize.FirstSizeDescription', 'clear-size-description-and-restart', request, po);
+            } else {
+              return replyWith('QuerySize.FirstSizeDescription', 'size-descriptions', request, po);
+            }
           } else if (request.intent.name == 'AMAZON.NoIntent') {
             po.nextSizeDescription();
             if (!po.hasSizeDescription()) {
@@ -326,6 +332,22 @@ module.exports = StateMachine({
             return replyWith(null, 'size-selection', request, po);
           }
         });
+      }
+    },
+    "clear-size-description-and-restart": {
+      enter: function enter(request) {
+        return this.Access(request)
+          .then(function(api){ return PartialOrder.fromRequest(api,request); })
+          .then(function(po) {
+            var sizeSlot = po.getSizeDescription().name;
+            po.clearSizeDescriptions();
+            if (request.intent.name == 'AMAZON.YesIntent') {
+              request.intent.params.sizeSlot = sizeSlot;
+              return replyWith(null, 'size-selection', request, po);
+            } else if (request.intent.name == 'AMAZON.NoIntent') {
+              return replyWith(null, 'options-review', request, po);
+            }
+          });
       }
     },
     "size-selection": {
