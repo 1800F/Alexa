@@ -27,3 +27,5 @@ An Amazon Alexa skill for ordering flowers via 1-800-Flowers
 `gulpfile.js` -> Gulp tasks
 `package.json` -> Dependencies
 `README.md`
+
+To debug with Charles use the following inside flowers in local.json:  "strictSSL": false and "proxy": "http://localhost:8888"
