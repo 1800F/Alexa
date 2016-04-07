@@ -101,7 +101,7 @@ exports.choices = [
         , 'description': "The large 25-stem \"Thank You\" arrangement is about 13 inches high, including the elegant, six-inch-tall vase. It is about 13 inches in diameter."
       }
     ]
-
+  }
 ];
 
 exports.findByName = function(name) {
