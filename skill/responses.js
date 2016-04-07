@@ -287,7 +287,7 @@ var responses = function () {
 
     Help: {
       HelpStartMenu: {
-        tell: "Okay, I'd be happy to help.    <break time=\"1s\"/>\n "
+        say: "Okay, I'd be happy to help.    <break time=\"1s\"/>\n "
           + "You can send flowers to your contacts in your 1 800 Flowers account. "
           + "Just say their name to send them flowers.   <break time=\"1s\"/>\n "
           + "You can add contacts and update addresses on 1 800 Flowers.com.   <break time=\"1s\"/>\n "
