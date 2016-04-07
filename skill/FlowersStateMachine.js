@@ -272,6 +272,8 @@ module.exports = StateMachine({
               return replyWith(null, 'arrangement-selection', request, po);
             } else if (request.intent.name == 'AMAZON.NoIntent') {
               return replyWith(null, 'options-review', request, po);
+            } else if (request.intent.name == 'DescriptionIntent') {
+              return replyWith(null, 'arrangement-descriptions', request, po);
             }
           });
       }
@@ -346,6 +348,8 @@ module.exports = StateMachine({
               return replyWith(null, 'size-selection', request, po);
             } else if (request.intent.name == 'AMAZON.NoIntent') {
               return replyWith(null, 'options-review', request, po);
+            } else if (request.intent.name == 'DescriptionIntent') {
+              return replyWith(null, 'size-descriptions', request, po);
             }
           });
       }
