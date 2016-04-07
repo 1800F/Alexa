@@ -473,7 +473,7 @@ module.exports = StateMachine({
         });
       }
     },
-    "help-menu": SimpleHelpMessage('Help.HelpStartMenu', 'Start Menu')
+    "help-menu": SimpleHelpMessage('Help.HelpStartMenu', 'Start Menu', 'options-review')
   },
   Access: function Access(request) {
     var self = this;
