@@ -234,6 +234,9 @@ var responses = function () {
       DateValidation: {
         say: "{okay}, {deliveryDate}.",
       },
+       DateValidationAlt: {
+        say: "{okay}, let's see if I can have it delivered on {deliveryDate}. ",
+      },
       NotAValidDate: {
         //For developer ... please ensure the logic of this phrase makes sense with the code you create (dateMinusOne should never bring up a non-available date).
         ask: "{possibleDeliveryDate} is not available for delivery. Would you like to deliver on {deliveryDateOffers}?",
