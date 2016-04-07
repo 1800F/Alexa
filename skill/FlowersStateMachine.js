@@ -4,7 +4,6 @@ var StateMachine = require('./StateMachine.js'),
     currency = require('./currency.js'),
     Reply = require('./reply.js'),
     Flowers = require('../services/Flowers.js'),
-    FlowersUser = Flowers.FlowersUser,
     config = require('../config'),
     StateMachineSkill = require('./StateMachineSkill.js'),
     _ = require('lodash'),
@@ -32,13 +31,17 @@ module.exports = StateMachine({
     request.session.attributes.reprompt = null;
   },
   onBadResponse: function onBadResponse(request) {
+    var reply = new Reply();
     var reprompt = request.session.attributes.reprompt;
     // The user said something unexpected, replay the last reprompt
     if (reprompt) {
-      return { ask: reprompt };
+      reply.append(_.at(responses, 'BadInput.RepeatLastAskReprompt')[0]);
+      reply.append({ ask: reprompt });
+    } else {
+      reply.append(_.at(responses, 'Errors.ErrorNonPlannedAtLaunch')[0]);
     }
 
-    return _.at(responses, 'Errors.ErrorNonPlannedAtLaunch')[0];
+    return reply;
   },
   onAuthError: function onAuthError() {
     return new Reply(_.at(responses, 'Errors.NotConnectedToAccount')[0]);
@@ -128,6 +131,10 @@ module.exports = StateMachine({
           }
           if(!po.hasArrangement()) return replyWith('Options.ArrangementList', 'query-arrangement-type', request, po);
           if(!po.hasSize()) return replyWith('Options.SizeList', 'query-size', request, po);
+          if(!po.hasDeliveryDate()) {
+            if(po.possibleDeliveryDate) return replyWith(null,'validate-possible-delivery-date',request,po);
+            return replyWith('Options.DateSelection','query-date',request,po);
+          }
           return replyWith(null,'order-review',request,po);
         });
       }
@@ -182,7 +189,7 @@ module.exports = StateMachine({
         .then(function(po){
           po.setupContactCandidates();
           if(!po.hasContactCandidate()) {
-            return replyWith('ValidatePossibleRecipient.NotInAddressBook', 'query-options-again', request, po);
+            return replyWith('ValidatePossibleRecipient.NotInAddressBook', 'clear-and-query-options-again', request, po);
           }
           return replyWith('ValidatePossibleRecipient.FirstAddress', 'query-address', request, po);
         });
@@ -195,21 +202,34 @@ module.exports = StateMachine({
         .then(function(po){
           if (request.intent.name == 'AMAZON.YesIntent') {
             //TODO: Determine if this address is deliverable. If not, QueryAddress.AddressNotDeliverable, and go to next address
+            if (!(po.isContactCandidateDeliverable())) {
+              return replyWith('QueryAddress.AddressNotDeliverable', 'query-address-continue', request, po);
+            }
             po.acceptCandidateContact();
             return replyWith('QueryAddress.RecipientValidation','options-review',request,po);
           }else if (request.intent.name == 'AMAZON.NoIntent') {
-            po.nextContactCandidate();
-            if(!po.hasContactCandidate()) return replyWith('QueryAddress.SendToSomeoneElse', 'clear-and-query-options-again', request, po);
-            return replyWith('QueryAddress.NextAddress', 'query-address', request, po);
+            return replyWith(null, 'query-address-continue', request, po);
           }
 
         });
       }
     },
+    "query-address-continue": {
+      enter: function enter(request) {
+        return this.Access(request)
+          .then(function(api){ return PartialOrder.fromRequest(api,request); })
+          .then(function(po) {
+            po.nextContactCandidate();
+            if(!po.hasContactCandidate()) return replyWith('QueryAddress.SendToSomeoneElse', 'clear-and-query-options-again', request, po);
+            return replyWith('QueryAddress.NextAddress', 'query-address', request, po);
+          });
+      }
+    },
     "query-arrangement-type": {
       to: {
         DescriptionIntent: 'arrangement-descriptions',
-        LaunchIntent: 'arrangement-selection'
+        LaunchIntent: 'arrangement-selection',
+        "AMAZON.RepeatIntent": 'options-review'
       }
     },
     "arrangement-descriptions": {
@@ -218,22 +238,42 @@ module.exports = StateMachine({
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
           if (request.intent.name == 'DescriptionIntent') {
-            po.setupArrangementDescriptions();
-            console.log('Current Arrangement ' + po.getArrangementDescription().name);
-            return replyWith('QueryArrangementType.FirstArrangmentDescription', 'arrangement-descriptions', request, po);
+            po.setupArrangementDescriptions(request.intent.params.arrangementSlot);
+            if (verbose) console.log('Current Arrangement ' + po.getArrangementDescription().name);
+            if (request.intent.params.arrangementSlot) {
+              return replyWith('QueryArrangementType.FirstArrangmentDescription', 'clear-arrangement-description-and-restart', request, po);
+            } else {
+              return replyWith('QueryArrangementType.FirstArrangmentDescription', 'arrangement-descriptions', request, po);
+            }
           } else if (request.intent.name == 'AMAZON.NoIntent') {
             po.nextArrangementDescription();
             if (!po.hasArrangementDescription()) {
               return replyWith('ArrangementDescriptions.MoreArrangmentsOnline', 'query-continue-with-order', request, po);
             }
-            console.log('Current Arrangement ' + po.getArrangementDescription().name);
+            if (verbose) console.log('Current Arrangement ' + po.getArrangementDescription().name);
             return replyWith('ArrangementDescriptions.NextArrangmentDescription', 'arrangement-descriptions', request, po);
+          } else if (request.intent.name == 'AMAZON.YesIntent') {
+            request.intent.params.arrangementSlot = po.getArrangementDescription().name;
+            po.clearArrangementDescriptions();
+            return replyWith(null, 'arrangement-selection', request, po);
           }
-
-          // AMAZON.YesIntent
-          request.intent.params.arrangementSlot = po.getArrangementDescription().name;
-          return replyWith(null, 'arrangement-selection', request, po);
         });
+      }
+    },
+    "clear-arrangement-description-and-restart": {
+      enter: function enter(request) {
+        return this.Access(request)
+          .then(function(api){ return PartialOrder.fromRequest(api,request); })
+          .then(function(po) {
+            var arrangementSlot = po.getArrangementDescription().name;
+            po.clearArrangementDescriptions();
+            if (request.intent.name == 'AMAZON.YesIntent') {
+              request.intent.params.arrangementSlot = arrangementSlot;
+              return replyWith(null, 'arrangement-selection', request, po);
+            } else if (request.intent.name == 'AMAZON.NoIntent') {
+              return replyWith(null, 'options-review', request, po);
+            }
+          });
       }
     },
     "arrangement-selection": {
@@ -241,8 +281,12 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          po.pickArrangement(request.intent.params.arrangementSlot);
-          return replyWith('ArrangementSelectionIntent.ArrangementValidation', 'options-review', request, po);
+          return po.pickArrangement(request.intent.params.arrangementSlot).then(function (success) {
+            if (!success) {
+              return replyWith('Errors.ErrorGeneral', 'die', request, po);
+            }
+            return replyWith('ArrangementSelectionIntent.ArrangementValidation', 'options-review', request, po);
+          });
         });
       }
     },
@@ -250,22 +294,60 @@ module.exports = StateMachine({
       enter: function enter (request) {
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
-        .then(function(po) { 
-          if (request.from == 'arrangement-descriptions') {
-            return replyWith('ArrangementDescriptions.ContinueWithOrder', 'query-options-again', request, po);
-          }
+        .then(function(po) {
+          return replyWith('ArrangementDescriptions.ContinueWithOrder', 'query-options-again', request, po);
         });
       }
     },
     "query-size": {
       to: {
         DescriptionIntent: 'size-descriptions',
-        LaunchIntent: 'size-selection'
+        LaunchIntent: 'size-selection',
+        "AMAZON.RepeatIntent": 'options-review'
       }
     },
     "size-descriptions": {
       enter: function enter(request) {
-        console.log('--> size-descriptions');
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          if (request.intent.name == 'DescriptionIntent') {
+            po.setupSizeDescriptions(request.intent.params.sizeSlot);
+            if (verbose) console.log('Current Size ' + po.getSizeDescription().name);
+            if (request.intent.params.sizeSlot) {
+              return replyWith('QuerySize.FirstSizeDescription', 'clear-size-description-and-restart', request, po);
+            } else {
+              return replyWith('QuerySize.FirstSizeDescription', 'size-descriptions', request, po);
+            }
+          } else if (request.intent.name == 'AMAZON.NoIntent') {
+            po.nextSizeDescription();
+            if (!po.hasSizeDescription()) {
+              return replyWith('SizeDescriptions.ContinueWithOrder', 'query-options-again', request, po);
+            }
+            if (verbose) console.log('Current Size ' + po.getSizeDescription().name);
+            return replyWith('SizeDescriptions.NextSizeDescription', 'size-descriptions', request, po);
+          } else if (request.intent.name == 'AMAZON.YesIntent') {
+            request.intent.params.sizeSlot = po.getSizeDescription().name;
+            po.clearSizeDescriptions();
+            return replyWith(null, 'size-selection', request, po);
+          }
+        });
+      }
+    },
+    "clear-size-description-and-restart": {
+      enter: function enter(request) {
+        return this.Access(request)
+          .then(function(api){ return PartialOrder.fromRequest(api,request); })
+          .then(function(po) {
+            var sizeSlot = po.getSizeDescription().name;
+            po.clearSizeDescriptions();
+            if (request.intent.name == 'AMAZON.YesIntent') {
+              request.intent.params.sizeSlot = sizeSlot;
+              return replyWith(null, 'size-selection', request, po);
+            } else if (request.intent.name == 'AMAZON.NoIntent') {
+              return replyWith(null, 'options-review', request, po);
+            }
+          });
       }
     },
     "size-selection": {
@@ -280,12 +362,114 @@ module.exports = StateMachine({
     },
     "date-selection": {
       enter: function enter(request) {
-        return replyWith('Options.OrderReview', 'order-review', request);
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          po.possibleDeliveryDate = request.intent.params.deliveryDateSlot;
+          return replyWith(null, 'validate-possible-delivery-date', request, po);
+        });
+      }
+    },
+    "query-date": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          if (request.intent.name == 'AMAZON.YesIntent') {
+            if(po.deliverDateOffers && po.deliverDateOffers.length == 1) {
+              po.acceptPossibleDeliveryDate(po.deliverDateOffers[0]);
+              return replyWith('QueryDate.DateValidation', 'order-review', request);
+            }
+            return replyWith('QueryDate.DateSelectionAgain', 'order-review', request);
+          } else if (request.intent.name == 'AMAZON.NoIntent') {
+            return replyWith('QueryDate.ContinueWithOrder','query-options-again',request,po);
+          }
+        });
+      }
+    },
+    "validate-possible-delivery-date": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          po.deliveryDateOffers = null;
+          return po.isDateDeliverable(po.possibleDeliveryDate)
+          .then(function(isDeliverable){
+            if(isDeliverable) {
+              po.acceptPossibleDeliveryDate();
+              return replyWith('ValidatePossibleDeliveryDate.DateValidation','options-review',request,po);
+            }
+            else {
+              return po.findDeliveryDateOffers(po.possibleDeliveryDate).then(function(offers){
+                if(!offers) return replyWith('Error.ErrorGeneral','die',request,po); //TODO Better error
+                return replyWith('ValidatePossibleDeliveryDate.NotAValidDate','query-date',request,po);
+              });
+            }
+          });
+        });
       }
     },
     "order-review": {
       enter: function enter(request) {
-        return replyWith('ExitIntent.RepeatLastAskReprompt', 'die', request);
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          return replyWith('Options.OrderReview', 'query-order-confirmation', request,po);
+        });
+      }
+    },
+    "query-order-confirmation": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          if (request.intent.name == 'AMAZON.YesIntent') {
+            return po.prepOrderForPlacement().then(function(isValid){
+              if(!isValid) return replyWith('Errors.ErrorAtLaunch','die',request,po);
+              return replyWith('QueryOrderConfirmation.ConfirmOrder','query-buy-confirmation',request,po);
+            });
+          }else if (request.intent.name == 'AMAZON.NoIntent') {
+            return replyWith('QueryOrderConfirmation.CancelOrder','cancel-order-confirmation',request,po);
+          }
+        });
+      }
+    },
+    "query-buy-confirmation": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          if (request.intent.name == 'AMAZON.YesIntent') {
+            return po.placeOrder().then(function(isValid){
+              if(!isValid) return replyWith('Errors.ErrorAtOrder','die',request,po);
+              return replyWith('QueryBuyConfirmation.SendToSomeoneElse','clear-and-restart',request,po);
+            });
+          }else if (request.intent.name == 'AMAZON.NoIntent') {
+            return replyWith('QueryBuyConfirmation.CancelOrder','cancel-order-confirmation',request,po);
+          }
+        });
+      }
+    },
+    "clear-and-restart": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.empty(api); })
+        .then(function(po){
+          return replyWith(null,'query-options-again',request,po)
+        });
+      }
+    },
+    "cancel-order-confirmation": {
+      enter: function enter(request) {
+        return this.Access(request)
+        .then(function(api){ return PartialOrder.fromRequest(api,request); })
+        .then(function(po){
+          if (request.intent.name == 'AMAZON.YesIntent') {
+            return replyWith('CancelOrderConfirmation.Canceled','die',request,po);
+          }else if (request.intent.name == 'AMAZON.NoIntent') {
+            return replyWith('queryOrderConfirmation.ConfirmOrder','query-order-confirmation',request,po);
+          }
+        });
       }
     },
     "clear-and-query-options-again": {
@@ -305,49 +489,27 @@ module.exports = StateMachine({
         .then(function(po){
           if (request.intent.name == 'AMAZON.YesIntent') {
             return replyWith('QueryOptionsAgain.Validation','options-review',request,po);
-          }else if (request.intent.name == 'AMAZON.NoIntent') {
+          } else if (request.intent.name == 'AMAZON.NoIntent') {
             return replyWith('QueryOptionsAgain.Close','die',request,po);
           }
         });
       }
     },
-    "help-menu": SimpleHelpMessage('Help.HelpStartMenu', 'Start Menu')
+    "help-menu": SimpleHelpMessage('Help.HelpStartMenu', 'Start Menu', 'options-review')
   },
   Access: function Access(request) {
     var self = this;
     if (this.access) return Promise.resolve(this.access);
     if (!request || !request.user || !request.user.accessToken) {
-      //Allow logging in with fake credentials for debugging
-      if (!config.skill.fakeCredentials) {
-        analytics(request).event('Main Flow', 'Exit from not authorized').send();
-        return Promise.reject(StateMachineSkill.ERRORS.AUTHORIZATION);
-      }
-      return Promise.try(function () {
-        flowers = flowers || Flowers(config.flowers);
-        console.log('Using faked credentials. This should never happen in live!');
-        return flowers.login(config.skill.fakeCredentials.username, config.skill.fakeCredentials.password).then(function (user) {
-          self.access = {
-            user: user,
-            flowers: flowers,
-            analytics: analytics(request)
-          };
-          return self.access;
-        });
-      });
+      analytics(request).event('Main Flow', 'Exit from not authorized').send();
+      return Promise.reject(StateMachineSkill.ERRORS.AUTHORIZATION);
     }
     //HERE IS WHERE WE WILL GET AN OAUTH ACCESSTOKEN USING THE DEFAULT CREDENTIALS
     //THEN WE WILL PULL USER DATA BASED ON SYSTEMID STORED IN THE ALEXA REQUEST IN PartialOrder.build()
-    //FIRST CALL flowers.getProfile, THEN flowers.getRecipients, THEN flowers.getPaymentMethods
     return Promise.try(function () {
       flowers = flowers || Flowers(config.flowers);
-      console.log('Logging in using default credentials.');
-      // TODO We're going to need to make this something that doesn't make a request each time, since it's called often when flowing
-      // between states
-      return flowers.login(config.skill.defaultCredentials.username, config.skill.defaultCredentials.password).then(function (user) {
-        //Store the systemID and customerID that should be in the request.user.accessToken to the user object
-        var tokens = oauthhelper.decryptCode(request.user.accessToken);
-        user.systemID = tokens.systemID;
-        user.customerID = tokens.customerID;
+      var tokens = oauthhelper.decryptCode(request.user.accessToken);
+      return flowers.buildUser(tokens.systemID, tokens.customerID).then(function (user) {
         self.access = {
           user: user,
           flowers: flowers,

@@ -12,7 +12,9 @@ var router = exports.router = require('../infrastructure/mount.js')(__dirname),
     basicauth = require('basic-auth'),
     alexaFlowers = require('../../services/alexa-flowers.js'),
     _ = require('lodash'),
-    verbose = config.verbose;
+    verbose = config.verbose,
+    lang = require('../../skill/lang.js')
+    ;
 
 router.get('/fail', function (req, res, next) {
   res.redirect(oauthhelper.redirectTo(req.query.state, 'notvalid'));
@@ -59,55 +61,22 @@ router.post('/', function (req, res, next) {
     alexaFlowers.validate(user).then(function (data) {
       console.log('--------------------------------------------------------------------VALIDATE DATA---------------------------------');
       console.log(data);
-      if (data.errors.length) {
-        res.render('home/account-error', {
-          page: 'account-error',
-          title: '1800flowers',
-          hasError: function hasError(error) {
-            return data.errors.indexOf(error) >= 0;
-          }
-        });
-      } else {
-        var authCode = oauthhelper.encryptTokens({"systemID":data.systemID, "customerID":data.customerID});
-        process.stdout.write('auth_code: ' + authCode + "\r");
-        if (data.noCC || data.noContacts) {
-          console.log("REDIRECT URL: " + oauthhelper.redirectTo(req.body.state, authCode));
-          res.render('home/success-needs-more', {
-            page: "success",
-            title: "1800flowers - Account Linked",
-            auth_code: authCode,
-            redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
-            noCC: data.noCC,
-            noContacts: data.noContacts,
-            created: false
-            // card: {
-            //   imgUrl: alexaFlowers.pickCardImage(data.card.imageUrls, 'ImageLarge'),
-            //   name: data.card.nickname
-            // }
-          });
-        }
-        else {
-          console.log("REQ BODY:");
-          console.log(req.body);
-          console.log("REDIRECT URL: " + oauthhelper.redirectTo(req.body.state, authCode));
-          res.render('home/success', {
-            page: "success",
-            title: "1800flowers - Account Linked",
-            auth_code: authCode,
-            redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
-            noCC: data.noCC,
-            noContacts: data.noContacts,
-            created: false
-            // card: {
-            //   imgUrl: alexaFlowers.pickCardImage(data.card.imageUrls, 'ImageLarge'),
-            //   name: data.card.nickname
-            // }
-          });
-        }
-      }
+      var authCode = oauthhelper.encryptTokens({"systemID":data.systemID, "customerID":data.customerID});
+      res.render( data.noCC || data.noContacts || data.noBillingAddress ?'home/success-needs-more' :'home/success'
+      , {
+        page: "success",
+        title: "1800flowers - Account Linked",
+        auth_code: authCode,
+        redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
+        nextSteps: lang.enumerate(_.compact([
+            data.noCC ? 'contacts' : ''
+          , data.noBillingAddress ? 'a billing address' : ''
+          , data.noContacts ? 'contacts' : ''
+        ])),
+        created: false
+      });
     }).catch(function (err) {
-      console.log("ERROR AUTHENTICATING----------------------------------------******************************----------------------:");
-      console.log(JSON.stringify(err));
+      console.error(err.stack);
       res.render('home/index', {
         page: 'homepage',
         title: '1800flowers',
@@ -115,7 +84,7 @@ router.post('/', function (req, res, next) {
       });
     })
   }).catch(function (err) {
-    //process.stdout.write("Error logging in: " + err + "\r");
+    console.error(err.stack || err);
     res.render('home/index', {
       page: 'homepage',
       title: '1800flowers',
@@ -195,30 +164,6 @@ router.post('/create', function (req, res, next) {
           });
         }
       });
-      
-      // flowers.login(email, password).then(function (flowersUser) {
-      //   flowersUser.getProfile(user.registerNewCustomerResponse.customerData.systemID).then( function (userProfile) {
-      //     console.log("System ID: " + user.registerNewCustomerResponse.customerData.systemID);
-      //     console.log("Customer ID: " + userProfile.Get18FCustomerByAdminSysKeyResponse.result.response.idPK);
-      //     var authCode = oauthhelper.encryptTokens({"systemID":user.registerNewCustomerResponse.customerData.systemID, "customerID":userProfile.Get18FCustomerByAdminSysKeyResponse.result.response.idPK});
-      //     res.render('home/success-needs-more', {
-      //         page: "success",
-      //         title: "1800flowers - Account Created",
-      //         auth_code: authCode,
-      //         noCC: true,
-      //         noContacts: true,
-      //         created: true
-      //     });
-      //   }).catch(function (profileError) {
-      //     console.log("PROFILE ERROR: ", profileError);
-      //       res.render('home/create', {
-      //       page: 'create',
-      //       title: '1800flowers',
-      //       errorCreating: true,
-      //       errorMessage: profileError
-      //     });
-      //   });
-      // });
     }
   }).catch(function (err) {
     process.stdout.write("Error Creating User: " + err + "\r");
@@ -229,7 +174,7 @@ router.post('/create', function (req, res, next) {
       errorMessage: err
     });
   });
-});  
+});
 
 router.get('/success', function (req, res, next) {
   res.render('home/success', {
@@ -298,7 +243,7 @@ router.get('/privacy-policy', function (req, res, next) {
   //     console.log("Taxes: " + taxes);
   //   }
   // });
-  
+
   // purchase.getOrderNumber().then(function (orderNum) {
   //   if (orderNum.error) {
   //     console.log("Error getting order number: " + orderNum.error);

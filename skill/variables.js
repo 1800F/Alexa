@@ -20,13 +20,6 @@ var _ = require('lodash'),
     address = require('./address.js')
     ;
 
-exports.userName = function (po) {
-  if(!po) return '';
-  return po.getProfile().then(function (profile) {
-    return profile.name;
-  })
-};
-
 // Recipients
 
 exports.recipientChoices = function (po) {
@@ -47,18 +40,27 @@ exports.contactCandidateAddress = function (po) {
   return address.say(address.fromPipes(po.getContactCandidate().address));
 };
 
+exports.deliveryDateOffers = function(po) {
+  return lang.enumerateOr(po.deliveryDateOffers.map(function(date){
+    return moment(date).format('MMMM Do');
+  }))
+}
+
 // Arrangement sizes
 
 exports.largePrice = function (po) {
-  return '';
+  var details = po.getSizeDetailsByName('large');
+  return currency.sayInBlocks(details.price);
 };
 
 exports.mediumPrice = function (po) {
-  return '';
+  var details = po.getSizeDetailsByName('medium');
+  return currency.sayInBlocks(details.price);
 };
 
 exports.smallPrice = function (po) {
-  return '';
+  var details = po.getSizeDetailsByName('small');
+  return currency.sayInBlocks(details.price);
 };
 
 // To Review Order
@@ -68,7 +70,7 @@ exports.arrangementSize = function (po) {
 };
 
 exports.arrangementType = function (po) {
-  return po.arrangement;
+  return po.arrangement.name;
 };
 
 exports.recipient = function (po) {
@@ -80,7 +82,7 @@ exports.possibleRecipient = function (po) {
 };
 
 exports.deliveryDate = function (po) {
-  return '';
+  return moment(po.deliveryDate).format('MMMM Do');
 };
 
 // Query arrangement, size
@@ -95,17 +97,20 @@ exports.arrangementName = function(po) {
   return arrangement.name;
 }
 
-exports.arrangement = function (po) {
-  return '';
-}
-
 exports.sizeDescription = function (po) {
-  return '';
+  var size = po.getSizeDescription();
+  return size.description;
 }
 
-exports.size = function (po) {
-  return '';
+exports.sizeName = function (po) {
+  var size = po.getSizeDescription();
+  return size.name;
 };
+
+exports.sizePrice = function (po) {
+  var details = po.getSizeDetailsByName(po.getSizeDescription().name);
+  return currency.say(details.price, 'USD');
+}
 
 // OKay
 
@@ -120,29 +125,17 @@ exports.okay = function (po) {
 // Confirm
 
 exports.address = function (po) {
-  return '';
+  return po.getRecipientAddress();
 };
 
 exports.price = function (po) {
-  return '';
+  return currency.say(po.order.charges.total,'USD');
 };
 
-exports.date = function (po) {
-  return '';
+exports.possibleDeliveryDate = function (po) {
+  return moment(po.possibleDeliveryDate).format('MMMM Do');
 };
-
-exports.dateMinusOne = function (po) {
-  return '';
-}
-
-exports.datePlusOne = function (po) {
-  return '';
-}
-
-exports.nextDate = function (po) {
-  return '';
-}
 
 exports.paymentType = function (po) {
-  return '';
+  return po.order.card.type.code;
 }

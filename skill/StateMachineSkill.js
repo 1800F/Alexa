@@ -60,7 +60,6 @@ StateMachineSkill.prototype.eventHandlers.onIntent = function (request, session,
       stateMachine = this._StateMachine(fromState),
       request = new Request(request, session),
       qTransition = stateMachine.transition(request);
-  console.log(fromState + " " + JSON.stringify(stateMachine) + " " + JSON.stringify(request) + " " + JSON.stringify(qTransition));
   return qTransition.then(function (trans) {
     return transitionEndingInterceptor.call(self, trans, stateMachine, request);
   }).then(function (trans) {
@@ -88,13 +87,12 @@ function respondAuthFailure(response) {
 function respondBadResponse(stateMachine, request, response) {
   var _this = this;
 
-  var reply = new Reply();
   Promise.try(function () {
     return _this._StateMachine.onBadResponse(request);
-  }).then(function (errorMsg) {
-    if (errorMsg) {
+  }).then(function (reply) {
+    if (reply) {
       if (verbose) console.log('Got an error response, and it was handled by a custom handler');
-      new Reply(errorMsg).write(response);
+      reply.write(response);
     } else {
       respondError(stateMachine, request, response)();
     }
