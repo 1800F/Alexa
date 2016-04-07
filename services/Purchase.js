@@ -150,8 +150,8 @@ var Purchase = module.exports= function Purchase(options,tokens) {
       "paymentRequest": {
           "authorization": {
              "security": {
-                "username": options.paymentUser, //This will be updated in production
-                "password": options.paymentPass  //This will be updated in production
+                "username": options.paymentCredentials.user, //This will be updated in production
+                "password": options.paymentCredentials.password  //This will be updated in production
              },
              "sourceId": "W0097",
              "orderId": "8401226524",
@@ -193,7 +193,6 @@ var Purchase = module.exports= function Purchase(options,tokens) {
           }
        }
     };
-    console.log(JSON.stringify(body));
 
     return purchaseRequest('POST', '/authorizeCC', {}, body,  "payment").then(function(authorization){
       var authResult = authorization;

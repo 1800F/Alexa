@@ -396,9 +396,8 @@ PartialOrder.prototype.placeOrder = function() {
     }
     , payment = self.order.card
   ;
-  console.log('Recipient ' + JSON.stringify(recipient));
-
-  return self.user.submitOrder(product, self.user, recipient, self.order.card)
+  
+  return self.user.submitOrder(product, recipient, self.order.card)
     .then(function(order) {
       console.log(order);
     })

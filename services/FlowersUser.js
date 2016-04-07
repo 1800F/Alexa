@@ -133,8 +133,9 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
       };
 
       function processPhone(contactMethod) {
-        if(!contactMethod || !contactMethod.contactMethod) return null;
-        contactMethod = contactMethod.contactMethod;
+        // This is an array, so we should get the first one
+        if(!contactMethod || contactMethod.length == 0 || !contactMethod[0].contactMethod) return null;
+        contactMethod = contactMethod[0].contactMethod;
         return contactMethod.referenceNumber;
       }
       function processAddress(address) {
@@ -152,7 +153,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
     });
   }
 
-  function submitOrder(product, recipient, user, payment) {
+  function submitOrder(product, recipient, payment) {
     var purchase = Purchase(options)
       , user = {
           displayName: null
@@ -170,6 +171,8 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
       ;
     return this.getCustomerDetails().then(function(userProfile) {
       user.displayName = userProfile.displayName;
+      user.firstName = userProfile.firstName;
+      user.lastName = userProfile.lastName;
       user.phone = userProfile.phone;
       user.email = userProfile.email;
       if (userProfile.address) {
