@@ -162,7 +162,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                       "cardType": paymentInfo.type.value,
                       "securityCode": "", //We don't collect this, but it's not required
                       "nameOnCard": paymentInfo.nameOnCard,
-                      "cardExpDate": paymentInfo.cardExpiryDate,
+                      "cardExpDate": moment(paymentInfo.cardExpiryDate).format('MMYY').toUpperCase(),
                       "currencyCode": "840",
                       "transactionAmount": amount.toFixed(2),
                       "divisionNumber": "104272",
@@ -193,6 +193,8 @@ var Purchase = module.exports= function Purchase(options,tokens) {
           }
        }
     };
+
+    console.log(JSON.stringify(body));
 
     return purchaseRequest('POST', '/authorizeCC', {}, body,  "payment").then(function(authorization){
       var authResult = authorization;
