@@ -247,6 +247,16 @@ DescriptionIntent What about the {arrangementSlot}
 DescriptionIntent Describe {arrangementSlot}
 DescriptionIntent Describe the {arrangementSlot}
 DescriptionIntent I want to hear about the {arrangementSlot}
+DescriptionIntent What's in the {arrangementSlot} {bouquet}
+DescriptionIntent Tell me about the {arrangementSlot} {bouquet}
+DescriptionIntent Tell me more about {arrangementSlot} {bouquet}
+DescriptionIntent What's in {arrangementSlot} {bouquet}
+DescriptionIntent What's in the {arrangementSlot} {bouquet}
+DescriptionIntent What about {arrangementSlot} {bouquet}
+DescriptionIntent What about the {arrangementSlot} {bouquet}
+DescriptionIntent Describe {arrangementSlot} {bouquet}
+DescriptionIntent Describe the {arrangementSlot} {bouquet}
+DescriptionIntent I want to hear about the {arrangementSlot} {bouquet}
 
 DescriptionIntent Who can I send flowers to
 DescriptionIntent What are my options
