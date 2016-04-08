@@ -96,7 +96,7 @@ var responses = function () {
       // The {okay} variable consists of the terms, (Okay, Great, Excellent)
       // that are randomly selected to fill the slot.
       FirstAddress: {
-        ask: "{okay}, is that {contactCandidateName} at {contactCandidateAddress}?",
+        ask: "{okay}, is that {contactCandidateName}, at {contactCandidateAddress}?",
         reprompt: "Is {contactCandidateAddress} the correct address for {contactCandidateName}?"
       },
       NotInAddressBook: {
@@ -136,7 +136,7 @@ var responses = function () {
         say: "I'm sorry. Flowers ordered through the 1-800-Flowers Amazon Echo Skill cannot be delivered to that address.",
       },
       NextAddress: {
-        ask: "How about flowers for {contactCandidateName} at {contactCandidateAddress}?",
+        ask: "How about flowers for {contactCandidateName}, at {contactCandidateAddress}?",
         reprompt: "Is {contactCandidateAddress} the correct address for {contactCandidateName}?"
       },
       AddOrUpdateAddressesOnline: {
