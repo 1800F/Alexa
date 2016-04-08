@@ -125,7 +125,12 @@ exports.okay = function (po) {
 // Confirm
 
 exports.address = function (po) {
-  return po.getRecipientAddress();
+  var addr = po.getRecipientAddress();
+  var addressString = addr.line1 + "\n";
+  if (addr.line2) addressString += (addr.line2 + "\n");
+  if (addr.line3) addressString += (addr.line3 + "\n");
+  addressString += (addr.city + ', ' + addr.state + ' ' + addr.zip);
+  return addressString;
 };
 
 exports.price = function (po) {
