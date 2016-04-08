@@ -366,8 +366,8 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                   "ord:itemDiscountAmount": "0.00",
                   "ord:itemDiscountAmountPercent": "0.00",
                   "ord:itemTaxAmount": product.tax,
-                  "ord:itemServiceChargeAmount": "0.00",
-                  "ord:itemShippingChargeAmount": product.shipping,
+                  "ord:itemServiceChargeAmount": product.shipping,
+                  "ord:itemShippingChargeAmount": "0.00",
                   "ord:methodDescription": "",
                   "ord:deliveryDate": moment(product.deliveryDate).format("MM/DD/YYYY"),
                   "ord:outsideDate": "",
@@ -404,9 +404,9 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                 "ord:totalAmount": product.total.toFixed(2),
                 "ord:taxAmount": product.tax,
                 "ord:discountAmount": "0.0",
-                "ord:serviceCharge": "0.0",
+                "ord:serviceCharge": product.shipping,
                 "ord:giftCertificateAmount": "0.0",
-                "ord:shippingChargeAmount": product.shipping,
+                "ord:shippingChargeAmount": "0.0",
               },
               "ord:paymentDetails": {
                 "ord:creditCardPayment": {
