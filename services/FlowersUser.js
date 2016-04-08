@@ -5,6 +5,7 @@ var Promise = require('bluebird')
   , moment = require('moment')
   , js2xmlparser = require("js2xmlparser")
   , post = Promise.promisify(require('request').post)
+  , Purchase = require('./Purchase.js')
 ;
 
 var FlowersUser = module.exports = function FlowersUser(options, tokens, systemID, customerID) {
@@ -49,7 +50,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
           "requesterLanguage":"-1",
           "requesterLocale":"en"
         },
-        "SourceId":"W0091",
+        "SourceId":"W0097",
         "AdminSystemType":"3001666",
         "AdminPartyId":systemID,
         "InquiryLevel":"4"
@@ -124,13 +125,17 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
       return {
         customerID: body.idPK,
         displayName: body.displayName,
+        firstName: body.name.givenNameOne,
+        lastName: body.name.lastName,
         address: processAddress(body.address),
-        phone: processPhone(body.contactMethod)
+        phone: processPhone(body.contactMethod),
+        email: body.identification.number
       };
 
       function processPhone(contactMethod) {
-        if(!contactMethod || !contactMethod.contactMethod) return null;
-        contactMethod = contactMethod.contactMethod;
+        // This is an array, so we should get the first one
+        if(!contactMethod || contactMethod.length == 0 || !contactMethod[0].contactMethod) return null;
+        contactMethod = contactMethod[0].contactMethod;
         return contactMethod.referenceNumber;
       }
       function processAddress(address) {
@@ -148,19 +153,59 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
     });
   }
 
-  function submitOrder(product, recipient, user, payment, delivery) {
-    var purchase = Flowers.Purchase(options);
-    return purchase.createOrder(product, recipient, user, payment, delivery).then( function(testOrder) {
-      return getUserAuthToken().then(function (token) {
-        return soapRequest(token, 'https://ecommerce.800-flowers.net/alexa/uat/submitOrder/v1', testOrder, options).then(function(order) {
-          console.log("ORDER PROCESSED: " + JSON.stringify(order));
-          if (order[0].flwsErrors[0].flwsError[0].errorMessage[0]) {
-            return {error: order[0].flwsErrors[0].flwsError[0].errorMessage[0]};
+  /**
+   * It will return an object with the following structure depends of the case
+   * - For Error {"flwsErrors":[{"flwsError":[{"errorCode":["2526"],"errorMessage":["Invalid Service Charge"],"errorType":[""]}]}]}
+   * - For Success {"message":["OrderSubmitted :7760000028"]}
+   */
+  function submitOrder(product, recipient, payment) {
+    var purchase = Purchase(options)
+      , user = {
+          displayName: null
+          , address: {
+            addr1: null
+            , addr2: null
+            , city: null
+            , state: null
+            , country: null
+            , postalCode: null
           }
-          else
-            return order[0];
+          , phone: null
+          , email: null
+        }
+      ;
+    return this.getCustomerDetails().then(function(userProfile) {
+      user.displayName = userProfile.displayName;
+      user.firstName = userProfile.firstName;
+      user.lastName = userProfile.lastName;
+      user.phone = userProfile.phone;
+      user.email = userProfile.email;
+      if (userProfile.address) {
+        user.address.addr1 = userProfile.address.addr1;
+        user.address.addr2 = userProfile.address.addr2;
+        user.address.city = userProfile.address.city;
+        user.address.state = userProfile.address.state;
+        user.address.country = userProfile.address.country;
+        user.address.postalCode = userProfile.address.postalCode;
+      }
+      return purchase.authorizeCC(payment, product.total, user)
+        .then(function(authorization) {
+          // Error
+          if (authorization.authCode.trim() != 100) {
+            return authorization.errors.error;
+          }
+          payment.authType = authorization.authVerificationCode;
+          return purchase.createOrder(product, user, recipient, payment)
+            .then( function(order) {
+              return getUserAuthToken()
+                .then(function (token) {
+                  return soapRequest(token, 'submitOrder', order, options)
+                    .then(function(order) {
+                      return order[0];
+                    });
+                });
+            });
         });
-      });
     });
   }
 
@@ -188,7 +233,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
 function soapRequest(token, uri, sendObject, options) {
   var method = 'POST',
       op = method == 'POST' ? post : get,
-      url = uri,
+      url = options.endpoint + '/' + uri + '/' + options.version,
       js2XMLParseOptions = {declaration: {'include': false},prettyPrinting: {'enabled': true}},
       myxml = js2xmlparser('ord:orderFile', sendObject, js2XMLParseOptions),
       startTime = +new Date(),

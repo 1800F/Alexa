@@ -79,7 +79,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
        "esbSaltaServiceRequest": {
           "getOrderNumberRequest": {
              "brandCode": "1001",
-             "sourceId": "W0091"
+             "sourceId": "W0097"
           }
        }
     };
@@ -150,8 +150,8 @@ var Purchase = module.exports= function Purchase(options,tokens) {
       "paymentRequest": {
           "authorization": {
              "security": {
-                "username": options.paymentUser, //This will be updated in production
-                "password": options.paymentPass  //This will be updated in production
+                "username": options.paymentCredentials.user, //This will be updated in production
+                "password": options.paymentCredentials.password  //This will be updated in production
              },
              "sourceId": "W0097",
              "orderId": "8401226524",
@@ -162,9 +162,9 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                       "cardType": paymentInfo.type.value,
                       "securityCode": "", //We don't collect this, but it's not required
                       "nameOnCard": paymentInfo.nameOnCard,
-                      "cardExpDate": paymentInfo.cardExpiryDate,
+                      "cardExpDate": moment(paymentInfo.cardExpiryDate).format('MMYY').toUpperCase(),
                       "currencyCode": "840",
-                      "transactionAmount": amount.toFixed(2),
+                      "transactionAmount": amount.toFixed(2).replace('.', ''),
                       "divisionNumber": "104272",
                       "transactionType": "7"
                    },
@@ -195,18 +195,14 @@ var Purchase = module.exports= function Purchase(options,tokens) {
     };
 
     return purchaseRequest('POST', '/authorizeCC', {}, body,  "payment").then(function(authorization){
-      var authResult = authorization;
-      console.log("CC Auth Result: " + JSON.stringify(authResult));
-      if (authResult.errorCode != "0") {
-        return {error:authResult.errorDescription};
-      }
-      else return authResult.paymentResponse.authorizations.creditCardAuthorizations;
+      var authResult = authorization.paymentResponse.authorizations.creditCardAuthorizations.creditCardAuthorization;
+      return authResult;
     });
   }
 
-  function createOrderObject(product, user, recipient, payment, delivery) {
+  function createOrderObject(product, user, recipient, payment) {
     return getNextOrderNumber().then(function (orderNumber) {
-      var testOrder = {
+      var order = {
           // '@': {
           //   "xmlns:ord": "http://1800flowers.com/BTOP/OrderFile"
           // },
@@ -245,7 +241,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                   "ord:type": "HP",
                   "ord:telephoneNumber": user.phone,
                 },
-                "ord:emailAddress": "",
+                "ord:emailAddress": user.email,
                 "ord:optInFlag": "",
                 "ord:gender": "",
                 "ord:specialFlag": "",
@@ -255,10 +251,10 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                 "ord:CustomerSuffix": "",
               },
               "ord:orderTotalAmount": {
-                "ord:totalAmount": product.amount,
+                "ord:totalAmount": product.total.toFixed(2),
                 "ord:taxAmount": product.tax,
                 "ord:discountAmount": "0.0",
-                "ord:serviceCharge": "",
+                "ord:serviceCharge": product.shipping,
                 "ord:giftCertificateAmount": "0.0",
                 "ord:shippingChargeAmount": product.shipping,
               },
@@ -316,7 +312,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                 "ord:title": "",
                 "ord:firstName": recipient.firstName,
                 "ord:lastName": recipient.lastName,
-                "ord:emailAddress": recipient.email,
+                "ord:emailAddress": "",
                 "ord:address": {
                   "ord:streetAddress1": recipient.addr1,
                   "ord:streetAddress2": recipient.addr2,
@@ -373,7 +369,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                   "ord:itemServiceChargeAmount": "0.00",
                   "ord:itemShippingChargeAmount": product.shipping,
                   "ord:methodDescription": "",
-                  "ord:deliveryDate": product.deliveryDate,
+                  "ord:deliveryDate": moment(product.deliveryDate).format("MM/DD/YYYY"),
                   "ord:outsideDate": "",
                   "ord:flexGuaranteedFlag": "N",
                   "ord:customerDOB": "",
@@ -390,7 +386,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                   "ord:lineItemType": "",
                 },
                 "ord:recipientTotalAmount": {
-                  "ord:totalAmount": product.total,
+                  "ord:totalAmount": product.total.toFixed(2),
                   "ord:taxAmount": product.tax,
                   "ord:discountAmount": "0.0",
                   "ord:serviceCharge": "0.0",
@@ -405,7 +401,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                 "ord:recipientSuffix": "",
               },
               "ord:brandTotalAmount": {
-                "ord:totalAmount": product.total,
+                "ord:totalAmount": product.total.toFixed(2),
                 "ord:taxAmount": product.tax,
                 "ord:discountAmount": "0.0",
                 "ord:serviceCharge": "0.0",
@@ -445,12 +441,12 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                     "ord:suffix": "",
                     "ord:CustomerSuffix": "",
                   },
-                  "ord:expirationDate": payment.expiration,
-                  "ord:cardType": payment.cardType,
+                  "ord:expirationDate": moment(payment.cardExpiryDate).format('MM/YYYY').toUpperCase(),
+                  "ord:cardType": payment.type.value,
                   "ord:cryptogram": "",
                   "ord:thirdPartyPaymentType": "",
                   "ord:thirdPartyTransactionId": "",
-                  "ord:approvalCode": payment.approvalCode,
+                  "ord:approvalCode": payment.authType,
                   "ord:secureIdentifier": "",
                   "ord:CAVVValue": "",
                   "ord:AVSResponseCode": payment.AVSResponseCode,
@@ -461,7 +457,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                   "ord:CAVVResponseCode": "",
                   "ord:cardSecurityValueResponse": "",
                   "ord:authType": payment.authType,
-                  "ord:authorizedAmount": payment.authorizedAmount,
+                  "ord:authorizedAmount": product.total.toFixed(2),
                   "ord:googleTransactionId": "",
                 },
                 "ord:houseAccountPayment": {
@@ -511,7 +507,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
             "ord:errorFlag": ""
           }]
       };
-      return testOrder;
+      return order;
     });
   }
 

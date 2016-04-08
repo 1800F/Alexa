@@ -348,7 +348,7 @@ PartialOrder.prototype.prepOrderForPlacement = function(){
     , item = self.getSizeDetailsByName()
   ;
   return Promise.all([
-    this.user.getRecipientAddress(self.recipient.demoId,self.recipient.id),
+    self.user.getRecipientAddress(self.recipient.demoId,self.recipient.id),
     self.user.getPaymentMethods()
   ])
   .spread(function(address, cards){
@@ -382,15 +382,39 @@ PartialOrder.prototype.prepOrderForPlacement = function(){
   });
 }
 
-PartialOrder.prototype.placeOrder = function(){
+PartialOrder.prototype.placeOrder = function() {
+  //-1. Get User Address
   //0. Get order Number
   //1. Authorize CC
   //2. create order
   var self = this
-    , purchase = Purchase(config.flowers)
+    , item = self.getSizeDetailsByName()
+    , product = {
+      tax: self.order.charges.taxes
+      , shipping: self.order.charges.shippingTotal
+      , sku: item.sku
+      , name: item.name
+      , price: self.order.charges.item
+      , deliveryDate: self.deliveryDate
+      , total: self.order.charges.total
+    }
+    , recipient = {
+      firstName: self.order.address.firstName
+      , lastName: self.order.address.lastName
+      , addr1: self.order.address.addr1
+      , addr2: self.order.address.addr2
+      , city: self.order.address.city
+      , state: self.order.address.state
+      , postalCode: self.order.address.postalCode
+      , country: self.order.address.country
+      , phone: self.order.address.phone
+    }
+    , payment = self.order.card
   ;
-
-  return purchase.getOrderNumber().then(function(orderNumber) {
-    console.log('Order number ' + orderNumber + ' ' + JSON.stringify(self.order.card));
-  });
+  
+  return self.user.submitOrder(product, recipient, self.order.card)
+    .then(function(status) {
+      return !!status.message;
+    })
+  ;
 }
