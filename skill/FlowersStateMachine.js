@@ -163,7 +163,6 @@ module.exports = StateMachine({
             return replyWith('QueryRecipientList.OkayWho','query-recipient-list',request,po);
           }else if (request.intent.name == 'AMAZON.NoIntent') {
             po.nextRecipientChoices();
-            console.log("the number of remaining choices is: " + po.getRecipientChoices().length)
             if(!po.getRecipientChoices().length) return replyWith('QueryRecipientList.ContinueWithOrder','query-options-again',request,po);
             if(po.isLastRecipientChoiceOffer()) return replyWith('QueryRecipient.LastRecipientList','query-recipient-list',request,po);
             return replyWith('QueryRecipientList.NextFourRecipientList','query-recipient-list',request,po);
