@@ -158,8 +158,11 @@ router.post('/create', function (req, res, next) {
               title: "1800flowers - Account Created",
               auth_code: authCode,
               redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
-              noCC: true,
-              noContacts: true,
+              nextSteps: lang.enumerate(_.compact([
+                'contacts'
+                , 'a billing address'
+                , 'contacts'
+              ])),
               created: true
           });
         }
