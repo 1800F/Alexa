@@ -303,7 +303,7 @@ var responses = function () {
     ExitIntent: {
       // This should replay the reprompt associated with the last ask the user received.
       RepeatLastAskReprompt: {
-        tell: "Okay, for more floral needs visit 1-800-Flowers.com.",
+        tell: "Okay, for more of your floral needs visit 1-800-Flowers.com.",
       },
     },
   };
