@@ -374,8 +374,7 @@ PartialOrder.prototype.placeOrder = function() {
   var self = this
     , item = self.getSizeDetailsByName()
     , product = {
-      amount: 1
-      , tax: self.order.charges.taxes
+      tax: self.order.charges.taxes
       , shipping: self.order.charges.shippingTotal
       , sku: item.sku
       , name: item.name
@@ -398,8 +397,8 @@ PartialOrder.prototype.placeOrder = function() {
   ;
   
   return self.user.submitOrder(product, recipient, self.order.card)
-    .then(function(order) {
-      console.log(order);
+    .then(function(status) {
+      return !!status.message;
     })
   ;
 }

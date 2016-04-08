@@ -153,6 +153,11 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
     });
   }
 
+  /**
+   * It will return an object with the following structure depends of the case
+   * - For Error {"flwsErrors":[{"flwsError":[{"errorCode":["2526"],"errorMessage":["Invalid Service Charge"],"errorType":[""]}]}]}
+   * - For Success {"message":["OrderSubmitted :7760000028"]}
+   */
   function submitOrder(product, recipient, payment) {
     var purchase = Purchase(options)
       , user = {
@@ -185,19 +190,18 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
       }
       return purchase.authorizeCC(payment, product.total, user)
         .then(function(authorization) {
-          console.log('AUTHORIZATION ' + JSON.stringify(authorization));
+          // Error
+          if (authorization.authCode.trim() != 100) {
+            return authorization.errors.error;
+          }
+          payment.authType = authorization.authVerificationCode;
           return purchase.createOrder(product, user, recipient, payment)
             .then( function(order) {
               return getUserAuthToken()
                 .then(function (token) {
                   return soapRequest(token, 'submitOrder', order, options)
                     .then(function(order) {
-                      console.log("ORDER PROCESSED: " + JSON.stringify(order));
-                      if (order[0].flwsErrors[0].flwsError[0].errorMessage[0]) {
-                        return {error: order[0].flwsErrors[0].flwsError[0].errorMessage[0]};
-                      } else {
-                        return order[0];
-                      }
+                      return order[0];
                     });
                 });
             });

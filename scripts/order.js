@@ -110,13 +110,12 @@ flowers.buildUser(systemID)
     Card {"idPK":"728145998864957897","number":"7CC92D0B83DAC18D","type":{"code":"VISA","value":"VI"},"cardExpiryDate":"2026-12-28","nameOnCard":"Christian Torres","id":"728145998864957897"}
    */
   var product = {
-      amount: 1
-      , tax: charges.taxes
+      tax: charges.taxes
       , shipping: charges.shippingTotal
       , sku: item.productSku
       , name: item.skuName
       , price: charges.item
-      , deliveryDate: moment(deliveryDate).format('DD-MMM-YY').toUpperCase()
+      , deliveryDate: deliveryDate
       , total: charges.total
     }
   ;
@@ -125,7 +124,7 @@ flowers.buildUser(systemID)
 })
 .then(function(order) {
   console.log('Order');
-  console.log(order);
+  console.log(JSON.stringify(order));
 })
 ;
 
