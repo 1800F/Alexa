@@ -166,10 +166,18 @@ router.post('/create', function (req, res, next) {
               created: true
           });
         }
+      }).catch(function (err) {
+        console.log("Error adding customer details " + JSON.stringify(err));
+        res.render('home/create', {
+          page: 'create',
+          title: '1800flowers',
+          errorCreating: true,
+          errorMessage: "We were unabled to set your profile, please review your email address and other information and try again."
+        });
       });
     }
   }).catch(function (err) {
-    process.stdout.write("Error Creating User: " + err + "\r");
+    console.log("Error Creating User: " + JSON.stringify(err));
     res.render('home/create', {
       page: 'create',
       title: '1800flowers',
