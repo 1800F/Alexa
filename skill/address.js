@@ -26,6 +26,8 @@ exports.fromPipes = function(address){
 
 exports.say = function (address) {
   if (!address) return address;
+  address.line1 += ",";
+  if(address.line2) address.line2 += ",";
   if(_.isObject(address)) address = _.compact([address.line1, address.line2, address.line3, address.city]).join(' ');
   return rules.reduce(function (address, rule) {
     return address.replace(rule.regex, rule.to + ' ');
