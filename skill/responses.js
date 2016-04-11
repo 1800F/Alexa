@@ -18,14 +18,14 @@ var responses = function () {
     Errors: {
 
       NotConnectedToAccount: {
-        tell: "Hi there. Before I can help you place an order, you'll need to connect to your 1-800-Flowers account.\n        To help you get started, I've added a link to the authorization process in the Home screen of the Alexa app.\n        <break time=\"1s\"/>\n        When you're ready, come back and I'll be happy to help you place your order!",
+        tell: "{welcomePhrase}. Before I can help you place an order, you'll need to connect to your 1-800-Flowers account.\n        To help you get started, I've added a link to the authorization process in the Home screen of the Alexa app.\n        <break time=\"1s\"/>\n        When you're ready, come back and I'll be happy to help you place your order!",
         card: authCard
       },
       NoRecipientsInAddressBook: {
-        tell: "Hi there. Before I can help you place an order, you'll need to add at least one address to your 1-800-Flowers address book online.    <break time=\"1s\"/>      When you're ready, come back and I'll be happy to help you place your order!",
+        tell: "{welcomePhrase}. Before I can help you place an order, you'll need to add at least one address to your 1-800-Flowers address book online.    <break time=\"1s\"/>      When you're ready, come back and I'll be happy to help you place your order!",
       },
       NoPaymentMethod: {
-        tell: "Hi there. Before I can help you place an order, you'll need to add a payment method to your 1-800-Flowers account online.    <break time=\"1s\"/>      When you're ready, come back and I'll be happy to help you place your order!",
+        tell: "{welcomePhrase}. Before I can help you place an order, you'll need to add a payment method to your 1-800-Flowers account online.    <break time=\"1s\"/>      When you're ready, come back and I'll be happy to help you place your order!",
       },
       ErrorAtLaunch: {
         tell: "I'm really sorry, but I can't take floral orders right now.\n          <break time=\"1s\"/>\n          Please check back soon and thank you for visiting 1-800-Flowers."
@@ -43,7 +43,7 @@ var responses = function () {
 
     Options: {
       OpenResponse: {
-        say: "Hi there!"
+        say: "{welcomePhrase}"
       },
       RecipientSelection: {
         ask: "Who would you like to send flowers to?",

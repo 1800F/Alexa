@@ -153,3 +153,9 @@ exports.paymentType = function (po) {
 exports.imageUrl = function (po) {
   return images[po.arrangement.name];
 };
+
+exports.welcomePhrase = function (po) {
+  var welcomePhrase = !po.hasSaidWelcome ? 'Hi there!' : '';
+  po.hasSaidWelcome = true;
+  return welcomePhrase;
+}
