@@ -42,12 +42,15 @@ var responses = function () {
     },
 
     Options: {
+      OpenResponse: {
+        Say: "Hi there!"
+      },
       RecipientSelection: {
         ask: "Who would you like to send flowers to?",
         reprompt: "What's the first name of the person you want to send flowers to?"
       },
        RecipientSelectionAlt: {
-        ask: "{okay}, who are the flowers for?",
+        ask: "Who are the flowers for?",
         reprompt: "What's the first name of the person you want to send flowers to?"
       },
       ArrangementList: {
