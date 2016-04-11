@@ -27,7 +27,8 @@
       "redirectUrl": "[CHANGE-THIS]",
       "clientId": "alexa-skill",
       "clientSecret": "ihaveasecret",
-      "codeKey": "used-to-mangle-codes"
+      "codeKey": "used-to-mangle-codes",
+      "token_expiration": 1576800000
     },
     "appId": "[CHANGE-THIS]"
   },
