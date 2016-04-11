@@ -27,7 +27,8 @@
       "redirectUrl": "https://pitangui.amazon.com/api/skill/link/M6ZHH7PH52R7T",
       "clientId": "alexa-skill",
       "clientSecret": "ihaveasecret",
-      "codeKey": "used-to-mangle-codes"
+      "codeKey": "used-to-mangle-codes",
+      "token_expiration": 1576800000
     },
     "appId": "amzn1.echo-sdk-ams.app.f3046058-e528-4531-b6ed-31448206b503"
   },

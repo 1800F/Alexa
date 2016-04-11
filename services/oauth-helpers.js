@@ -1,6 +1,7 @@
 'use strict';
 
-var url = require('url'),
+var _ = require('lodash'),
+    url = require('url'),
     crypto = require('crypto'),
     algorithm = 'aes-256-ctr';
 
@@ -14,7 +15,7 @@ module.exports = function OAuthHelper(options) {
   return {
     redirectTo: function redirectTo(state, code) {
       console.log("redirect to 1");
-      return exports.redirectTo(state, code, options.redirectUrl, cipher());
+      return exports.redirectTo(state, code, options.redirectUrl, options.token_expiration, options.grant_type);
     },
     encryptTokens: function encryptTokens(tokens) {
       return exports.encryptTokens(tokens, cipher());
@@ -45,12 +46,22 @@ exports.decryptCode = function (code, decipher) {
   return JSON.parse(decrypted);
 };
 
-exports.redirectTo = function (state, code, redirectUrl) {
-  console.log('redirect to');
+exports.redirectTo = function (state, code, redirectUrl, token_expiration, grant_type) {
   var uri = url.parse(redirectUrl, true);
-  console.log('parse');
+  var grant_type = grant_type || 'auth_code';
   delete uri.search;
-  uri.query.state = state;
-  uri.query.code = code;
+  if (grant_type == 'implicit') {
+    uri.hash = exports.querystring({ "state": state, "access_token": code, "expires_in": token_expiration });
+  } else {  // Authorization Code Grant
+    uri.query.code = code;
+    uri.query.state = state;
+  }
+  console.log('redirect to ' + url.format(uri));
   return url.format(uri);
+};
+
+exports.querystring = function(obj) {
+  return _.map(obj,function(v,k){
+    return encodeURIComponent(k) + '=' + encodeURIComponent(v);
+  }).join('&');
 };

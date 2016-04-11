@@ -13,6 +13,7 @@ var router = exports.router = require('../infrastructure/mount.js')(__dirname),
     alexaFlowers = require('../../services/alexa-flowers.js'),
     _ = require('lodash'),
     verbose = config.verbose,
+    logsAreInsensitive = config.logsAreInsensitive,
     lang = require('../../skill/lang.js')
     ;
 
@@ -94,22 +95,18 @@ router.post('/', function (req, res, next) {
 });
 
 router.post('/oauth', function (req, res, next) {
-  console.log("OAUTH POSTED");
-  console.log(req.body);
-  // var token_expiration = config.flowers.token_expiration;
-  //if (!oauthhelper.authenticate(basicauth(req))) return res.sendStatus(403);
-  if(verbose) console.log('Grant type:',req.body.grant_type);
-  if (req.body.grant_type == 'authorization_code') {
-    var tokens = oauthhelper.decryptCode(req.body.code);
-    // if (token_expiration) tokens.expires_in = token_expiration;
-    //res.json(tokens);
-    res.json({"access_token":req.body.code, "token_type": "bearer", "state": req.body.state });
-  } else if (req.body.grant_type == 'refresh_token') {
-    //starbucks.User({ refresh_token: req.body.refresh_token }).refresh().then(function (tokens) {
-      // if (token_expiration) tokens.expires_in = token_expiration;
-      var tokens = oauthhelper.decryptCode(req.body.code);
-      //res.json(tokens);
-      res.json({"access_token":req.body.code, "token_type": "bearer", "state": req.body.state });
+  var token_expiration = config.alexa.auth.token_expiration || 3600;
+  if (verbose && logsAreInsensitive && false) {
+    console.log("OAUTH POSTED");
+    console.log(req.body);
+  } 
+  if (["authorization_code", "refresh_token"].indexOf(req.body.grant_type) != -1) {
+    res.json({
+      "access_token": req.body.code,
+      "token_type": "bearer",
+      "expires_in": token_expiration,
+      "state": req.body.state
+    });
   } else res.sendStatus(404);
 });
 
