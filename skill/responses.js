@@ -268,12 +268,15 @@ var responses = function () {
              "Would you like to send flowers to someone else?",
         reprompt: "To send flowers to someone just say their name.",
         card: {
-          type: 'Simple',
+          type: 'Standard',
           title: 'You bought flowers!',
-          content: 'Your {arrangementSize} {arrangementType} order has been placed!\n' +
+          text: 'Your {arrangementSize} {arrangementType} order has been placed!\n' +
             '{recipient}\n{address}\n' +
             'Delivery Date: {deliveryDate}\n' +
-            'Order Total: {priceTextFormatted}'
+            'Order Total: {priceTextFormatted}',
+          image: {
+            smallImageUrl: '{imageUrl}'
+          }
         }
       },
     },
