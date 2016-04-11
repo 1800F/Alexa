@@ -448,7 +448,6 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          console.log(po.arrangement)
           return replyWith('Options.OrderReview', 'query-order-confirmation', request,po);
         });
       }
