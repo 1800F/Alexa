@@ -17,7 +17,8 @@ var _ = require('lodash'),
     moment = require('moment'),
     phonetic = require('./phonetic.js'),
     _ = require('lodash'),
-    address = require('./address.js')
+    address = require('./address.js'),
+    images = require('./images.json')
     ;
 
 // Recipients
@@ -148,3 +149,7 @@ exports.possibleDeliveryDate = function (po) {
 exports.paymentType = function (po) {
   return po.order.card.type.code;
 }
+
+exports.imageUrl = function (po) {
+  return images[po.arrangement.name];
+};
