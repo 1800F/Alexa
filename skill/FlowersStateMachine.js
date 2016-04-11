@@ -113,10 +113,7 @@ module.exports = StateMachine({
           po.possibleDeliveryDate = request.intent.params.deliveryDateSlot;
           po.pickArrangement(request.intent.params.arrangementSlot);
           po.pickSize(request.intent.params.sizeSlot);
-          return po.getContactBook().then(function(contactBook){
-            if(!po.contactBook.hasContacts()) return replyWith('Errors.NoRecipientsInAddressBook', 'die', request, po);
-            return replyWith('Options.OpenResponse', 'options-review', request, po);
-          });
+          return replyWith('Options.OpenResponse', 'options-review', request, po);
         });
       }
     },
@@ -125,20 +122,28 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          if(!po.hasRecipient()) {
-            if(po.possibleRecipient) return replyWith(null,'validate-possible-recipient',request,po);
-            else if(po.hasDeliveryDate() || po.hasArrangement() || po.hasSize()) {
-              return replyWith('Options.RecipientSelectionAlt', 'query-recipient', request,po);
-            }
-            return replyWith('Options.RecipientSelection','query-recipient',request,po);
-          }
-          if(!po.hasArrangement()) return replyWith('Options.ArrangementList', 'query-arrangement-type', request, po);
-          if(!po.hasSize()) return replyWith('Options.SizeList', 'query-size', request, po);
-          if(!po.hasDeliveryDate()) {
-            if(po.possibleDeliveryDate) return replyWith(null,'validate-possible-delivery-date',request,po);
-            return replyWith('Options.DateSelection','query-date',request,po);
-          }
-          return replyWith(null,'order-review',request,po);
+          return Promise.all([
+              po.getContactBook(),
+              po.hasPaymentMethod()
+            ])
+            .spread(function (contactBook, hasPaymentMethod) {
+              if(!po.contactBook.hasContacts()) return replyWith('Errors.NoRecipientsInAddressBook', 'die', request, po);
+              if(!hasPaymentMethod) return replyWith('Errors.NoPaymentMethod', 'die', request, po);
+              if(!po.hasRecipient()) {
+                if(po.possibleRecipient) return replyWith(null,'validate-possible-recipient',request,po);
+                else if(po.hasDeliveryDate() || po.hasArrangement() || po.hasSize()) {
+                  return replyWith('Options.RecipientSelectionAlt', 'query-recipient', request,po);
+                }
+                return replyWith('Options.RecipientSelection','query-recipient',request,po);
+              }
+              if(!po.hasArrangement()) return replyWith('Options.ArrangementList', 'query-arrangement-type', request, po);
+              if(!po.hasSize()) return replyWith('Options.SizeList', 'query-size', request, po);
+              if(!po.hasDeliveryDate()) {
+                if(po.possibleDeliveryDate) return replyWith(null,'validate-possible-delivery-date',request,po);
+                return replyWith('Options.DateSelection','query-date',request,po);
+              }
+              return replyWith(null,'order-review',request,po);
+            });
         });
       }
     },

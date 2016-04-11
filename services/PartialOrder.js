@@ -79,6 +79,15 @@ PartialOrder.prototype.hasRecipient = function() {
   return !!this.recipient;
 }
 
+PartialOrder.prototype.hasPaymentMethod = function() {
+  var self = this;
+  if(self.hasPM) return Promise.resolve(self.hasPM);
+  return self.q.hasPM = (self.q.hasPM || self.user.getPaymentMethods().then(function(cards) {
+    self.hasPM = cards.length > 0;
+    return self.hasPM;
+  }));
+}
+
 PartialOrder.prototype.getRecipientAddress = function() {
   return address.fromPipes(this.recipient.address);
 }
