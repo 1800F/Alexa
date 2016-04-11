@@ -43,7 +43,7 @@ var responses = function () {
 
     Options: {
       OpenResponse: {
-        Say: "Hi there!"
+        say: "Hi there!"
       },
       RecipientSelection: {
         ask: "Who would you like to send flowers to?",
