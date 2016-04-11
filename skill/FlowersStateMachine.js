@@ -408,7 +408,7 @@ module.exports = StateMachine({
               .then(function(isDeliverable) {
                 if(isDeliverable) {
                   po.acceptPossibleDeliveryDate();
-                  return replyWith('validatePossibleDeliveryDate.DateValidation', 'options-review', request,po);
+                  return replyWith('ValidatePossibleDeliveryDate.DateValidation', 'options-review', request,po);
                 }
                 else {
                   return po.findDeliveryDateOffers(po.possibleDeliveryDate)
