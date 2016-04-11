@@ -270,7 +270,7 @@ var responses = function () {
           content: 'Your {arrangementSize} {arrangementType} order has been placed!\n' +
             '{recipient}\n{address}\n' +
             'Delivery Date: {deliveryDate}\n' +
-            'Order Total: {price}'
+            'Order Total: {priceTextFormatted}'
         }
       },
     },

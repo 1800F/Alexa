@@ -137,6 +137,10 @@ exports.price = function (po) {
   return currency.say(po.order.charges.total,'USD');
 };
 
+exports.priceTextFormatted = function (po) {
+  return '$' + po.order.charges.total.toFixed(2);
+}
+
 exports.possibleDeliveryDate = function (po) {
   return moment(po.possibleDeliveryDate).format('MMMM Do');
 };
