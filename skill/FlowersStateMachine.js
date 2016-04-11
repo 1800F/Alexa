@@ -115,7 +115,7 @@ module.exports = StateMachine({
           po.pickSize(request.intent.params.sizeSlot);
           return po.getContactBook().then(function(contactBook){
             if(!po.contactBook.hasContacts()) return replyWith('Errors.NoRecipientsInAddressBook', 'die', request, po);
-            return replyWith(null, 'options-review', request, po);
+            return replyWith('Options.OpenResponse', 'options-review', request, po);
           });
         });
       }
@@ -127,6 +127,9 @@ module.exports = StateMachine({
         .then(function(po){
           if(!po.hasRecipient()) {
             if(po.possibleRecipient) return replyWith(null,'validate-possible-recipient',request,po);
+            if(po.possibleDeliveryDate || po.hasArrangement || po.hasSize) {
+              return replyWith('Options.RecipientSelectionAlt', 'query-recipient', request,po);
+            }
             return replyWith('Options.RecipientSelection','query-recipient',request,po);
           }
           if(!po.hasArrangement()) return replyWith('Options.ArrangementList', 'query-arrangement-type', request, po);
