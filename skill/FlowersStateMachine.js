@@ -127,7 +127,7 @@ module.exports = StateMachine({
         .then(function(po){
           if(!po.hasRecipient()) {
             if(po.possibleRecipient) return replyWith(null,'validate-possible-recipient',request,po);
-            if(po.possibleDeliveryDate || po.hasArrangement || po.hasSize) {
+            else if(po.hasDeliveryDate() || po.hasArrangement() || po.hasSize()) {
               return replyWith('Options.RecipientSelectionAlt', 'query-recipient', request,po);
             }
             return replyWith('Options.RecipientSelection','query-recipient',request,po);
