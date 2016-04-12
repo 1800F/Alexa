@@ -379,7 +379,7 @@ module.exports = StateMachine({
         .then(function(po){
           po.possibleDeliveryDate = request.intent.params.deliveryDateSlot;
           if (po.hasRecipient() && po.hasArrangement() && po.hasSize()) {
-            return replyWith(null, 'validate-possible-delivery-date', request, po);
+            return replyWith(null, 'validate-delivery-date', request, po);
           } else {
             return replyWith('ValidatePossibleDeliveryDate.DateValidationAlt', 'options-review', request, po);
           }
