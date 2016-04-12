@@ -1,6 +1,6 @@
 {
-    "Thank You": "./img/thankyou.jpg",
-    "Love and Romance": "./img/love.jpg",
-    "Mother's Day": "./img/mothersday.jpg",
-    "Birthday": "./img/birthday.jpg"
+    "thank you": "/img/thankyou.jpg",
+    "love and romance": "/img/love.jpg",
+    "mothers day": "/img/mothersday.jpg",
+    "birthday": "/img/birthday.jpg"
 }

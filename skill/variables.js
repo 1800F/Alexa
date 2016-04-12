@@ -151,7 +151,9 @@ exports.paymentType = function (po) {
 }
 
 exports.imageUrl = function (po) {
-  return images[po.arrangement.name];
+  var url = po.getWeb() || '';
+  console.log(po.arrangement.name.toLowerCase());
+  return url + images[po.arrangement.name.toLowerCase()];
 };
 
 exports.welcomePhrase = function (po) {

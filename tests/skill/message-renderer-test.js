@@ -5,7 +5,8 @@ var assert = require('chai').assert,
     Promise = require('bluebird');
 
 var data = {
-  drink: 'water'
+  drink: 'water',
+  small_image: 'race-car-small'
 };
 
 var responses = {
@@ -24,6 +25,17 @@ var responses = {
         content: "I want {a} {drink}"
       }
     }
+    , "Standard": {
+      card: {
+        type: 'Standard',
+        title: '{a} Blah',
+        text: "I want {a} {drink}",
+        image: {
+          smallImageUrl: "https://carfu.com/resources/card-images/{small_image}.png",
+          largeImageUrl: "https://carfu.com/resources/card-images/race-car-large.png"
+        }
+      }
+    }
   }
 };
 
@@ -33,6 +45,9 @@ var variables = {
   },
   drink: function drink(data) {
     return Promise.resolve(data.drink);
+  },
+  small_image: function small_image(data) {
+    return Promise.resolve(data.small_image);
   }
 };
 
@@ -43,7 +58,8 @@ describe('message renderer', function () {
   itIs('Replaces ask variables', 'Generic.Ask', { ask: 'I want a water' });
   itIs('Replaces reprompt variables', 'Generic.Reprompt', { ask: 'I want a water', reprompt: "water" });
   itIs('Can work with messages without needs ', 'Generic.NoNeeds', { say: 'Do you like trees?' });
-  itIs('Processes cards', 'Card.Simple', { card: { type: 'Simple', title: 'Blah', content: 'I want a water' } });
+  itIs('Processes simple cards', 'Card.Simple', { card: { type: 'Simple', title: 'Blah', content: 'I want a water' } });
+  itIs('Processes standard cards', 'Card.Standard', { card: { type: 'Standard', title: 'a Blah', text: 'I want a water', image: { smallImageUrl: "https://carfu.com/resources/card-images/race-car-small.png", largeImageUrl: "https://carfu.com/resources/card-images/race-car-large.png" } } });
 
   function itIs(testName, msg, shouldBe) {
     it(testName, function (done) {
