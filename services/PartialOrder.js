@@ -218,7 +218,6 @@ PartialOrder.prototype.nextSizeDescription = function() {
 }
 
 PartialOrder.prototype.getSizeDescription = function() {
-  console.log(this.getSizeDetails()[this.sizeDescriptionOffset]);
   return this.getSizeDetails()[this.sizeDescriptionOffset];
 }
 
