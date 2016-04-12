@@ -137,6 +137,22 @@ RecipientSelectionIntent Can I send flowers to {recipientSlot}
 RecipientSelectionIntent I need flowers for {recipientSlot}
 RecipientSelectionIntent let's send to {recipientSlot}
 
+RecipientSelectionIntent no {recipientSlot}
+RecipientSelectionIntent no  {recipientSlot} please
+RecipientSelectionIntent no For {recipientSlot}
+RecipientSelectionIntent no Oh {recipientSlot}
+RecipientSelectionIntent no Send flowers to {recipientSlot}
+RecipientSelectionIntent no Send to {recipientSlot}
+RecipientSelectionIntent no I want {recipientSlot}
+RecipientSelectionIntent no I would like to send to {recipientSlot}
+RecipientSelectionIntent no Should go to {recipientSlot}
+RecipientSelectionIntent no I want to send to {recipientSlot}
+RecipientSelectionIntent no These are for {recipientSlot}
+RecipientSelectionIntent no Please send them to {recipientSlot}
+RecipientSelectionIntent no Can I send flowers to {recipientSlot}
+RecipientSelectionIntent no I need flowers for {recipientSlot}
+RecipientSelectionIntent no let's send to {recipientSlot}
+
 
 SizeSelectionIntent {sizeSlot}
 SizeSelectionIntent {sizeSlot} please
@@ -322,6 +338,8 @@ DescriptionIntent What is the price of the {sizeSlot}
 DescriptionIntent Tell me the price of the {sizeSlot}
 DescriptionIntent How much does the {sizeSlot} cost
 DescriptionIntent How much is the {sizeSlot}
+DescriptionIntent Can you tell me what is in the {sizeSlot}
+DescriptionIntent Can you tell me what's in the {sizeSlot}
 
 DescriptionIntent What's in the {arrangementSlot}
 DescriptionIntent Tell me about the {arrangementSlot}
@@ -337,6 +355,8 @@ DescriptionIntent What is the price of the {arrangementSlot}
 DescriptionIntent Tell me the price of the {arrangementSlot}
 DescriptionIntent How much does the {arrangementSlot} cost
 DescriptionIntent How much is the {arrangementSlot}
+DescriptionIntent Can you tell me what is in the {arrangementSlot}
+DescriptionIntent Can you tell me what's in the {arrangementSlot}
 
 DescriptionIntent What's in the {sizeSlot} {bouquet}
 DescriptionIntent Tell me about the {sizeSlot} {bouquet}
@@ -352,6 +372,9 @@ DescriptionIntent What is the price of the {sizeSlot} {bouquet}
 DescriptionIntent Tell me the price of the {sizeSlot} {bouquet}
 DescriptionIntent How much does the {sizeSlot} {bouquet} cost
 DescriptionIntent How much is the {sizeSlot} {bouquet}
+DescriptionIntent Can you tell me what is in the {sizeSlot} {bouquet}
+DescriptionIntent Can you tell me what's in the {sizeSlot} {bouquet}
+
 
 DescriptionIntent What's in the {arrangementSlot} {bouquet}
 DescriptionIntent Tell me about the {arrangementSlot} {bouquet}
@@ -367,6 +390,8 @@ DescriptionIntent What is the price of the {arrangementSlot} {bouquet}
 DescriptionIntent Tell me the price of the {arrangementSlot} {bouquet}
 DescriptionIntent How much does the {arrangementSlot} {bouquet} cost
 DescriptionIntent How much is the {arrangementSlot} {bouquet}
+DescriptionIntent Can you tell me what is in the {arrangementSlot} {bouquet}
+DescriptionIntent Can you tell me what's in the {arrangementSlot} {bouquet}
 
 DescriptionIntent Who can I send flowers to
 DescriptionIntent What are my options
@@ -723,6 +748,8 @@ AMAZON.YesIntent sure sounds good
 AMAZON.YesIntent sure thing
 AMAZON.YesIntent thanks
 AMAZON.YesIntent that's it
+AMAZON.YesIntent that's her
+AMAZON.YesIntent that's him
 AMAZON.YesIntent that is her
 AMAZON.YesIntent that is him
 AMAZON.YesIntent uh huh
@@ -941,9 +968,6 @@ AMAZON.StopIntent stop please
 AMAZON.StopIntent that's all
 AMAZON.StopIntent that's it
 AMAZON.StopIntent the end
-AMAZON.StopIntent we're done
-AMAZON.StopIntent we're done here
-
 AMAZON.StopIntent no all done
 AMAZON.StopIntent no cancel
 AMAZON.StopIntent no cancel please
