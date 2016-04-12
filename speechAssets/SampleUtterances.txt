@@ -944,3 +944,35 @@ AMAZON.StopIntent the end
 AMAZON.StopIntent we're done
 AMAZON.StopIntent we're done here
 
+AMAZON.StopIntent no all done
+AMAZON.StopIntent no cancel
+AMAZON.StopIntent no cancel please
+AMAZON.StopIntent no cancel that
+AMAZON.StopIntent no cancel that please
+AMAZON.StopIntent no close
+AMAZON.StopIntent no complete
+AMAZON.StopIntent no done
+AMAZON.StopIntent no end
+AMAZON.StopIntent no end please
+AMAZON.StopIntent no exit
+AMAZON.StopIntent no exit please
+AMAZON.StopIntent no finished
+AMAZON.StopIntent no goodbye
+AMAZON.StopIntent no goodnight
+AMAZON.StopIntent no i am done
+AMAZON.StopIntent no i'm done
+AMAZON.StopIntent no  i'm out
+AMAZON.StopIntent no no more
+AMAZON.StopIntent no no more please
+AMAZON.StopIntent no please close
+AMAZON.StopIntent no please end
+AMAZON.StopIntent no please stop
+AMAZON.StopIntent no stop
+AMAZON.StopIntent no stop please
+AMAZON.StopIntent no that's all
+AMAZON.StopIntent no that's it
+AMAZON.StopIntent no the end
+AMAZON.StopIntent no we're done
+AMAZON.StopIntent no we're done here
+
+
