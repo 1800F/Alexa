@@ -218,6 +218,7 @@ PartialOrder.prototype.nextSizeDescription = function() {
 }
 
 PartialOrder.prototype.getSizeDescription = function() {
+  console.log(this.getSizeDetails()[this.sizeDescriptionOffset]);
   return this.getSizeDetails()[this.sizeDescriptionOffset];
 }
 
@@ -265,6 +266,10 @@ PartialOrder.prototype.getSizeDetailsByName = function (name) {
   name = name || self.size;
   var size = self.getSizeByName(name);
   return _.find(self.arrangement.details.items,function(item){ return item.sku == size.sku });
+}
+
+PartialOrder.prototype.getSizeName = function() {
+  return this.size;
 }
 
 // Cache products
