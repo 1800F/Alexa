@@ -118,6 +118,8 @@ describe('address', function () {
     itIs("24 S Center Street|||Spanish Fork|UT|84660|uS",true);
     itIs("24 S Center Street||||UT|84660|US",false);
     itIs("||||UT|84660|US",false);
+    itIs("13|||SLC|Utah|84660|US",true);
+    itIs("13|||SLC|Texas|84660|US",true);
 
     function itIs(src, expected) {
       it(src + ' => ' + expected, function () {
@@ -141,17 +143,3 @@ describe('address', function () {
     });
   })
 });
-
-var deliverDates = ["1234 Main St|#11||American Fork|UT|84003|US"
-    , "24 S Center Street|||Spanish Fork|UT|84660|US"
-    , "7201 S State Street|||Murray|UT|84015|US"
-    , "1222 E 4530 S|||Salt Lake City|UT|84199|US"
-    , "121 E Center Street|||Provo|UT|84001|US"
-    , "686 E 110 S|Suite 102||AMERICAN FORK|UT|84003|US"
-    , "68 N 300 W|||Spanish Fork|UT|84660|US"
-    , "2401 S Canyon Rd|||Spanish Fork|UT|84660|US"
-    , "832 Holroyd Dr|||South Ogden|UT|84403|US"
-    , "1277 Joshua Tree Ct|||Las Vegas|NV|89084|US"
-    , "2409 Skyline Dr|||St. George|UT|84901|US"
-    , "101 S Smith Ln|||Mesquite|NV|89027|US"];
-

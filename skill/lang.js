@@ -22,6 +22,13 @@ exports.enumerate = function (words) {
   return _.take(words, words.length - 1).join(', ') + ', and ' + words[words.length - 1];
 };
 
+exports.enumerateOr = function (words) {
+  if (words.length == 0) return '';
+  if (words.length == 1) return words[0];
+  if (words.length == 2) return words[0] + ' or ' + words[1];
+  return _.take(words, words.length - 1).join(', ') + ', or ' + words[words.length - 1];
+};
+
 exports.pluralize = function (word) {
   return word + 's';
 };

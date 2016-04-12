@@ -1,4 +1,4 @@
-{
+module.exports = {
   "session": {
     "sessionId": "SessionId.6c81ec8a-06aa-48ca-b873-a77b8d00d635",
     "application": { },
@@ -32,7 +32,7 @@
     "requestId": "EdwRequestId.6890243f-c14c-4098-82e0-849658d28029",
     "timestamp": "2016-03-30T23:24:58Z",
     "intent": {
-      "name": "YesIntent",
+      "name": "AMAZON.YesIntent",
       "slots": {}
     }
   },

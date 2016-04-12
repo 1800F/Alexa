@@ -10,7 +10,7 @@ if [[ "$GIT_BRANCH" == "origin/master"  ]] ; then
   export NODE_ENV=prod
 elif [[ "$GIT_BRANCH" == "origin/staging" ]] ; then
   export PROJECT_ROOT='/srv/flowers'
-  export SSH_HOSTS=( 'ubuntu@' )
+  export SSH_HOSTS=( 'ubuntu@52.207.233.92' )
   export NODE_ENV=staging
 elif [[ "$GIT_BRANCH" == "origin/dev"  ]] ; then
   export PROJECT_ROOT='/srv/flowers'

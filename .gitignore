@@ -2,6 +2,7 @@ node_modules
 .DS_Store
 dump.rdb
 npm-debug.log
+*.class
 /src
 /www/public
 

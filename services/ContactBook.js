@@ -1,5 +1,6 @@
 var _ = require('lodash')
-  , levenshtein = require('levenshtein-edit-distance')
+  , natural = require('natural')
+  , metaphone = natural.Metaphone
 ;
 
 /*
@@ -35,10 +36,11 @@ ContactBook.prototype.build = function(contacts){
   this.contacts = _(contacts)
     .map(function(contact){
       return {
-        id: contact.cont_id,
-        firstName: contact.FirstName,
-        lastName: contact.LastName,
-        address: contact.NickName, // Insanely, the API stores addresses in the Nickname field
+        id: contact.cont_id || contact.id,
+        demoId: contact.demoGraphicsID || contact.demoId,
+        firstName: (contact.FirstName || contact.firstName).trim(),
+        lastName: (contact.LastName || contact.lastName).trim(),
+        address: contact.NickName || contact.address // Insanely, the API stores addresses in the Nickname field
       };
     })
     .groupBy('firstName')
@@ -65,9 +67,18 @@ ContactBook.prototype.range = function(offset, take) {
 }
 
 ContactBook.prototype.searchByName = function(name) {
-  var threshold = 2;
   return _(this.contacts)
-  .filter(function(entry){
-    return levenshtein(name,entry.name, true) <= threshold;
-  }).reduce(function(memo,entry){ return memo.concat(entry.contacts) },[]);
+    .map(function(group) {
+      return group.contacts;
+    })
+    .flatten()
+    .filter(function(contact) {
+      return (
+        (metaphone.compare(contact.firstName, name)) ||
+         (metaphone.compare(contact.lastName, name)) ||
+        (metaphone.compare(contact.firstName + " " + contact.lastName, name))
+     );
+    })
+    .value()
+    ;
 }
