@@ -172,7 +172,7 @@ module.exports = StateMachine({
           }else if (request.intent.name == 'AMAZON.NoIntent') {
             po.nextRecipientChoices();
             if(!po.getRecipientChoices().length) return replyWith('QueryRecipientList.ContinueWithOrder','query-options-again',request,po);
-            if(po.isLastRecipientChoiceOffer()) return replyWith('QueryRecipient.LastRecipientList','query-recipient-list',request,po);
+            if(po.isLastRecipientChoiceOffer()) return replyWith('QueryRecipientList.LastRecipientList','query-recipient-list',request,po);
             return replyWith('QueryRecipientList.NextFourRecipientList','query-recipient-list',request,po);
           }
         });
