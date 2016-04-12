@@ -38,8 +38,8 @@ ContactBook.prototype.build = function(contacts){
       return {
         id: contact.cont_id || contact.id,
         demoId: contact.demoGraphicsID || contact.demoId,
-        firstName: contact.FirstName || contact.firstName,
-        lastName: contact.LastName || contact.lastName,
+        firstName: (contact.FirstName || contact.firstName).trim(),
+        lastName: (contact.LastName || contact.lastName).trim(),
         address: contact.NickName || contact.address // Insanely, the API stores addresses in the Nickname field
       };
     })

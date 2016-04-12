@@ -113,10 +113,7 @@ module.exports = StateMachine({
           po.possibleDeliveryDate = request.intent.params.deliveryDateSlot;
           po.pickArrangement(request.intent.params.arrangementSlot);
           po.pickSize(request.intent.params.sizeSlot);
-          return po.getContactBook().then(function(contactBook){
-            if(!po.contactBook.hasContacts()) return replyWith('Errors.NoRecipientsInAddressBook', 'die', request, po);
-            return replyWith(null, 'options-review', request, po);
-          });
+          return replyWith('Options.OpenResponse', 'options-review', request, po);
         });
       }
     },
@@ -125,17 +122,28 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          if(!po.hasRecipient()) {
-            if(po.possibleRecipient) return replyWith(null,'validate-possible-recipient',request,po);
-            return replyWith('Options.RecipientSelection','query-recipient',request,po);
-          }
-          if(!po.hasArrangement()) return replyWith('Options.ArrangementList', 'query-arrangement-type', request, po);
-          if(!po.hasSize()) return replyWith('Options.SizeList', 'query-size', request, po);
-          if(!po.hasDeliveryDate()) {
-            if(po.possibleDeliveryDate) return replyWith(null,'validate-possible-delivery-date',request,po);
-            return replyWith('Options.DateSelection','query-date',request,po);
-          }
-          return replyWith(null,'order-review',request,po);
+          return Promise.all([
+              po.getContactBook(),
+              po.hasPaymentMethod()
+            ])
+            .spread(function (contactBook, hasPaymentMethod) {
+              if(!po.contactBook.hasContacts()) return replyWith('Errors.NoRecipientsInAddressBook', 'die', request, po);
+              if(!hasPaymentMethod) return replyWith('Errors.NoPaymentMethod', 'die', request, po);
+              if(!po.hasRecipient()) {
+                if(po.possibleRecipient) return replyWith(null,'validate-possible-recipient',request,po);
+                else if(po.hasDeliveryDate() || po.hasArrangement() || po.hasSize()) {
+                  return replyWith('Options.RecipientSelectionAlt', 'query-recipient', request,po);
+                }
+                return replyWith('Options.RecipientSelection','query-recipient',request,po);
+              }
+              if(!po.hasArrangement()) return replyWith('Options.ArrangementList', 'query-arrangement-type', request, po);
+              if(!po.hasSize()) return replyWith('Options.SizeList', 'query-size', request, po);
+              if(!po.hasDeliveryDate()) {
+                if(po.possibleDeliveryDate) return replyWith(null,'validate-possible-delivery-date',request,po);
+                return replyWith('Options.DateSelection','query-date',request,po);
+              }
+              return replyWith(null,'order-review',request,po);
+            });
         });
       }
     },
@@ -164,7 +172,7 @@ module.exports = StateMachine({
           }else if (request.intent.name == 'AMAZON.NoIntent') {
             po.nextRecipientChoices();
             if(!po.getRecipientChoices().length) return replyWith('QueryRecipientList.ContinueWithOrder','query-options-again',request,po);
-            if(po.isLastRecipientChoiceOffer()) return replyWith('QueryRecipient.LastRecipientList','query-recipient-list',request,po);
+            if(po.isLastRecipientChoiceOffer()) return replyWith('QueryRecipientList.LastRecipientList','query-recipient-list',request,po);
             return replyWith('QueryRecipientList.NextFourRecipientList','query-recipient-list',request,po);
           }
         });
@@ -228,7 +236,8 @@ module.exports = StateMachine({
     "query-arrangement-type": {
       to: {
         DescriptionIntent: 'arrangement-descriptions',
-        LaunchIntent: 'arrangement-selection'
+        LaunchIntent: 'arrangement-selection',
+        "AMAZON.RepeatIntent": 'options-review'
       }
     },
     "arrangement-descriptions": {
@@ -237,9 +246,13 @@ module.exports = StateMachine({
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
           if (request.intent.name == 'DescriptionIntent') {
-            po.setupArrangementDescriptions();
+            po.setupArrangementDescriptions(request.intent.params.arrangementSlot);
             if (verbose) console.log('Current Arrangement ' + po.getArrangementDescription().name);
-            return replyWith('QueryArrangementType.FirstArrangmentDescription', 'arrangement-descriptions', request, po);
+            if (request.intent.params.arrangementSlot) {
+              return replyWith('QueryArrangementType.FirstArrangmentDescription', 'clear-arrangement-description-and-restart', request, po);
+            } else {
+              return replyWith('QueryArrangementType.FirstArrangmentDescription', 'arrangement-descriptions', request, po);
+            }
           } else if (request.intent.name == 'AMAZON.NoIntent') {
             po.nextArrangementDescription();
             if (!po.hasArrangementDescription()) {
@@ -253,6 +266,24 @@ module.exports = StateMachine({
             return replyWith(null, 'arrangement-selection', request, po);
           }
         });
+      }
+    },
+    "clear-arrangement-description-and-restart": {
+      enter: function enter(request) {
+        return this.Access(request)
+          .then(function(api){ return PartialOrder.fromRequest(api,request); })
+          .then(function(po) {
+            var arrangementSlot = po.getArrangementDescription().name;
+            po.clearArrangementDescriptions();
+            if (request.intent.name == 'AMAZON.YesIntent') {
+              request.intent.params.arrangementSlot = arrangementSlot;
+              return replyWith(null, 'arrangement-selection', request, po);
+            } else if (request.intent.name == 'AMAZON.NoIntent') {
+              return replyWith(null, 'options-review', request, po);
+            } else if (request.intent.name == 'DescriptionIntent') {
+              return replyWith(null, 'arrangement-descriptions', request, po);
+            }
+          });
       }
     },
     "arrangement-selection": {
@@ -281,7 +312,8 @@ module.exports = StateMachine({
     "query-size": {
       to: {
         DescriptionIntent: 'size-descriptions',
-        LaunchIntent: 'size-selection'
+        LaunchIntent: 'size-selection',
+        "AMAZON.RepeatIntent": 'options-review'
       }
     },
     "size-descriptions": {
@@ -290,9 +322,13 @@ module.exports = StateMachine({
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
           if (request.intent.name == 'DescriptionIntent') {
-            po.setupSizeDescriptions();
+            po.setupSizeDescriptions(request.intent.params.sizeSlot);
             if (verbose) console.log('Current Size ' + po.getSizeDescription().name);
-            return replyWith('QuerySize.FirstSizeDescription', 'size-descriptions', request, po);
+            if (request.intent.params.sizeSlot) {
+              return replyWith('QuerySize.FirstSizeDescription', 'clear-size-description-and-restart', request, po);
+            } else {
+              return replyWith('QuerySize.FirstSizeDescription', 'size-descriptions', request, po);
+            }
           } else if (request.intent.name == 'AMAZON.NoIntent') {
             po.nextSizeDescription();
             if (!po.hasSizeDescription()) {
@@ -306,6 +342,24 @@ module.exports = StateMachine({
             return replyWith(null, 'size-selection', request, po);
           }
         });
+      }
+    },
+    "clear-size-description-and-restart": {
+      enter: function enter(request) {
+        return this.Access(request)
+          .then(function(api){ return PartialOrder.fromRequest(api,request); })
+          .then(function(po) {
+            var sizeSlot = po.getSizeDescription().name;
+            po.clearSizeDescriptions();
+            if (request.intent.name == 'AMAZON.YesIntent') {
+              request.intent.params.sizeSlot = sizeSlot;
+              return replyWith(null, 'size-selection', request, po);
+            } else if (request.intent.name == 'AMAZON.NoIntent') {
+              return replyWith(null, 'options-review', request, po);
+            } else if (request.intent.name == 'DescriptionIntent') {
+              return replyWith(null, 'size-descriptions', request, po);
+            }
+          });
       }
     },
     "size-selection": {
@@ -324,7 +378,11 @@ module.exports = StateMachine({
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
           po.possibleDeliveryDate = request.intent.params.deliveryDateSlot;
-          return replyWith(null, 'validate-possible-delivery-date', request, po);
+          if (po.hasRecipient() && po.hasArrangement() && po.hasSize()) {
+            return replyWith(null, 'validate-delivery-date', request, po);
+          } else {
+            return replyWith('ValidatePossibleDeliveryDate.DateValidationAlt', 'options-review', request, po);
+          }
         });
       }
     },
@@ -345,6 +403,29 @@ module.exports = StateMachine({
         });
       }
     },
+    "validate-delivery-date": {
+      enter: function enter(request) {
+        return this.Access(request)
+          .then(function(api) { return PartialOrder.fromRequest(api,request); })
+          .then(function(po) {
+            po.deliveryDateOffers = null;
+            return po.isDateDeliverable(po.possibleDeliveryDate)
+              .then(function(isDeliverable) {
+                if(isDeliverable) {
+                  po.acceptPossibleDeliveryDate();
+                  return replyWith('ValidatePossibleDeliveryDate.DateValidation', 'options-review', request,po);
+                }
+                else {
+                  return po.findDeliveryDateOffers(po.possibleDeliveryDate)
+                    .then(function(offers) {
+                      if(!offers) return replyWith('Error.ErrorGeneral', 'die', request,po);
+                      return replyWith('ValidatePossibleDeliveryDate.NotAValidDate', 'query-date', request,po);
+                    });
+                }
+              });
+          });
+      }
+    },
     "validate-possible-delivery-date": {
       enter: function enter(request) {
         return this.Access(request)
@@ -355,7 +436,7 @@ module.exports = StateMachine({
           .then(function(isDeliverable){
             if(isDeliverable) {
               po.acceptPossibleDeliveryDate();
-              return replyWith('ValidatePossibleDeliveryDate.DateValidation','options-review',request,po);
+              return replyWith(null,'options-review',request,po);
             }
             else {
               return po.findDeliveryDateOffers(po.possibleDeliveryDate).then(function(offers){
@@ -453,7 +534,7 @@ module.exports = StateMachine({
         });
       }
     },
-    "help-menu": SimpleHelpMessage('Help.HelpStartMenu', 'Start Menu')
+    "help-menu": SimpleHelpMessage('Help.HelpStartMenu', 'Start Menu', 'options-review')
   },
   Access: function Access(request) {
     var self = this;

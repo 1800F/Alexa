@@ -13,6 +13,7 @@ var router = exports.router = require('../infrastructure/mount.js')(__dirname),
     alexaFlowers = require('../../services/alexa-flowers.js'),
     _ = require('lodash'),
     verbose = config.verbose,
+    logsAreInsensitive = config.logsAreInsensitive,
     lang = require('../../skill/lang.js')
     ;
 
@@ -69,7 +70,7 @@ router.post('/', function (req, res, next) {
         auth_code: authCode,
         redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
         nextSteps: lang.enumerate(_.compact([
-            data.noCC ? 'contacts' : ''
+            data.noCC ? 'a credit card' : ''
           , data.noBillingAddress ? 'a billing address' : ''
           , data.noContacts ? 'contacts' : ''
         ])),
@@ -94,22 +95,18 @@ router.post('/', function (req, res, next) {
 });
 
 router.post('/oauth', function (req, res, next) {
-  console.log("OAUTH POSTED");
-  console.log(req.body);
-  // var token_expiration = config.flowers.token_expiration;
-  //if (!oauthhelper.authenticate(basicauth(req))) return res.sendStatus(403);
-  if(verbose) console.log('Grant type:',req.body.grant_type);
-  if (req.body.grant_type == 'authorization_code') {
-    var tokens = oauthhelper.decryptCode(req.body.code);
-    // if (token_expiration) tokens.expires_in = token_expiration;
-    //res.json(tokens);
-    res.json({"access_token":req.body.code, "token_type": "bearer", "state": req.body.state });
-  } else if (req.body.grant_type == 'refresh_token') {
-    //starbucks.User({ refresh_token: req.body.refresh_token }).refresh().then(function (tokens) {
-      // if (token_expiration) tokens.expires_in = token_expiration;
-      var tokens = oauthhelper.decryptCode(req.body.code);
-      //res.json(tokens);
-      res.json({"access_token":req.body.code, "token_type": "bearer", "state": req.body.state });
+  var token_expiration = config.alexa.auth.token_expiration || 63113851;
+  if (verbose && logsAreInsensitive && false) {
+    console.log("OAUTH POSTED");
+    console.log(req.body);
+  } 
+  if (["authorization_code", "refresh_token"].indexOf(req.body.grant_type) != -1) {
+    res.json({
+      "access_token": req.body.code,
+      "token_type": "bearer",
+      "expires_in": token_expiration,
+      "state": req.body.state
+    });
   } else res.sendStatus(404);
 });
 
@@ -151,22 +148,33 @@ router.post('/create', function (req, res, next) {
       console.log("ERROR CODE DOESN'T EXIST");
       flowers.addCustomerDetails(first, lastname, email, user.registerNewCustomerResponse.customerData.systemID).then(function (details) {
         if (details.AddPersonResponse) {
-          console.log(details.AddPersonResponse.result.person);
+          console.log("ADD PERSON DETAILS: " + JSON.stringify(details.AddPersonResponse.result.person));
           var authCode = oauthhelper.encryptTokens({"systemID": user.registerNewCustomerResponse.customerData.systemID, "customerID": details.AddPersonResponse.result.person.idPK});
           res.render('home/success-needs-more', {
               page: "success",
               title: "1800flowers - Account Created",
               auth_code: authCode,
               redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
-              noCC: true,
-              noContacts: true,
+              nextSteps: lang.enumerate(_.compact([
+                'contacts'
+                , 'a billing address'
+                , 'contacts'
+              ])),
               created: true
           });
         }
+      }).catch(function (err) {
+        console.log("Error adding customer details " + JSON.stringify(err));
+        res.render('home/create', {
+          page: 'create',
+          title: '1800flowers',
+          errorCreating: true,
+          errorMessage: "We were unabled to set your profile, please review your email address and other information and try again."
+        });
       });
     }
   }).catch(function (err) {
-    process.stdout.write("Error Creating User: " + err + "\r");
+    console.log("Error Creating User: " + JSON.stringify(err));
     res.render('home/create', {
       page: 'create',
       title: '1800flowers',
@@ -194,13 +202,13 @@ router.get('/privacy-policy', function (req, res, next) {
   //TEST ORDER
   flowers.login('1stevenh@rain.agency', '1rainPssword').then(function (user) {
     console.log(user);
-    user.submitOrder({productSku:"90950L", prodType:"FPT", itemPrice:"69.99"},
-    {firstName:"Mark", lastName:"Miles", address:{addr1:"test"}},
-    {firstName:"Mark", lastName:"Miles", addr1:"686 E State St", addr2:"Suite 101", city:"American Fork", state:"UT", postalCode:"84003", country:"USA"},
-    {number:"4333"},
-    {shortDate:"14-APR-16"}).then(function(order) {
-      console.log(order);
-    })
+    // user.submitOrder({productSku:"90950L", prodType:"FPT", itemPrice:"69.99"},
+    // {firstName:"Mark", lastName:"Miles", address:{addr1:"test"}},
+    // {firstName:"Mark", lastName:"Miles", addr1:"686 E State St", addr2:"Suite 101", city:"American Fork", state:"UT", postalCode:"84003", country:"USA"},
+    // {number:"4333"},
+    // {shortDate:"14-APR-16"}).then(function(order) {
+    //   console.log(order);
+    // })
   });
 
   //TEST PRODUCT API

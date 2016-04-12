@@ -79,6 +79,15 @@ PartialOrder.prototype.hasRecipient = function() {
   return !!this.recipient;
 }
 
+PartialOrder.prototype.hasPaymentMethod = function() {
+  var self = this;
+  if(self.hasPM) return Promise.resolve(self.hasPM);
+  return self.q.hasPM = (self.q.hasPM || self.user.getPaymentMethods().then(function(cards) {
+    self.hasPM = cards.length > 0;
+    return self.hasPM;
+  }));
+}
+
 PartialOrder.prototype.getRecipientAddress = function() {
   return address.fromPipes(this.recipient.address);
 }
@@ -147,8 +156,10 @@ PartialOrder.prototype.isContactCandidateDeliverable = function() {
 /// in a series, and they can pick one that will become the final arrangement, or we just
 /// let them say the name of the arrangement directly.
 
-PartialOrder.prototype.setupArrangementDescriptions = function() {
-  this.arrangementDescriptionOffset = 0;
+PartialOrder.prototype.setupArrangementDescriptions = function(name) {
+  var index = 0;
+  if (name) index = Catalog.indexByName(name);
+  this.arrangementDescriptionOffset = index;
 }
 
 PartialOrder.prototype.hasArrangementDescription = function() {
@@ -192,8 +203,10 @@ PartialOrder.prototype.hasArrangement = function() {
 /// We describe them to the user in series, and they can pick one that will become the final size,
 /// or the user can just pick the one they want directly.
 
-PartialOrder.prototype.setupSizeDescriptions = function() {
-  this.sizeDescriptionOffset = 0;
+PartialOrder.prototype.setupSizeDescriptions = function(name) {
+  var index = 0;
+  if (name) index = this.sizeIndexByName(name);
+  this.sizeDescriptionOffset = index;
 }
 
 PartialOrder.prototype.hasSizeDescription = function() {
@@ -225,9 +238,21 @@ PartialOrder.prototype.getSizeDetails = function(name) {
   return Catalog.findByName(name || this.arrangement.name).sizes;
 }
 
+PartialOrder.prototype.sizeIndexByName = function(name) {
+  var self = this
+      , sizes = self.getSizeDetails()
+  ;
+  return _(sizes)
+    .map(function(entry) {
+      return entry.name.toLowerCase();
+    })
+    .indexOf(name.toLowerCase());
+}
+
 PartialOrder.prototype.getSizeByName = function(name) {
-  var self = this;
-  var sizes = self.getSizeDetails();
+  var self = this
+      , sizes = self.getSizeDetails()
+  ;
   var val = _(sizes).find(function (entry) {
     return entry.name.toLowerCase() == name.toLowerCase();
   });
@@ -332,7 +357,7 @@ PartialOrder.prototype.prepOrderForPlacement = function(){
     , item = self.getSizeDetailsByName()
   ;
   return Promise.all([
-    this.user.getRecipientAddress(self.recipient.demoId,self.recipient.id),
+    self.user.getRecipientAddress(self.recipient.demoId,self.recipient.id),
     self.user.getPaymentMethods()
   ])
   .spread(function(address, cards){
@@ -366,15 +391,44 @@ PartialOrder.prototype.prepOrderForPlacement = function(){
   });
 }
 
-PartialOrder.prototype.placeOrder = function(){
+PartialOrder.prototype.placeOrder = function() {
+  //-1. Get User Address
   //0. Get order Number
   //1. Authorize CC
   //2. create order
   var self = this
-    , purchase = Purchase(config.flowers)
+    , item = self.getSizeDetailsByName()
+    , product = {
+      tax: self.order.charges.taxes
+      , shipping: self.order.charges.shippingTotal
+      , sku: item.sku
+      , name: item.name
+      , price: self.order.charges.item
+      , deliveryDate: self.deliveryDate
+      , total: self.order.charges.total
+    }
+    , recipient = {
+      firstName: self.order.address.firstName
+      , lastName: self.order.address.lastName
+      , addr1: self.order.address.addr1
+      , addr2: self.order.address.addr2
+      , city: self.order.address.city
+      , state: self.order.address.state
+      , postalCode: self.order.address.postalCode
+      , country: self.order.address.country
+      , phone: self.order.address.phone
+    }
+    , payment = self.order.card
   ;
+  
+  return self.user.submitOrder(product, recipient, self.order.card)
+    .then(function(status) {
+      return !!status.message;
+    })
+  ;
+}
 
-  return purchase.getOrderNumber().then(function(orderNumber) {
-    console.log('Order number ' + orderNumber + ' ' + JSON.stringify(self.order.card));
-  });
+// Get the web url
+PartialOrder.prototype.getWeb = function() {
+  return config.flowers.web;
 }

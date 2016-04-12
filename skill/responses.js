@@ -18,20 +18,20 @@ var responses = function () {
     Errors: {
 
       NotConnectedToAccount: {
-        tell: "Before I can help you place an order, you'll need to connect to your 1-800-Flowers account.\n        To help you get started, I've added a link to the authorization process in the Home screen of the Alexa app.\n        <break time=\"1s\"/>\n        When you're ready, come back and I'll be happy to help you place your order!",
+        tell: "Hi there! Before I can help you place an order, you'll need to connect to your 1-800-Flowers account.\n        To help you get started, I've added a link to the authorization process in the Home screen of the Alexa app.\n        <break time=\"1s\"/>\n        When you're ready, come back and I'll be happy to help you place your order!",
         card: authCard
       },
       NoRecipientsInAddressBook: {
-        tell: "Before I can help you place an order, you'll need to add at least one address to your 1-800-Flowers address book online.    <break time=\"1s\"/>      When you're ready, come back and I'll be happy to help you place your order!",
+        tell: "{welcomePhrase} Before I can help you place an order, you'll need to add at least one address to your 1-800-Flowers address book online.    <break time=\"1s\"/>      When you're ready, come back and I'll be happy to help you place your order!",
       },
       NoPaymentMethod: {
-        tell: "Before I can help you place an order, you'll need to add a payment method to your 1-800-Flowers account online.    <break time=\"1s\"/>      When you're ready, come back and I'll be happy to help you place your order!",
+        tell: "{welcomePhrase} Before I can help you place an order, you'll need to add a payment method to your 1-800-Flowers account online.    <break time=\"1s\"/>      When you're ready, come back and I'll be happy to help you place your order!",
       },
       ErrorAtLaunch: {
         tell: "I'm really sorry, but I can't take floral orders right now.\n          <break time=\"1s\"/>\n          Please check back soon and thank you for visiting 1-800-Flowers."
       },
       ErrorGeneral: {
-        tell: "Hello, and welcome back to 1-800-Flowers. I'm sorry, I've encountered an issue and I'm unable to take orders at this time.\n          <break time=\"1s\"/>\n          Please check back soon, and thank you for visiting 1-800-Flowers."
+        tell: "I'm sorry, I've encountered an issue and I'm unable to take orders at this time.\n          <break time=\"1s\"/>\n          Please check back soon, and thank you for visiting 1-800-Flowers."
       },
       ErrorAtOrder: {
         tell: "I'm sorry, but there was an error in processing your order and I'm unable to continue at this time.\n          <break time=\"1s\"/>\n          Please check back soon to try your order again, and thank you for visiting 1-800-Flowers."
@@ -42,8 +42,15 @@ var responses = function () {
     },
 
     Options: {
+      OpenResponse: {
+        say: "{welcomePhrase}"
+      },
       RecipientSelection: {
         ask: "Who would you like to send flowers to?",
+        reprompt: "What's the first name of the person you want to send flowers to?"
+      },
+       RecipientSelectionAlt: {
+        ask: "Who are the flowers for?",
         reprompt: "What's the first name of the person you want to send flowers to?"
       },
       ArrangementList: {
@@ -84,7 +91,7 @@ var responses = function () {
         say: "{okay}.",
       },
       Close: {
-        tell: "Okay, for more floral needs visit 1-800-Flowers.com.",
+        tell: "Okay, for more of your floral needs visit 1-800-Flowers.com.",
       },
     },
 
@@ -92,7 +99,7 @@ var responses = function () {
       // The {okay} variable consists of the terms, (Okay, Great, Excellent)
       // that are randomly selected to fill the slot.
       FirstAddress: {
-        ask: "{okay}, is that {contactCandidateName} at {contactCandidateAddress}?",
+        ask: "{okay}, is that {contactCandidateName}, at {contactCandidateAddress}?",
         reprompt: "Is {contactCandidateAddress} the correct address for {contactCandidateName}?"
       },
       NotInAddressBook: {
@@ -132,13 +139,13 @@ var responses = function () {
         say: "I'm sorry. Flowers ordered through the 1-800-Flowers Amazon Echo Skill cannot be delivered to that address.",
       },
       NextAddress: {
-        ask: "How about flowers for {contactCandidateName} at {contactCandidateAddress}?",
+        ask: "How about flowers for {contactCandidateName}, at {contactCandidateAddress}?",
         reprompt: "Is {contactCandidateAddress} the correct address for {contactCandidateName}?"
       },
       AddOrUpdateAddressesOnline: {
       },
       SendToSomeoneElse: {
-        ask: "You can only send flowers to contacts in your 1 800 Flowers address book. Go to 1-800-Flowers.com to add more contacts. " +
+        ask: "I have no more available addresses for {possibleRecipient}. Go to 1-800-Flowers.com to update your contacts. " +
           "Would you like to send flowers to someone else?",
         reprompt: "To send flowers to someone just say their name."
       },
@@ -230,9 +237,12 @@ var responses = function () {
       DateValidation: {
         say: "{okay}, {deliveryDate}.",
       },
+       DateValidationAlt: {
+        say: "{okay}, let's see if I can have it delivered on {possibleDeliveryDate}. ",
+      },
       NotAValidDate: {
         //For developer ... please ensure the logic of this phrase makes sense with the code you create (dateMinusOne should never bring up a non-available date).
-        ask: "{possibleDeliveryDate} is not available for delivery. Would you like to deliver on {deliveryDateOffers}?",
+        ask: "This arrangement is not available for delivery on {possibleDeliveryDate}. Would you like to deliver on {deliveryDateOffers}?",
         reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
       }
     },
@@ -243,7 +253,7 @@ var responses = function () {
         reprompt: "Should I place your order for {price}?"
       },
       CancelOrder: {
-        ask: "Would you like to cancel your order?",
+        ask: "Okay, what order change would you like to make,",
         reprompt: "Did you want to cancel your order?",
       },
     },
@@ -256,7 +266,19 @@ var responses = function () {
       SendToSomeoneElse: {
         ask: "I've sent your order. There is a review card in the Alexa app and you will receive an email confirmation shortly. \n" +
              "Would you like to send flowers to someone else?",
-        reprompt: "To send flowers to someone just say their name."
+        reprompt: "To send flowers to someone just say their name.",
+        card: {
+          type: 'Standard',
+          title: 'You bought flowers!',
+          text: 'Your {arrangementSize} {arrangementType} order has been placed!\n' +
+            '{recipient}\n{address}\n' +
+            'Delivery Date: {deliveryDate}\n' +
+            'Order Total: {priceTextFormatted}',
+          image: {
+            smallImageUrl: '{imageUrl}',
+            largeImageUrl: '{imageUrl}'
+          }
+        }
       },
     },
 
@@ -275,11 +297,11 @@ var responses = function () {
 
     Help: {
       HelpStartMenu: {
-        tell: "Okay, I'd be happy to help.    <break time=\"1s\"/>\n "
-          + "You can send flowers to you contacts in your 1-800 Flowers account."
+        say: "Okay, I'd be happy to help.    <break time=\"1s\"/>\n "
+          + "You can send flowers to your contacts in your 1 800 Flowers account. "
           + "Just say their name to send them flowers.   <break time=\"1s\"/>\n "
-          + "You can add contacts and updates addresses on 1-800 Flowers.com.   <break time=\"1s\"/>\n "
-          + "You can select the type of arrangement like; Mother's Day, Birthday, Thank You, or Love and Romance."
+          + "You can add contacts and update addresses on 1 800 Flowers.com.   <break time=\"1s\"/>\n "
+          + "You can select the type of arrangement like; Mother's Day, Birthday, Thank You, or Love and Romance. "
           + "You can also choose between small, medium, and large arrangement sizes.    <break time=\"1s\"/>\n "
           + "Lastly, tell me what day you would like the flowers delivered and I will make sure they get there.",
       },
@@ -288,7 +310,7 @@ var responses = function () {
     ExitIntent: {
       // This should replay the reprompt associated with the last ask the user received.
       RepeatLastAskReprompt: {
-        tell: "Okay, for more floral needs visit 1-800-Flowers.com.",
+        tell: "Okay, for more of your floral needs visit 1-800-Flowers.com.",
       },
     },
   };

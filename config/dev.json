@@ -7,6 +7,7 @@
     "key": "c4078e06-7f12-442f-ae72-def09015a4f8",
     "secret": "rT6kX2qU3iS3pH5aQ6iV6sQ4pK1yV1aB4dP5yU5jU6nE0bT5iM",
     "endpoint": "https://ecommerce.800-flowers.net/alexa/uat",
+    "web": "https://flowers-dev.rain.agency",
     "version": "v1",
     "verbose": true,
     "logsAreInsensitive": true,
@@ -27,7 +28,8 @@
       "redirectUrl": "https://pitangui.amazon.com/api/skill/link/M6ZHH7PH52R7T",
       "clientId": "alexa-skill",
       "clientSecret": "ihaveasecret",
-      "codeKey": "used-to-mangle-codes"
+      "codeKey": "used-to-mangle-codes",
+      "token_expiration": 1576800000
     },
     "appId": "amzn1.echo-sdk-ams.app.f3046058-e528-4531-b6ed-31448206b503"
   },

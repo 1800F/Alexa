@@ -1,3 +1,40 @@
+LaunchIntent {action}
+LaunchIntent {action} {arrangementSlot} {bouquet}
+LaunchIntent {action} {bouquet}
+LaunchIntent {action} {bouquet} for {deliveryDateSlot}
+LaunchIntent {action} {bouquet} for {recipientSlot}
+LaunchIntent {action} {bouquet} for {recipientSlot} on  {deliveryDateSlot}
+LaunchIntent {action} {bouquet} now
+LaunchIntent {action} {bouquet} of flowers
+LaunchIntent {action} {bouquet} on {deliveryDateSlot}
+LaunchIntent {action} {bouquet} stat
+LaunchIntent {action} {bouquet} to {recipientSlot}
+LaunchIntent {action} {bouquet} to {recipientSlot} on {deliveryDateSlot}
+LaunchIntent {action} {deliveryDateSlot}
+LaunchIntent {action} {recipientSlot}
+LaunchIntent {action} {recipientSlot} {bouquet}
+LaunchIntent {action} {recipientSlot} {bouquet} for {deliveryDateSlot}
+LaunchIntent {action} {recipientSlot} on {deliveryDateSlot}
+LaunchIntent {action} {recipientSlot} some  {bouquet}
+LaunchIntent {action} {recipientSlot} some  {bouquet} for {deliveryDateSlot}
+LaunchIntent {action} {recipientSlot} some flowers
+LaunchIntent {action} {sizeSlot} {arrangementSlot} {bouquet}
+LaunchIntent {action} {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot}
+LaunchIntent {action} {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot} on {deliveryDateSlot}
+LaunchIntent {action} {sizeSlot} {arrangementSlot} {bouquet} to {recipientSlot}
+LaunchIntent {action} {sizeSlot} {arrangementSlot} {bouquet} to {recipientSlot} on {deliveryDateSlot}
+LaunchIntent {action} {sizeSlot} {arrangementSlot} for {recipientSlot}
+LaunchIntent {action} {sizeSlot} {arrangementSlot} for {recipientSlot} on {deliveryDateSlot}
+LaunchIntent {action} {sizeSlot} {arrangementSlot} to {recipientSlot}
+LaunchIntent {action} {sizeSlot} {arrangementSlot} to {recipientSlot} on {deliveryDateSlot}
+LaunchIntent {action} {sizeSlot} {bouquet}
+LaunchIntent {action} {sizeSlot} {bouquet} of flowers to {recipientSlot} on {deliveryDateSlot}
+LaunchIntent {action} {sizeSlot} {bouquet} to {recipientSlot}
+LaunchIntent {action} {sizeSlot} {bouquet} to {recipientSlot} on {deliveryDateSlot}
+LaunchIntent {action} flowers to {recipientSlot}
+LaunchIntent {action} flowers to {recipientSlot} on {deliveryDateSlot}
+LaunchIntent for {bouquet}
+
 LaunchIntent to order {bouquet}
 LaunchIntent to order {bouquet} for {deliveryDateSlot}
 LaunchIntent to order {bouquet} for {recipientSlot}
@@ -42,6 +79,8 @@ LaunchIntent I need {bouquet} of flowers
 LaunchIntent I need {bouquet} for {recipientSlot}
 LaunchIntent I need {bouquet} for {deliveryDateSlot}
 LaunchIntent I need {bouquet} for {recipientSlot} on  {deliveryDateSlot}
+LaunchIntent I need a {sizeSlot} {arrangementSlot}
+LaunchIntent I need a {sizeSlot} {arrangementSlot} {bouquet}
 LaunchIntent I need a {sizeSlot} {arrangementSlot} for {recipientSlot}
 LaunchIntent I need a {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot}
 LaunchIntent I need a {sizeSlot} {arrangementSlot} for {recipientSlot} on {deliveryDateSlot}
@@ -83,6 +122,7 @@ LaunchIntent I need to order a {sizeSlot} {arrangementSlot} {bouquet} for {recip
 LaunchIntent for {bouquet}
 
 RecipientSelectionIntent {recipientSlot}
+RecipientSelectionIntent {recipientSlot} please
 RecipientSelectionIntent For {recipientSlot}
 RecipientSelectionIntent Oh {recipientSlot}
 RecipientSelectionIntent Send flowers to {recipientSlot}
@@ -97,13 +137,32 @@ RecipientSelectionIntent Can I send flowers to {recipientSlot}
 RecipientSelectionIntent I need flowers for {recipientSlot}
 RecipientSelectionIntent let's send to {recipientSlot}
 
+RecipientSelectionIntent no {recipientSlot}
+RecipientSelectionIntent no  {recipientSlot} please
+RecipientSelectionIntent no For {recipientSlot}
+RecipientSelectionIntent no Oh {recipientSlot}
+RecipientSelectionIntent no Send flowers to {recipientSlot}
+RecipientSelectionIntent no Send to {recipientSlot}
+RecipientSelectionIntent no I want {recipientSlot}
+RecipientSelectionIntent no I would like to send to {recipientSlot}
+RecipientSelectionIntent no Should go to {recipientSlot}
+RecipientSelectionIntent no I want to send to {recipientSlot}
+RecipientSelectionIntent no These are for {recipientSlot}
+RecipientSelectionIntent no Please send them to {recipientSlot}
+RecipientSelectionIntent no Can I send flowers to {recipientSlot}
+RecipientSelectionIntent no I need flowers for {recipientSlot}
+RecipientSelectionIntent no let's send to {recipientSlot}
+
 
 SizeSelectionIntent {sizeSlot}
+SizeSelectionIntent {sizeSlot} please
 SizeSelectionIntent {sizeSlot} {bouquet}
 SizeSelectionIntent A {sizeSlot}
 SizeSelectionIntent A {sizeSlot} {bouquet}
 SizeSelectionIntent I would like a {sizeSlot}
 SizeSelectionIntent I would like a {sizeSlot} {bouquet}
+SizeSelectionIntent I would like to order a {sizeSlot}
+SizeSelectionIntent I would like to order a {sizeSlot} {bouquet}
 SizeSelectionIntent How about {sizeSlot}
 SizeSelectionIntent How about {sizeSlot} {bouquet}
 SizeSelectionIntent I'd like a {sizeSlot}
@@ -135,7 +194,123 @@ SizeSelectionIntent I have to have a {sizeSlot}
 SizeSelectionIntent I have to have a {sizeSlot} {bouquet}
 SizeSelectionIntent I want to buy a {sizeSlot}
 SizeSelectionIntent I want to buy a {sizeSlot} {bouquet}
+SizeSelectionIntent {sizeSlot} {bouquet}
+SizeSelectionIntent A {sizeSlot} please
+SizeSelectionIntent A {sizeSlot} {bouquet} please
+SizeSelectionIntent I would like a {sizeSlot} please
+SizeSelectionIntent I would like a {sizeSlot} {bouquet} please
+SizeSelectionIntent How about {sizeSlot} please
+SizeSelectionIntent How about {sizeSlot} {bouquet} please
+SizeSelectionIntent I'd like a {sizeSlot} please
+SizeSelectionIntent I'd like a {sizeSlot} {bouquet} please
+SizeSelectionIntent Oh {sizeSlot} please
+SizeSelectionIntent Oh {sizeSlot} {bouquet} please
+SizeSelectionIntent Let's go with {sizeSlot} please
+SizeSelectionIntent Let's go with {sizeSlot} {bouquet} please
+SizeSelectionIntent Let's do with {sizeSlot} please
+SizeSelectionIntent I want a {sizeSlot} please
+SizeSelectionIntent I want a {sizeSlot} {bouquet} please
+SizeSelectionIntent I want to order a {sizeSlot} please
+SizeSelectionIntent I want to order a {sizeSlot} {bouquet} please
+SizeSelectionIntent Order a {sizeSlot} please
+SizeSelectionIntent Order a {sizeSlot} {bouquet} please
+SizeSelectionIntent Send a {sizeSlot} please
+SizeSelectionIntent Send a {sizeSlot} {bouquet} please
+SizeSelectionIntent Get a {sizeSlot} please
+SizeSelectionIntent Get a {sizeSlot} {bouquet} please
+SizeSelectionIntent I choose a {sizeSlot} please
+SizeSelectionIntent I choose a {sizeSlot} {bouquet} please
+SizeSelectionIntent I have to get a {sizeSlot} please
+SizeSelectionIntent I have to get a {sizeSlot} {bouquet} please
+SizeSelectionIntent I must to get a {sizeSlot} please
+SizeSelectionIntent I must to get a {sizeSlot} {bouquet} please
+SizeSelectionIntent I need to get a {sizeSlot} please
+SizeSelectionIntent I need to get a {sizeSlot} {bouquet} please
+SizeSelectionIntent It  must be a {sizeSlot} please
+SizeSelectionIntent It  must be a {sizeSlot} {bouquet} please
+SizeSelectionIntent I have to have a {sizeSlot} please
+SizeSelectionIntent I have to have a {sizeSlot} {bouquet} please
+SizeSelectionIntent I want to buy a {sizeSlot} please
+SizeSelectionIntent I want to buy a {sizeSlot} {bouquet} please
 
+SizeSelectionIntent no {sizeSlot}
+SizeSelectionIntent no {sizeSlot} please
+SizeSelectionIntent no {sizeSlot} {bouquet}
+SizeSelectionIntent no A {sizeSlot}
+SizeSelectionIntent no A {sizeSlot} {bouquet}
+SizeSelectionIntent no I would like a {sizeSlot}
+SizeSelectionIntent no I would like a {sizeSlot} {bouquet}
+SizeSelectionIntent no I would like to order a {sizeSlot}
+SizeSelectionIntent no I would like to order a {sizeSlot} {bouquet}
+SizeSelectionIntent no How about {sizeSlot}
+SizeSelectionIntent no How about {sizeSlot} {bouquet}
+SizeSelectionIntent no I'd like a {sizeSlot}
+SizeSelectionIntent no I'd like a {sizeSlot} {bouquet}
+SizeSelectionIntent no Oh {sizeSlot}
+SizeSelectionIntent no Oh {sizeSlot} {bouquet}
+SizeSelectionIntent no Let's go with {sizeSlot}
+SizeSelectionIntent no Let's go with {sizeSlot} {bouquet}
+SizeSelectionIntent no Let's do with {sizeSlot}
+SizeSelectionIntent no I want a {sizeSlot}
+SizeSelectionIntent no I want a {sizeSlot} {bouquet}
+SizeSelectionIntent no Order a {sizeSlot}
+SizeSelectionIntent no Order a {sizeSlot} {bouquet}
+SizeSelectionIntent no Send a {sizeSlot}
+SizeSelectionIntent no Send a {sizeSlot} {bouquet}
+SizeSelectionIntent no Get a {sizeSlot}
+SizeSelectionIntent no Get a {sizeSlot} {bouquet}
+SizeSelectionIntent no I choose a {sizeSlot}
+SizeSelectionIntent no I choose a {sizeSlot} {bouquet}
+SizeSelectionIntent no I have to get a {sizeSlot}
+SizeSelectionIntent no I have to get a {sizeSlot} {bouquet}
+SizeSelectionIntent no I must to get a {sizeSlot}
+SizeSelectionIntent no I must to get a {sizeSlot} {bouquet}
+SizeSelectionIntent no I need to get a {sizeSlot}
+SizeSelectionIntent no I need to get a {sizeSlot} {bouquet}
+SizeSelectionIntent no It  must be a {sizeSlot}
+SizeSelectionIntent no It  must be a {sizeSlot} {bouquet}
+SizeSelectionIntent no I have to have a {sizeSlot}
+SizeSelectionIntent no I have to have a {sizeSlot} {bouquet}
+SizeSelectionIntent no I want to buy a {sizeSlot}
+SizeSelectionIntent no I want to buy a {sizeSlot} {bouquet}
+SizeSelectionIntent no {sizeSlot} {bouquet}
+SizeSelectionIntent no A {sizeSlot} please
+SizeSelectionIntent no A {sizeSlot} {bouquet} please
+SizeSelectionIntent no I would like a {sizeSlot} please
+SizeSelectionIntent no I would like a {sizeSlot} {bouquet} please
+SizeSelectionIntent no How about {sizeSlot} please
+SizeSelectionIntent no How about {sizeSlot} {bouquet} please
+SizeSelectionIntent no I'd like a {sizeSlot} please
+SizeSelectionIntent no I'd like a {sizeSlot} {bouquet} please
+SizeSelectionIntent no Oh {sizeSlot} please
+SizeSelectionIntent no Oh {sizeSlot} {bouquet} please
+SizeSelectionIntent no Let's go with {sizeSlot} please
+SizeSelectionIntent no Let's go with {sizeSlot} {bouquet} please
+SizeSelectionIntent no Let's do with {sizeSlot} please
+SizeSelectionIntent no I want a {sizeSlot} please
+SizeSelectionIntent no I want a {sizeSlot} {bouquet} please
+SizeSelectionIntent no I want to order a {sizeSlot} please
+SizeSelectionIntent no I want to order a {sizeSlot} {bouquet} please
+SizeSelectionIntent no Order a {sizeSlot} please
+SizeSelectionIntent no Order a {sizeSlot} {bouquet} please
+SizeSelectionIntent no Send a {sizeSlot} please
+SizeSelectionIntent no Send a {sizeSlot} {bouquet} please
+SizeSelectionIntent no Get a {sizeSlot} please
+SizeSelectionIntent no Get a {sizeSlot} {bouquet} please
+SizeSelectionIntent no I choose a {sizeSlot} please
+SizeSelectionIntent no I choose a {sizeSlot} {bouquet} please
+SizeSelectionIntent no I have to get a {sizeSlot} please
+SizeSelectionIntent no I have to get a {sizeSlot} {bouquet} please
+SizeSelectionIntent no I must to get a {sizeSlot} please
+SizeSelectionIntent no I must to get a {sizeSlot} {bouquet} please
+SizeSelectionIntent no I need to get a {sizeSlot} please
+SizeSelectionIntent no I need to get a {sizeSlot} {bouquet} please
+SizeSelectionIntent no It  must be a {sizeSlot} please
+SizeSelectionIntent no It  must be a {sizeSlot} {bouquet} please
+SizeSelectionIntent no I have to have a {sizeSlot} please
+SizeSelectionIntent no I have to have a {sizeSlot} {bouquet} please
+SizeSelectionIntent no I want to buy a {sizeSlot} please
+SizeSelectionIntent no I want to buy a {sizeSlot} {bouquet} please
 
 DescriptionIntent What's the difference
 DescriptionIntent I don't know
@@ -159,6 +334,12 @@ DescriptionIntent What about the {sizeSlot}
 DescriptionIntent Describe {sizeSlot}
 DescriptionIntent Describe the {sizeSlot}
 DescriptionIntent I want to hear about the {sizeSlot}
+DescriptionIntent What is the price of the {sizeSlot}
+DescriptionIntent Tell me the price of the {sizeSlot}
+DescriptionIntent How much does the {sizeSlot} cost
+DescriptionIntent How much is the {sizeSlot}
+DescriptionIntent Can you tell me what is in the {sizeSlot}
+DescriptionIntent Can you tell me what's in the {sizeSlot}
 
 DescriptionIntent What's in the {arrangementSlot}
 DescriptionIntent Tell me about the {arrangementSlot}
@@ -170,6 +351,47 @@ DescriptionIntent What about the {arrangementSlot}
 DescriptionIntent Describe {arrangementSlot}
 DescriptionIntent Describe the {arrangementSlot}
 DescriptionIntent I want to hear about the {arrangementSlot}
+DescriptionIntent What is the price of the {arrangementSlot}
+DescriptionIntent Tell me the price of the {arrangementSlot}
+DescriptionIntent How much does the {arrangementSlot} cost
+DescriptionIntent How much is the {arrangementSlot}
+DescriptionIntent Can you tell me what is in the {arrangementSlot}
+DescriptionIntent Can you tell me what's in the {arrangementSlot}
+
+DescriptionIntent What's in the {sizeSlot} {bouquet}
+DescriptionIntent Tell me about the {sizeSlot} {bouquet}
+DescriptionIntent Tell me more about {sizeSlot} {bouquet}
+DescriptionIntent What's in {sizeSlot} {bouquet}
+DescriptionIntent What's in the {sizeSlot} {bouquet}
+DescriptionIntent What about {sizeSlot} {bouquet}
+DescriptionIntent What about the {sizeSlot} {bouquet}
+DescriptionIntent Describe {sizeSlot} {bouquet}
+DescriptionIntent Describe the {sizeSlot} {bouquet}
+DescriptionIntent I want to hear about the {sizeSlot} {bouquet}
+DescriptionIntent What is the price of the {sizeSlot} {bouquet}
+DescriptionIntent Tell me the price of the {sizeSlot} {bouquet}
+DescriptionIntent How much does the {sizeSlot} {bouquet} cost
+DescriptionIntent How much is the {sizeSlot} {bouquet}
+DescriptionIntent Can you tell me what is in the {sizeSlot} {bouquet}
+DescriptionIntent Can you tell me what's in the {sizeSlot} {bouquet}
+
+
+DescriptionIntent What's in the {arrangementSlot} {bouquet}
+DescriptionIntent Tell me about the {arrangementSlot} {bouquet}
+DescriptionIntent Tell me more about {arrangementSlot} {bouquet}
+DescriptionIntent What's in {arrangementSlot} {bouquet}
+DescriptionIntent What's in the {arrangementSlot} {bouquet}
+DescriptionIntent What about {arrangementSlot} {bouquet}
+DescriptionIntent What about the {arrangementSlot} {bouquet}
+DescriptionIntent Describe {arrangementSlot} {bouquet}
+DescriptionIntent Describe the {arrangementSlot} {bouquet}
+DescriptionIntent I want to hear about the {arrangementSlot} {bouquet}
+DescriptionIntent What is the price of the {arrangementSlot} {bouquet}
+DescriptionIntent Tell me the price of the {arrangementSlot} {bouquet}
+DescriptionIntent How much does the {arrangementSlot} {bouquet} cost
+DescriptionIntent How much is the {arrangementSlot} {bouquet}
+DescriptionIntent Can you tell me what is in the {arrangementSlot} {bouquet}
+DescriptionIntent Can you tell me what's in the {arrangementSlot} {bouquet}
 
 DescriptionIntent Who can I send flowers to
 DescriptionIntent What are my options
@@ -186,46 +408,178 @@ DescriptionIntent who's in my address book
 
 
 ArrangementSelectionIntent {arrangementSlot}
-ArrangementSelectionIntent A {arrangementSlot} 
-ArrangementSelectionIntent A {arrangementSlot}
-ArrangementSelectionIntent I would like a {arrangementSlot}
-ArrangementSelectionIntent How about {arrangementSlot}
-ArrangementSelectionIntent I'd like a {arrangementSlot}
-ArrangementSelectionIntent Oh {arrangementSlot}
-ArrangementSelectionIntent Let's go with {arrangementSlot}
-ArrangementSelectionIntent Let's do a {arrangementSlot}
-ArrangementSelectionIntent I want a {arrangementSlot}
-ArrangementSelectionIntent Let's make it a {arrangementSlot}
-ArrangementSelectionIntent Order a {arrangementSlot}
-ArrangementSelectionIntent Send a {arrangementSlot}
-ArrangementSelectionIntent Get a {arrangementSlot}
-ArrangementSelectionIntent I choose a {arrangementSlot}
-ArrangementSelectionIntent I have to get a {arrangementSlot}
-ArrangementSelectionIntent I must to get a {arrangementSlot}
-ArrangementSelectionIntent I need to get a {arrangementSlot}
-ArrangementSelectionIntent It  must be a {arrangementSlot}
-ArrangementSelectionIntent I have to have a {arrangementSlot}
 ArrangementSelectionIntent {arrangementSlot} {bouquet}
+ArrangementSelectionIntent {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent {arrangementSlot} please
+ArrangementSelectionIntent A {arrangementSlot}
+ArrangementSelectionIntent A {arrangementSlot} 
 ArrangementSelectionIntent A {arrangementSlot} {bouquet}
 ArrangementSelectionIntent A {arrangementSlot} {bouquet}
-ArrangementSelectionIntent I would like a {arrangementSlot} {bouquet}
-ArrangementSelectionIntent How about {arrangementSlot} {bouquet}
-ArrangementSelectionIntent I'd like a {arrangementSlot} {bouquet}
-ArrangementSelectionIntent Oh {arrangementSlot} {bouquet}
-ArrangementSelectionIntent Let's go with {arrangementSlot} {bouquet}
-ArrangementSelectionIntent Let's do a {arrangementSlot} {bouquet}
-ArrangementSelectionIntent I want a {arrangementSlot} {bouquet}
-ArrangementSelectionIntent Let's make it a {arrangementSlot} {bouquet}
-ArrangementSelectionIntent Order a {arrangementSlot} {bouquet}
-ArrangementSelectionIntent Send a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent A {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent A {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent A {arrangementSlot} please
+ArrangementSelectionIntent A {arrangementSlot} please
+ArrangementSelectionIntent Get a {arrangementSlot}
 ArrangementSelectionIntent Get a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent Get a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent Get a {arrangementSlot} please
+ArrangementSelectionIntent How about {arrangementSlot}
+ArrangementSelectionIntent How about {arrangementSlot} {bouquet}
+ArrangementSelectionIntent How about {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent How about {arrangementSlot} please
+ArrangementSelectionIntent I'd like a {arrangementSlot}
+ArrangementSelectionIntent I'd like a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent I'd like a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent I'd like a {arrangementSlot} please
+ArrangementSelectionIntent I choose a {arrangementSlot}
 ArrangementSelectionIntent I choose a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent I choose a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent I choose a {arrangementSlot} please
+ArrangementSelectionIntent I have to get a {arrangementSlot}
 ArrangementSelectionIntent I have to get a {arrangementSlot} {bouquet}
-ArrangementSelectionIntent I must to get a {arrangementSlot} {bouquet}
-ArrangementSelectionIntent I need to get a {arrangementSlot} {bouquet}
-ArrangementSelectionIntent It  must be a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent I have to get a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent I have to get a {arrangementSlot} please
+ArrangementSelectionIntent I have to have a {arrangementSlot}
 ArrangementSelectionIntent I have to have a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent I have to have a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent I have to have a {arrangementSlot} please
+ArrangementSelectionIntent I must to get a {arrangementSlot}
+ArrangementSelectionIntent I must to get a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent I must to get a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent I must to get a {arrangementSlot} please
+ArrangementSelectionIntent I need to get a {arrangementSlot}
+ArrangementSelectionIntent I need to get a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent I need to get a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent I need to get a {arrangementSlot} please
+ArrangementSelectionIntent It  must be a {arrangementSlot}
+ArrangementSelectionIntent It  must be a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent It  must be a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent It  must be a {arrangementSlot} please
+ArrangementSelectionIntent I want a {arrangementSlot}
+ArrangementSelectionIntent I want a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent I want a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent I want a {arrangementSlot} please
+ArrangementSelectionIntent I would like a {arrangementSlot}
+ArrangementSelectionIntent I would like a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent I would like a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent I would like a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent I would like a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent I would like a {arrangementSlot} please
+ArrangementSelectionIntent I would like to have a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent I would like to have a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent I would like to order a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent I would like to order a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent Let's do a {arrangementSlot}
+ArrangementSelectionIntent Let's do a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent Let's do a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent Let's do a {arrangementSlot} please
+ArrangementSelectionIntent Let's go with {arrangementSlot}
+ArrangementSelectionIntent Let's go with {arrangementSlot} {bouquet}
+ArrangementSelectionIntent Let's go with {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent Let's go with {arrangementSlot} please
+ArrangementSelectionIntent Let's make it a {arrangementSlot}
+ArrangementSelectionIntent Let's make it a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent Let's make it a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent Let's make it a {arrangementSlot} please
+ArrangementSelectionIntent Oh {arrangementSlot}
+ArrangementSelectionIntent Oh {arrangementSlot} {bouquet}
+ArrangementSelectionIntent Oh {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent Oh {arrangementSlot} please
+ArrangementSelectionIntent Order a {arrangementSlot}
+ArrangementSelectionIntent Order a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent Order a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent Order a {arrangementSlot} please
+ArrangementSelectionIntent Send a {arrangementSlot}
+ArrangementSelectionIntent Send a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent Send a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent Send a {arrangementSlot} please
 
+ArrangementSelectionIntent No {arrangementSlot}
+ArrangementSelectionIntent No {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No {arrangementSlot} please
+ArrangementSelectionIntent No A {arrangementSlot}
+ArrangementSelectionIntent No A {arrangementSlot} 
+ArrangementSelectionIntent No A {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No A {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No A {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No A {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No A {arrangementSlot} please
+ArrangementSelectionIntent No A {arrangementSlot} please
+ArrangementSelectionIntent No Get a {arrangementSlot}
+ArrangementSelectionIntent No Get a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No Get a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No Get a {arrangementSlot} please
+ArrangementSelectionIntent No How about {arrangementSlot}
+ArrangementSelectionIntent No How about {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No How about {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No How about {arrangementSlot} please
+ArrangementSelectionIntent No I'd like a {arrangementSlot}
+ArrangementSelectionIntent No I'd like a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No I'd like a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No I'd like a {arrangementSlot} please
+ArrangementSelectionIntent No I choose a {arrangementSlot}
+ArrangementSelectionIntent No I choose a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No I choose a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No I choose a {arrangementSlot} please
+ArrangementSelectionIntent No I have to get a {arrangementSlot}
+ArrangementSelectionIntent No I have to get a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No I have to get a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No I have to get a {arrangementSlot} please
+ArrangementSelectionIntent No I have to have a {arrangementSlot}
+ArrangementSelectionIntent No I have to have a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No I have to have a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No I have to have a {arrangementSlot} please
+ArrangementSelectionIntent No I must to get a {arrangementSlot}
+ArrangementSelectionIntent No I must to get a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No I must to get a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No I must to get a {arrangementSlot} please
+ArrangementSelectionIntent No I need to get a {arrangementSlot}
+ArrangementSelectionIntent No I need to get a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No I need to get a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No I need to get a {arrangementSlot} please
+ArrangementSelectionIntent No It  must be a {arrangementSlot}
+ArrangementSelectionIntent No It  must be a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No It  must be a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No It  must be a {arrangementSlot} please
+ArrangementSelectionIntent No I want a {arrangementSlot}
+ArrangementSelectionIntent No I want a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No I want a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No I want a {arrangementSlot} please
+ArrangementSelectionIntent No I would like a {arrangementSlot}
+ArrangementSelectionIntent No I would like a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No I would like a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No I would like a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No I would like a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No I would like a {arrangementSlot} please
+ArrangementSelectionIntent No I would like to have a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No I would like to have a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No I would like to order a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No I would like to order a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No Let's do a {arrangementSlot}
+ArrangementSelectionIntent No Let's do a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No Let's do a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No Let's do a {arrangementSlot} please
+ArrangementSelectionIntent No Let's go with {arrangementSlot}
+ArrangementSelectionIntent No Let's go with {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No Let's go with {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No Let's go with {arrangementSlot} please
+ArrangementSelectionIntent No Let's make it a {arrangementSlot}
+ArrangementSelectionIntent No Let's make it a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No Let's make it a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No Let's make it a {arrangementSlot} please
+ArrangementSelectionIntent No Oh {arrangementSlot}
+ArrangementSelectionIntent No Oh {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No Oh {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No Oh {arrangementSlot} please
+ArrangementSelectionIntent No Order a {arrangementSlot}
+ArrangementSelectionIntent No Order a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No Order a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No Order a {arrangementSlot} please
+ArrangementSelectionIntent No Send a {arrangementSlot}
+ArrangementSelectionIntent No Send a {arrangementSlot} {bouquet}
+ArrangementSelectionIntent No Send a {arrangementSlot} {bouquet} please
+ArrangementSelectionIntent No Send a {arrangementSlot} please
 
 
 DateSelectionIntent {deliveryDateSlot}
@@ -234,6 +588,8 @@ DateSelectionIntent oh {deliveryDateSlot}
 DateSelectionIntent on {deliveryDateSlot}
 DateSelectionIntent send them on {deliveryDateSlot}
 DateSelectionIntent can you send them on {deliveryDateSlot}
+DateSelectionIntent send {bouquet} on {deliveryDateSlot}
+DateSelectionIntent can you send {bouquet} on {deliveryDateSlot}
 DateSelectionIntent how about {deliveryDateSlot}
 DateSelectionIntent let's do {deliveryDateSlot}
 DateSelectionIntent can we do {deliveryDateSlot}
@@ -241,11 +597,72 @@ DateSelectionIntent what about {deliveryDateSlot}
 DateSelectionIntent maybe {deliveryDateSlot}
 DateSelectionIntent deliver them on {deliveryDateSlot}
 DateSelectionIntent deliver them {deliveryDateSlot}
+DateSelectionIntent deliver {bouquet} on {deliveryDateSlot}
+DateSelectionIntent deliver {bouquet} {deliveryDateSlot}
 DateSelectionIntent deliver on {deliveryDateSlot}
 DateSelectionIntent can you deliver them on {deliveryDateSlot}
 DateSelectionIntent I want them delivered {deliveryDateSlot}
 DateSelectionIntent I want them delivered on {deliveryDateSlot}
+DateSelectionIntent I want {bouquet} delivered {deliveryDateSlot}
+DateSelectionIntent I want {bouquet} delivered on {deliveryDateSlot}
 DateSelectionIntent I want to send them on {deliveryDateSlot}
+DateSelectionIntent I would like them delivered {deliveryDateSlot}
+DateSelectionIntent I would like them delivered on {deliveryDateSlot}
+DateSelectionIntent I would like them delivered on {deliveryDateSlot}
+DateSelectionIntent I would like the {bouquet} delivered on {deliveryDateSlot}
+DateSelectionIntent I would like the {bouquet} on {deliveryDateSlot}
+DateSelectionIntent The {bouquet} need to be delivered on {deliveryDateSlot}
+DateSelectionIntent The {bouquet} need to be delivered {deliveryDateSlot}
+DateSelectionIntent I need them delivered {deliveryDateSlot}
+DateSelectionIntent I need them delivered on {deliveryDateSlot}
+DateSelectionIntent I need {bouquet} delivered {deliveryDateSlot}
+DateSelectionIntent I need {bouquet} delivered on {deliveryDateSlot}
+DateSelectionIntent I need them sent on {deliveryDateSlot}
+DateSelectionIntent I need them on {deliveryDateSlot}
+DateSelectionIntent I need the  {bouquet} sent on {deliveryDateSlot}
+DateSelectionIntent I need the  {bouquet} on {deliveryDateSlot}
+
+DateSelectionIntent no {deliveryDateSlot}
+DateSelectionIntent no on {deliveryDateSlot}
+DateSelectionIntent no oh {deliveryDateSlot}
+DateSelectionIntent no on {deliveryDateSlot}
+DateSelectionIntent no send them on {deliveryDateSlot}
+DateSelectionIntent no can you send them on {deliveryDateSlot}
+DateSelectionIntent no send {bouquet} on {deliveryDateSlot}
+DateSelectionIntent no can you send {bouquet} on {deliveryDateSlot}
+DateSelectionIntent no how about {deliveryDateSlot}
+DateSelectionIntent no let's do {deliveryDateSlot}
+DateSelectionIntent no can we do {deliveryDateSlot}
+DateSelectionIntent no what about {deliveryDateSlot}
+DateSelectionIntent no maybe {deliveryDateSlot}
+DateSelectionIntent no deliver them on {deliveryDateSlot}
+DateSelectionIntent no deliver them {deliveryDateSlot}
+DateSelectionIntent no deliver {bouquet} on {deliveryDateSlot}
+DateSelectionIntent no deliver {bouquet} {deliveryDateSlot}
+DateSelectionIntent no deliver on {deliveryDateSlot}
+DateSelectionIntent no can you deliver them on {deliveryDateSlot}
+DateSelectionIntent no I want them delivered {deliveryDateSlot}
+DateSelectionIntent no I want them delivered on {deliveryDateSlot}
+DateSelectionIntent no I want {bouquet} delivered {deliveryDateSlot}
+DateSelectionIntent no I want {bouquet} delivered on {deliveryDateSlot}
+DateSelectionIntent no I want to send them on {deliveryDateSlot}
+DateSelectionIntent no I would like them delivered {deliveryDateSlot}
+DateSelectionIntent no I would like them delivered on {deliveryDateSlot}
+DateSelectionIntent no I would like them delivered on {deliveryDateSlot}
+DateSelectionIntent no I would like the {bouquet} delivered on {deliveryDateSlot}
+DateSelectionIntent no I would like the {bouquet} on {deliveryDateSlot}
+DateSelectionIntent no The {bouquet} need to be delivered on {deliveryDateSlot}
+DateSelectionIntent no The {bouquet} need to be delivered {deliveryDateSlot}
+DateSelectionIntent no I need them delivered {deliveryDateSlot}
+DateSelectionIntent no I need them delivered on {deliveryDateSlot}
+DateSelectionIntent no I need {bouquet} delivered {deliveryDateSlot}
+DateSelectionIntent no I need {bouquet} delivered on {deliveryDateSlot}
+DateSelectionIntent no I need them sent on {deliveryDateSlot}
+DateSelectionIntent no I need them on {deliveryDateSlot}
+DateSelectionIntent no I need the  {bouquet} sent on {deliveryDateSlot}
+DateSelectionIntent no I need the  {bouquet} on {deliveryDateSlot}
+
+
 
 
 AMAZON.RepeatIntent again
@@ -314,10 +731,11 @@ AMAZON.YesIntent for sure
 AMAZON.YesIntent gladly
 AMAZON.YesIntent go for it
 AMAZON.YesIntent good
+AMAZON.YesIntent hells yes
 AMAZON.YesIntent hell ya
 AMAZON.YesIntent hell yea
-AMAZON.YesIntent hells yes
 AMAZON.YesIntent i sure am
+AMAZON.YesIntent it is
 AMAZON.YesIntent naturally
 AMAZON.YesIntent of course
 AMAZON.YesIntent oh yeah
@@ -329,28 +747,38 @@ AMAZON.YesIntent roger
 AMAZON.YesIntent sure sounds good
 AMAZON.YesIntent sure thing
 AMAZON.YesIntent thanks
+AMAZON.YesIntent that's it
+AMAZON.YesIntent that's her
+AMAZON.YesIntent that's him
+AMAZON.YesIntent that is her
+AMAZON.YesIntent that is him
 AMAZON.YesIntent uh huh
 AMAZON.YesIntent very well
 AMAZON.YesIntent yea
 AMAZON.YesIntent yeah
 AMAZON.YesIntent yep
+AMAZON.YesIntent yep that is her
+AMAZON.YesIntent yep that is him
 AMAZON.YesIntent yeppers
+AMAZON.YesIntent yes that is her
+AMAZON.YesIntent yes that is him
 AMAZON.YesIntent yes confirm
 AMAZON.YesIntent yes confirm that
-AMAZON.YesIntent yes i accept
-AMAZON.YesIntent yes i confirm
 AMAZON.YesIntent yes I'd like that
 AMAZON.YesIntent yes I'll take it
+AMAZON.YesIntent yes i accept
+AMAZON.YesIntent yes i confirm
 AMAZON.YesIntent yes indeed
+AMAZON.YesIntent yes it is
 AMAZON.YesIntent yes order it
 AMAZON.YesIntent yes please
-AMAZON.YesIntent yes that one
+AMAZON.YesIntent yessum
 AMAZON.YesIntent yes that's it
 AMAZON.YesIntent yes that's the one I want
+AMAZON.YesIntent yes that one
 AMAZON.YesIntent yes way
 AMAZON.YesIntent yes you can
 AMAZON.YesIntent yes you may
-AMAZON.YesIntent yessum
 AMAZON.YesIntent you bet
 AMAZON.YesIntent you know it
 AMAZON.YesIntent yup
@@ -508,4 +936,67 @@ AMAZON.HelpIntent what do i do
 AMAZON.HelpIntent what do i do next
 AMAZON.HelpIntent what do you do
 AMAZON.HelpIntent what questions can i ask
+
+
+
+
+AMAZON.StopIntent all done
+AMAZON.StopIntent cancel
+AMAZON.StopIntent  cancel please
+AMAZON.StopIntent cancel that
+AMAZON.StopIntent cancel that please
+AMAZON.StopIntent close
+AMAZON.StopIntent complete
+AMAZON.StopIntent done
+AMAZON.StopIntent end
+AMAZON.StopIntent end please
+AMAZON.StopIntent exit
+AMAZON.StopIntent exit please
+AMAZON.StopIntent finished
+AMAZON.StopIntent goodbye
+AMAZON.StopIntent goodnight
+AMAZON.StopIntent i am done
+AMAZON.StopIntent i'm done
+AMAZON.StopIntent  i'm out
+AMAZON.StopIntent no more
+AMAZON.StopIntent no more please
+AMAZON.StopIntent please close
+AMAZON.StopIntent please end
+AMAZON.StopIntent please stop
+AMAZON.StopIntent stop
+AMAZON.StopIntent stop please
+AMAZON.StopIntent that's all
+AMAZON.StopIntent that's it
+AMAZON.StopIntent the end
+AMAZON.StopIntent no all done
+AMAZON.StopIntent no cancel
+AMAZON.StopIntent no cancel please
+AMAZON.StopIntent no cancel that
+AMAZON.StopIntent no cancel that please
+AMAZON.StopIntent no close
+AMAZON.StopIntent no complete
+AMAZON.StopIntent no done
+AMAZON.StopIntent no end
+AMAZON.StopIntent no end please
+AMAZON.StopIntent no exit
+AMAZON.StopIntent no exit please
+AMAZON.StopIntent no finished
+AMAZON.StopIntent no goodbye
+AMAZON.StopIntent no goodnight
+AMAZON.StopIntent no i am done
+AMAZON.StopIntent no i'm done
+AMAZON.StopIntent no  i'm out
+AMAZON.StopIntent no no more
+AMAZON.StopIntent no no more please
+AMAZON.StopIntent no please close
+AMAZON.StopIntent no please end
+AMAZON.StopIntent no please stop
+AMAZON.StopIntent no stop
+AMAZON.StopIntent no stop please
+AMAZON.StopIntent no that's all
+AMAZON.StopIntent no that's it
+AMAZON.StopIntent no the end
+AMAZON.StopIntent no we're done
+AMAZON.StopIntent no we're done here
+
 

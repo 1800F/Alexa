@@ -2,6 +2,10 @@
  * Unauthorized copying of this file, via any medium is strictly prohibited
  * Proprietary and confidential
  * Written by Mitchell Harris
+ *
+ * - Ask - Says something, then asks the user a question
+ * - Tell - Says something, then terminates the conversation
+ * - Say - Says something, then the state-machine will continue on it’s state processing until it runs into an ask or tell. It will concatenate the say to the begining of the next sentence.
  */
 'use strict';
 
