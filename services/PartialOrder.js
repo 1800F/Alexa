@@ -269,6 +269,10 @@ PartialOrder.prototype.getSizeDetailsByName = function (name) {
   return _.find(self.arrangement.details.items,function(item){ return item.sku == size.sku });
 }
 
+PartialOrder.prototype.getSizeName = function() {
+  return this.size;
+}
+
 // Cache products
 PartialOrder.prototype.getArrangementDetails = function(arrangement) {
   var self = this

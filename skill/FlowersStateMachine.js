@@ -87,6 +87,7 @@ module.exports = StateMachine({
         SizeSelectionIntent: 'size-selection',
         DateSelectionIntent: 'date-selection',
         OrderReviewIntent: 'order-review',
+        "AMAZON.StartOverIntent": 'start-over',
         "AMAZON.HelpIntent": 'help-menu',
         "AMAZON.StopIntent": 'exit'
       }
@@ -115,6 +116,16 @@ module.exports = StateMachine({
           po.pickSize(request.intent.params.sizeSlot);
           return replyWith('Options.OpenResponse', 'options-review', request, po);
         });
+      }
+    },
+    "start-over": {
+      enter: function enter(request) {
+        return this.Access(request)
+          .then(function(api){return PartialOrder.fromRequest(api,request); })
+          .then(function(po){
+            po = PartialOrder.empty();
+            return replyWith(null, 'launch', request,po);
+          });
       }
     },
     "options-review": {
@@ -527,7 +538,7 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          if (request.intent.name == 'AMAZON.YesIntent') {
+          if (request.intent.name == 'AMAZON.YesIntent' || request.intent.name == 'AMAZON.DescriptionIntent') {
             return replyWith('QueryOptionsAgain.Validation','options-review',request,po);
           } else if (request.intent.name == 'AMAZON.NoIntent') {
             return replyWith('QueryOptionsAgain.Close','die',request,po);
