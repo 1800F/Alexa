@@ -275,7 +275,8 @@ var responses = function () {
             'Delivery Date: {deliveryDate}\n' +
             'Order Total: {priceTextFormatted}',
           image: {
-            smallImageUrl: '{imageUrl}'
+            smallImageUrl: '{imageUrl}',
+            largeImageUrl: '{imageUrl}'
           }
         }
       },

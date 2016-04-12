@@ -427,3 +427,8 @@ PartialOrder.prototype.placeOrder = function() {
     })
   ;
 }
+
+// Get the web url
+PartialOrder.prototype.getWeb = function() {
+  return config.flowers.web;
+}

@@ -22,6 +22,14 @@ console.log('Attempting to start.\r\n\t'
             + '\r\n\tNODE_ENV: '
             + env);
 var app = express();
+
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://ask-ifr-download.s3.amazonaws.com");
+  req.header('Access-Control-Allow-Methods', 'GET');
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
+
 app.use(serveStatic(path.join(__dirname, 'public')));
 
 app.set('views', __dirname + '/views');
