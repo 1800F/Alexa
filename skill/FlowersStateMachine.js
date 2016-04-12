@@ -291,6 +291,7 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
+          if (verbose) console.log(request.intent.params);
           return po.pickArrangement(request.intent.params.arrangementSlot).then(function (success) {
             if (!success) {
               return replyWith('Errors.ErrorGeneral', 'die', request, po);
