@@ -70,7 +70,7 @@ router.post('/', function (req, res, next) {
         auth_code: authCode,
         redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
         nextSteps: lang.enumerate(_.compact([
-            data.noCC ? 'contacts' : ''
+            data.noCC ? 'a credit card' : ''
           , data.noBillingAddress ? 'a billing address' : ''
           , data.noContacts ? 'contacts' : ''
         ])),
@@ -95,7 +95,7 @@ router.post('/', function (req, res, next) {
 });
 
 router.post('/oauth', function (req, res, next) {
-  var token_expiration = config.alexa.auth.token_expiration || 3600;
+  var token_expiration = config.alexa.auth.token_expiration || 63113851;
   if (verbose && logsAreInsensitive && false) {
     console.log("OAUTH POSTED");
     console.log(req.body);
