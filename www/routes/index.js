@@ -70,7 +70,7 @@ router.post('/', function (req, res, next) {
         auth_code: authCode,
         redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
         nextSteps: lang.enumerate(_.compact([
-            data.noCC ? 'contacts' : ''
+            data.noCC ? 'a credit card' : ''
           , data.noBillingAddress ? 'a billing address' : ''
           , data.noContacts ? 'contacts' : ''
         ])),
@@ -95,7 +95,7 @@ router.post('/', function (req, res, next) {
 });
 
 router.post('/oauth', function (req, res, next) {
-  var token_expiration = config.alexa.auth.token_expiration || 3600;
+  var token_expiration = config.alexa.auth.token_expiration || 63113851;
   if (verbose && logsAreInsensitive && false) {
     console.log("OAUTH POSTED");
     console.log(req.body);
@@ -148,7 +148,7 @@ router.post('/create', function (req, res, next) {
       console.log("ERROR CODE DOESN'T EXIST");
       flowers.addCustomerDetails(first, lastname, email, user.registerNewCustomerResponse.customerData.systemID).then(function (details) {
         if (details.AddPersonResponse) {
-          console.log(details.AddPersonResponse.result.person);
+          console.log("ADD PERSON DETAILS: " + JSON.stringify(details.AddPersonResponse.result.person));
           var authCode = oauthhelper.encryptTokens({"systemID": user.registerNewCustomerResponse.customerData.systemID, "customerID": details.AddPersonResponse.result.person.idPK});
           res.render('home/success-needs-more', {
               page: "success",
@@ -202,13 +202,13 @@ router.get('/privacy-policy', function (req, res, next) {
   //TEST ORDER
   flowers.login('1stevenh@rain.agency', '1rainPssword').then(function (user) {
     console.log(user);
-    user.submitOrder({productSku:"90950L", prodType:"FPT", itemPrice:"69.99"},
-    {firstName:"Mark", lastName:"Miles", address:{addr1:"test"}},
-    {firstName:"Mark", lastName:"Miles", addr1:"686 E State St", addr2:"Suite 101", city:"American Fork", state:"UT", postalCode:"84003", country:"USA"},
-    {number:"4333"},
-    {shortDate:"14-APR-16"}).then(function(order) {
-      console.log(order);
-    })
+    // user.submitOrder({productSku:"90950L", prodType:"FPT", itemPrice:"69.99"},
+    // {firstName:"Mark", lastName:"Miles", address:{addr1:"test"}},
+    // {firstName:"Mark", lastName:"Miles", addr1:"686 E State St", addr2:"Suite 101", city:"American Fork", state:"UT", postalCode:"84003", country:"USA"},
+    // {number:"4333"},
+    // {shortDate:"14-APR-16"}).then(function(order) {
+    //   console.log(order);
+    // })
   });
 
   //TEST PRODUCT API
