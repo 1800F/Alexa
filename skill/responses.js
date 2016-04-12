@@ -271,8 +271,8 @@ var responses = function () {
           type: 'Standard',
           title: 'You bought flowers!',
           text: 'Your {arrangementSize} {arrangementType} order has been placed!\n' +
-            '{recipient}\n{address}\n' +
-            'Delivery Date: {deliveryDate}\n' +
+            '{recipient}\n{address}\n\n' +
+            'Delivery Date: {deliveryDate}\n\n' +
             'Order Total: {priceTextFormatted}',
           image: {
             smallImageUrl: '{imageUrl}',
