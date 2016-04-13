@@ -44,6 +44,11 @@ exports.empty = function (api) {
   return new PartialOrder(api, {});
 };
 
+// Check if an PO is open
+exports.exists = function (request) {
+  return !!(request.session && request.session.attributes && request.session.attributes.partialOrder);
+}
+
 /**
  * q: { } set of promises that are getting data :), such as:
  *    - product
@@ -180,7 +185,7 @@ PartialOrder.prototype.clearArrangementDescriptions = function() {
 }
 
 PartialOrder.prototype.pickArrangement = function(arrangementName) {
-  if (verbose) console.log(arrangementName);
+  if (verbose) console.log('PickArrangement ' + arrangementName);
   var self = this;
   if (!arrangementName) {
     self.arrangement = null;

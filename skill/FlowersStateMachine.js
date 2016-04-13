@@ -109,8 +109,15 @@ module.exports = StateMachine({
     "launch": {
       enter: function enter(request) {
         return this.Access(request)
-        .then(PartialOrder.empty)
-        .then(function (po) {
+        .then(function(api) {
+          return PartialOrder.exists(request);
+        })
+        .then(function(exists) {
+          if (exists) {
+            return Promise.reject(StateMachineSkill.ERRORS.BAD_RESPONSE);
+          }
+          
+          var po = PartialOrder.empty();
           po.possibleRecipient = request.intent.params.recipientSlot;
           po.possibleDeliveryDate = request.intent.params.deliveryDateSlot;
           po.pickArrangement(request.intent.params.arrangementSlot);
@@ -313,13 +320,15 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          if (verbose) console.log(request.intent.params);
-          return po.pickArrangement(request.intent.params.arrangementSlot).then(function (success) {
-            if (!success) {
-              return replyWith('Errors.ErrorGeneral', 'die', request, po);
-            }
-            return replyWith('ArrangementSelectionIntent.ArrangementValidation', 'options-review', request, po);
-          });
+          if (request.intent.params && request.intent.params.arrangementSlot) {
+            if (verbose) console.log('Arrangement Selection Params ',request.intent.params);
+            return po.pickArrangement(request.intent.params.arrangementSlot).then(function (success) {
+              if (!success) {
+                return replyWith('Errors.ErrorGeneral', 'die', request, po);
+              }
+              return replyWith('ArrangementSelectionIntent.ArrangementValidation', 'options-review', request, po);
+            });
+          }
         });
       }
     },
