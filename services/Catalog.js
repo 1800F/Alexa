@@ -44,17 +44,17 @@ exports.choices = [
     , 'sizes': [
       {
         'name': 'small'
-        , 'suffix': 'SHB'
+        , 'suffix': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? 'S' : 'SHB')
         , 'description': "The small 11-stem \"birthday arrangement\" is about 14 inches high, including the stylish eight inch glass vase. It's about 10 inches in diameter."
       }
       , {
         'name': 'medium'
-        , 'suffix': 'MHB'
+        , 'suffix': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? 'M' : 'MHB')
         , 'description': "The 15-stem medium \"birthday arrangement\" is about 15 inches high, including the stylish, eight-inch vase, and it's about 11.5 inches in diameter."
       }
       , {
         'name': 'large'
-        , 'suffix': 'LHB'
+        , 'suffix': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? 'L' : 'LHB')
         , 'description': "The large \"birthday arrangement\" has 18 stems and is about 16 inches high, including the stylish, eight-inch vase. It's roughly 13 inches in diameter."
       }
     ]
