@@ -16,7 +16,7 @@ var _ = require('lodash')
 
 exports.choices = [
   {
-    'name': 'Mothers Day'
+    'name': 'Mother\'s Day'
     , 'sku': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? '90950' : '146638')
     , 'description': "The Mother's Day arrangement features light pink roses, pink Oriental, Hybrid, and Peruvian lilies, carnations, white snapdragons, pink stock, and salal tips. It is artistically designed in an eight-inch-tall, pink, vintage-inspired glass vase."
     , 'sizes': [
