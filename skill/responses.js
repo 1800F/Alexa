@@ -271,11 +271,11 @@ var responses = function () {
           type: 'Standard',
           title: 'You bought flowers!',
           text: 'Your {arrangementSize} {arrangementType} order has been placed!\n' +
-            ' \n' +
+            '-\n' +
             '{recipient}\n{address}\n' +
-            ' \n' +
+            '-\n' +
             'Delivery Date: {deliveryDate}\n' +
-            ' \n' +
+            '-\n' +
             'Order Total: {priceTextFormatted}',
           image: {
             smallImageUrl: '{imageUrl}',
