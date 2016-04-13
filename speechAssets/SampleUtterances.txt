@@ -2,6 +2,7 @@ LaunchIntent {action}
 LaunchIntent {action} {arrangementSlot} {bouquet}
 LaunchIntent {action} {bouquet}
 LaunchIntent {action} {bouquet} for {deliveryDateSlot}
+LaunchIntent {action} {bouquet} on {deliveryDateSlot}
 LaunchIntent {action} {bouquet} for {recipientSlot}
 LaunchIntent {action} {bouquet} for {recipientSlot} on  {deliveryDateSlot}
 LaunchIntent {action} {bouquet} now
