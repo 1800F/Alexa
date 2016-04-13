@@ -134,6 +134,7 @@ module.exports = StateMachine({
             if (request.session.attributes.reply) {
               return replyWith(request.session.attributes.reply.msgPath, request.session.attributes.reply.state, request, po);
             }
+            return replyWith(null, 'launch', request, null);
           });
       }
     },
