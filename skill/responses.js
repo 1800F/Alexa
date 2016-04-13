@@ -253,7 +253,7 @@ var responses = function () {
         reprompt: "Should I place your order for {price}?"
       },
       CancelOrder: {
-        ask: "Okay, what order change would you like to make,",
+        ask: "Oh, OK. You can change any part of your order by just stating the change you want to make. For example, you can say, Send to Bertha. and the recipient will change to Bertha instead of {recipient}. Or, if you'd rather have a {differentSize}, just say, {differentSize}.  You can also tell me a new date and I will check to see if the new date is deliverable. What is the change you’d like to make?",
         reprompt: "Did you want to cancel your order?",
       },
     },
@@ -271,8 +271,11 @@ var responses = function () {
           type: 'Standard',
           title: 'You bought flowers!',
           text: 'Your {arrangementSize} {arrangementType} order has been placed!\n' +
+            '-\n' +
             '{recipient}\n{address}\n' +
+            '-\n' +
             'Delivery Date: {deliveryDate}\n' +
+            '-\n' +
             'Order Total: {priceTextFormatted}',
           image: {
             smallImageUrl: '{imageUrl}',

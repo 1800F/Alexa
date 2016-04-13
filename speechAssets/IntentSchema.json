@@ -106,6 +106,12 @@
     {
       "intent": "AMAZON.StopIntent"
     },
+    {
+      "intent": "AMAZON.CancelIntent"
+    },
+    {
+      "intent": "AMAZON.StartOverIntent"
+    },
      {
       "intent": "AMAZON.RepeatIntent"
     }

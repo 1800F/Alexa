@@ -87,6 +87,8 @@ module.exports = StateMachine({
         SizeSelectionIntent: 'size-selection',
         DateSelectionIntent: 'date-selection',
         OrderReviewIntent: 'order-review',
+        "AMAZON.RepeatIntent": 'repeat',
+        "AMAZON.StartOverIntent": 'start-over',
         "AMAZON.HelpIntent": 'help-menu',
         "AMAZON.StopIntent": 'exit'
       }
@@ -115,6 +117,27 @@ module.exports = StateMachine({
           po.pickSize(request.intent.params.sizeSlot);
           return replyWith('Options.OpenResponse', 'options-review', request, po);
         });
+      }
+    },
+    "repeat": {
+      enter: function enter(request) {
+        return this.Access(request)
+          .then(function(api) { return PartialOrder.fromRequest(api,request); })
+          .then(function(po) {
+            if (request.session.attributes.reply) {
+              return replyWith(request.session.attributes.reply.msgPath, request.session.attributes.reply.state, request, po);
+            }
+          });
+      }
+    },
+    "start-over": {
+      enter: function enter(request) {
+        return this.Access(request)
+          .then(function(api){return PartialOrder.fromRequest(api,request); })
+          .then(function(po){
+            po = PartialOrder.empty();
+            return replyWith(null, 'launch', request,po);
+          });
       }
     },
     "options-review": {
@@ -236,8 +259,7 @@ module.exports = StateMachine({
     "query-arrangement-type": {
       to: {
         DescriptionIntent: 'arrangement-descriptions',
-        LaunchIntent: 'arrangement-selection',
-        "AMAZON.RepeatIntent": 'options-review'
+        LaunchIntent: 'arrangement-selection'
       }
     },
     "arrangement-descriptions": {
@@ -291,6 +313,7 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
+          if (verbose) console.log(request.intent.params);
           return po.pickArrangement(request.intent.params.arrangementSlot).then(function (success) {
             if (!success) {
               return replyWith('Errors.ErrorGeneral', 'die', request, po);
@@ -312,8 +335,7 @@ module.exports = StateMachine({
     "query-size": {
       to: {
         DescriptionIntent: 'size-descriptions',
-        LaunchIntent: 'size-selection',
-        "AMAZON.RepeatIntent": 'options-review'
+        LaunchIntent: 'size-selection'
       }
     },
     "size-descriptions": {
@@ -526,7 +548,7 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          if (request.intent.name == 'AMAZON.YesIntent') {
+          if (request.intent.name == 'AMAZON.YesIntent' || request.intent.name == 'AMAZON.DescriptionIntent') {
             return replyWith('QueryOptionsAgain.Validation','options-review',request,po);
           } else if (request.intent.name == 'AMAZON.NoIntent') {
             return replyWith('QueryOptionsAgain.Close','die',request,po);
@@ -563,12 +585,16 @@ module.exports = StateMachine({
 function replyWith(msgPath, state, request, partialOrder) {
   if (verbose) console.log('Move to state [' + state + '] and say ' + msgPath);
   return renderMessage(msgPath, partialOrder).then(function (msg) {
+    // For AMAZON.RepeatIntent
+    var reply = null;
+    if (msg && msg.ask) reply = { msgPath: msgPath, state: state };
     return {
       message: msg,
       to: state,
       session: {
         partialOrder: partialOrder ? partialOrder.serialize() : request.session.attributes.partialOrder,
-        startTimestamp: request.session.attributes.startTimestamp
+        startTimestamp: request.session.attributes.startTimestamp,
+        reply: reply
       }
     };
   });

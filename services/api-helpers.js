@@ -34,7 +34,10 @@ function issue(method, token, path, queryString, body, options, apiType) {
     req.json = true;
     req.body = body;
   }
-  if(options.verbose && false) console.log("REQUEST: " + url);
+  if(options.verbose) {
+    console.log("REQUEST: " + url);
+    if (options.superVerbose) console.log("REQUEST BODY: " + JSON.stringify(req.body));
+  }
   return op(req).then(function (res) {
     if (options.verbose) {
       console.log("RESPONSE: " + url + " - " + res.statusCode + " - " + (new Date() - startTime) + 'ms');

@@ -494,7 +494,6 @@ ArrangementSelectionIntent Send a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent Send a {arrangementSlot} {bouquet} please
 ArrangementSelectionIntent Send a {arrangementSlot} please
 
-ArrangementSelectionIntent No {arrangementSlot}
 ArrangementSelectionIntent No {arrangementSlot} {bouquet}
 ArrangementSelectionIntent No {arrangementSlot} {bouquet} please
 ArrangementSelectionIntent No {arrangementSlot} please
@@ -667,13 +666,23 @@ DateSelectionIntent no I need the  {bouquet} on {deliveryDateSlot}
 
 AMAZON.RepeatIntent again
 AMAZON.RepeatIntent again please
+AMAZON.RepeatIntent can you give me those options again
+AMAZON.RepeatIntent can you repeat that
 AMAZON.RepeatIntent can you repeat that
 AMAZON.RepeatIntent can you repeat that please
+AMAZON.RepeatIntent can you say my options again
+AMAZON.RepeatIntent can you say that again
 AMAZON.RepeatIntent couldn't hear you
+AMAZON.RepeatIntent could you please repeat that
+AMAZON.RepeatIntent could you repeat that
+AMAZON.RepeatIntent could you repeat the options again
+AMAZON.RepeatIntent could you say my options again
+AMAZON.RepeatIntent could you say that again
+AMAZON.RepeatIntent could you say the options again
 AMAZON.RepeatIntent huh
+AMAZON.RepeatIntent i'm not sure what you said
 AMAZON.RepeatIntent i couldn't hear you
 AMAZON.RepeatIntent i didn't catch that
-AMAZON.RepeatIntent i'm not sure what you said
 AMAZON.RepeatIntent once again
 AMAZON.RepeatIntent once again please
 AMAZON.RepeatIntent once more
@@ -685,8 +694,8 @@ AMAZON.RepeatIntent play it again
 AMAZON.RepeatIntent play it again please
 AMAZON.RepeatIntent please repeat
 AMAZON.RepeatIntent please repeat that
-AMAZON.RepeatIntent please repeat what you said
 AMAZON.RepeatIntent please repeat the details
+AMAZON.RepeatIntent please repeat what you said
 AMAZON.RepeatIntent repeat
 AMAZON.RepeatIntent repeat it
 AMAZON.RepeatIntent repeat it please
@@ -695,6 +704,7 @@ AMAZON.RepeatIntent repeat the details
 AMAZON.RepeatIntent repeat the details Please
 AMAZON.RepeatIntent say it again
 AMAZON.RepeatIntent say it again please
+AMAZON.RepeatIntent say that again
 AMAZON.RepeatIntent say that again
 AMAZON.RepeatIntent say that again please
 AMAZON.RepeatIntent tell me again
@@ -706,9 +716,19 @@ AMAZON.RepeatIntent try it again please
 AMAZON.RepeatIntent wait
 AMAZON.RepeatIntent wait what
 AMAZON.RepeatIntent what
+AMAZON.RepeatIntent what's that
+AMAZON.RepeatIntent what are my options again
+AMAZON.RepeatIntent what are the arrangements again
+AMAZON.RepeatIntent what are they again
 AMAZON.RepeatIntent what did you say
 AMAZON.RepeatIntent what was that
-AMAZON.RepeatIntent what's that
+AMAZON.RepeatIntent what were my options again
+AMAZON.RepeatIntent what were they again
+AMAZON.RepeatIntent what were your options again
+AMAZON.RepeatIntent will you give me the options again
+AMAZON.RepeatIntent will you repeat that
+AMAZON.RepeatIntent will you say that again
+
 
 
 AMAZON.YesIntent absolutely
@@ -998,5 +1018,7 @@ AMAZON.StopIntent no that's it
 AMAZON.StopIntent no the end
 AMAZON.StopIntent no we're done
 AMAZON.StopIntent no we're done here
+
+
 
 

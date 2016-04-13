@@ -43,6 +43,7 @@ var Flowers = module.exports = function Flowers(options, tokens) {
     // endpoint
     return getSpecificAuthToken(username,password).then(function(tokens){
       if (tokens.error) return Promise.reject(tokens.error);
+      // if (options.superVerbose) console.log("TOKEN: " + JSON.stringify(tokens));
       var user = FlowersUser(options, tokens);
       return user.authenticate(username,password).then(_.constant(user));
     });
