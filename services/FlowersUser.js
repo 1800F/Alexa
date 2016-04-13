@@ -1,6 +1,7 @@
 var Promise = require('bluebird')
   , _ = require('lodash')
   , issue = require('./api-helpers.js').issue
+  , oauthReq = require('./api-helpers.js').oauthReq
   , parseString = require('xml2js').parseString
   , moment = require('moment')
   , js2xmlparser = require("js2xmlparser")
@@ -16,6 +17,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
     get tokens() { return tokens; },
     get systemID() { return systemID; },
     get customerID() { return customerID; },
+    // resetToken: resetToken, //FOR DEBUGGING ISSUE WITH OAUTH ONLY -- REMOVE BEFORE PUSHING LIVE
     authenticate: authenticate,
     getPaymentMethods: getPaymentMethods,
     getRecipients: getRecipients,
@@ -23,6 +25,10 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
     getCustomerDetails: getCustomerDetails,
     submitOrder: submitOrder // Why is this in the order and not in Purchase?
   }, 'user');
+
+  // function resetToken() {
+  //   tokens.access_token = 'bad token';
+  // }
 
   // Beware. While this endpoint accepts a user, it doesn't actually validate it
   function authenticate(username, password) {
@@ -74,7 +80,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
       }
     };
     return userrequest('POST', '/getRecipients', {}, body, "account").then(function (body) {
-      // if (options.verbose) console.log("Recipients: " + JSON.stringify(body.MDMRecipientsResponse));
+      if (options.verbose) console.log("Recipients: " + JSON.stringify(body.MDMRecipientsResponse));
       return body.MDMRecipientsResponse.MDMRecipients.MDMRecipient;
     });
   }
@@ -219,8 +225,21 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
     .then(function (token) {
       return issue(method, token, path, queryString, body, options, apiType);
     }).then(function (res) {
-      if (res.statusCode < 200 || res.statusCode >= 300) return Promise.reject(res);
+      if (res.statusCode < 200 || (res.statusCode >= 300 && res.statusCode != 401)) return Promise.reject(res);
       if (res.statusCode == 201 && !res.body) res.body = {};
+      if (res.statusCode == 401) {
+        //Our token is invalid, get a new token
+        return qAuthReq = oauthReq('password' ,options.defaultCredentials , options,'account').then(function (toks) {
+          qAuthReq = null;
+          if(toks.error) return Promise.reject(toks.error);
+          tokens.access_token = toks.access_token;
+          return issue(method, tokens.access_token, path, queryString, body, options, apiType);
+        }).catch(function(e){
+          qAuthReq = null;
+          tokens.access_token = null;
+          return Promise.reject(e);
+        });
+      }
       if (giveResponse) res.body.response = res;
       return res.body;
     });
