@@ -275,7 +275,7 @@ var responses = function () {
           type: 'Standard',
           title: 'You bought flowers!',
           text: 'Your {arrangementSize} {arrangementType} flowers are on their way!\n' +
-            '   \n' +
+            '     \n' +
             '{recipient}\n{address}\n' +
             '   \n' +
             'Delivery Date: {deliveryDate}\n' +
