@@ -259,8 +259,7 @@ module.exports = StateMachine({
     "query-arrangement-type": {
       to: {
         DescriptionIntent: 'arrangement-descriptions',
-        LaunchIntent: 'arrangement-selection',
-        "AMAZON.RepeatIntent": 'options-review'
+        LaunchIntent: 'arrangement-selection'
       }
     },
     "arrangement-descriptions": {
@@ -336,8 +335,7 @@ module.exports = StateMachine({
     "query-size": {
       to: {
         DescriptionIntent: 'size-descriptions',
-        LaunchIntent: 'size-selection',
-        "AMAZON.RepeatIntent": 'options-review'
+        LaunchIntent: 'size-selection'
       }
     },
     "size-descriptions": {
