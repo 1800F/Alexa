@@ -11,12 +11,13 @@
 'use strict';
 
 var _ = require('lodash')
+  , config = require('../config')
 ;
 
 exports.choices = [
   {
-    'name': 'Mothers Day'
-    , 'sku': '146638'
+    'name': 'Mother\'s Day'
+    , 'sku': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? '90950' : '146638')
     , 'description': "The Mother's Day arrangement features light pink roses, pink Oriental, Hybrid, and Peruvian lilies, carnations, white snapdragons, pink stock, and salal tips. It is artistically designed in an eight-inch-tall, pink, vintage-inspired glass vase."
     , 'sizes': [
       {
@@ -38,7 +39,7 @@ exports.choices = [
   }
   , {
     'name': 'Birthday'
-    , 'sku': '91576'
+    , 'sku': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? '90950' : '91576')
     , 'description': "The \"birthday arrangement\" features hot-pink roses, purple carnations, hot-pink mini carnations, yellow daisy poms, purple alstroemeria, athos poms, solidago and salal, all gathered in a stylish, 8-inch glass vase tied with colorful ribbon. It comes with an 18-inch Mylar birthday balloon."
     , 'sizes': [
       {
