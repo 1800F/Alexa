@@ -274,7 +274,7 @@ var responses = function () {
         card: {
           type: 'Standard',
           title: 'You bought flowers!',
-          text: 'Your {arrangementSize} {arrangementType} arrangement is on their way!\n' +
+          text: 'Your {arrangementSize} {arrangementType} arrangement is on its way!\n' +
             '-\n' +
             '{recipient}\n{address}\n' +
             '-\n' +
