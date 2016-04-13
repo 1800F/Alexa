@@ -200,8 +200,12 @@ router.get('/account-required', function (req, res, next) {
 
 router.get('/privacy-policy', function (req, res, next) {
   //TEST ORDER
-  flowers.login('1stevenh@rain.agency', '1rainPssword').then(function (user) {
-    console.log(user);
+  // flowers.login('1stevenh@rain.agency', '1rainPssword').then(function (user) {
+  //   console.log(user.tokens);
+    // user.resetToken();
+    // console.log(user.tokens);
+    // user.getPaymentMethods();
+    // console.log("TOKEN AFTER GETCC: " + user.tokens);
     // user.submitOrder({productSku:"90950L", prodType:"FPT", itemPrice:"69.99"},
     // {firstName:"Mark", lastName:"Miles", address:{addr1:"test"}},
     // {firstName:"Mark", lastName:"Miles", addr1:"686 E State St", addr2:"Suite 101", city:"American Fork", state:"UT", postalCode:"84003", country:"USA"},
@@ -209,7 +213,7 @@ router.get('/privacy-policy', function (req, res, next) {
     // {shortDate:"14-APR-16"}).then(function(order) {
     //   console.log(order);
     // })
-  });
+  // });
 
   //TEST PRODUCT API
   //var floralEmbrace = Flowers.Product(config.flowers, "91333SHB");
