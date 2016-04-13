@@ -2,6 +2,7 @@ LaunchIntent {action}
 LaunchIntent {action} {arrangementSlot} {bouquet}
 LaunchIntent {action} {bouquet}
 LaunchIntent {action} {bouquet} for {deliveryDateSlot}
+LaunchIntent {action} {bouquet} on {deliveryDateSlot}
 LaunchIntent {action} {bouquet} for {recipientSlot}
 LaunchIntent {action} {bouquet} for {recipientSlot} on  {deliveryDateSlot}
 LaunchIntent {action} {bouquet} now
@@ -962,7 +963,7 @@ AMAZON.HelpIntent what questions can i ask
 
 AMAZON.StopIntent all done
 AMAZON.StopIntent cancel
-AMAZON.StopIntent  cancel please
+AMAZON.StopIntent cancel please
 AMAZON.StopIntent cancel that
 AMAZON.StopIntent cancel that please
 AMAZON.StopIntent close
@@ -1019,6 +1020,17 @@ AMAZON.StopIntent no the end
 AMAZON.StopIntent no we're done
 AMAZON.StopIntent no we're done here
 
+AMAZON.StartOverIntent start my order over
+AMAZON.StartOverIntent let's start over
+AMAZON.StartOverIntent start my order over
+AMAZON.StartOverIntent I want to start my order over
+AMAZON.StartOverIntent start again
+AMAZON.StartOverIntent can we start again
+AMAZON.StartOverIntent can we start a new order
+AMAZON.StartOverIntent I want to start again
+AMAZON.StartOverIntent I want to start a new order
+AMAZON.StartOverIntent I want to start over
+AMAZON.StartOverIntent I need to start over
 
 
 

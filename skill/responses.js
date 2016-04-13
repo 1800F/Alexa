@@ -225,10 +225,14 @@ var responses = function () {
         ask: "To select a date you can say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'. What day would you like the flowers delivered?",
         reprompt: "When would you like the flowers delivered?",
       },
+       InvalidDate: {
+        ask: "To select a date just say the month and day, like 'March 6th' or you can say 'tomorrow' or 'next Wednesday'.  When would you like the flowers delivered?" ,
+        reprompt: "To select a date you can say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'.  When would you like the flowers delivered?",
+      },
       ContinueWithOrder: {
         ask: "Would you like to continue with your order?",
         reprompt: "Did you want to continue with your order?",
-      },
+      }
     },
 
     ValidatePossibleDeliveryDate: {
@@ -270,12 +274,12 @@ var responses = function () {
         card: {
           type: 'Standard',
           title: 'You bought flowers!',
-          text: 'Your {arrangementSize} {arrangementType} order has been placed!\n' +
+          text: 'Your {arrangementSize} {arrangementType} arrangement is on its way!\n' +
             '-\n' +
             '{recipient}\n{address}\n' +
             '-\n' +
             'Delivery Date: {deliveryDate}\n' +
-            '-\n' +
+            '\n' +
             'Order Total: {priceTextFormatted}',
           image: {
             smallImageUrl: '{imageUrl}',
