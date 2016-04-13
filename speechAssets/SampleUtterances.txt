@@ -494,7 +494,6 @@ ArrangementSelectionIntent Send a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent Send a {arrangementSlot} {bouquet} please
 ArrangementSelectionIntent Send a {arrangementSlot} please
 
-ArrangementSelectionIntent No {arrangementSlot}
 ArrangementSelectionIntent No {arrangementSlot} {bouquet}
 ArrangementSelectionIntent No {arrangementSlot} {bouquet} please
 ArrangementSelectionIntent No {arrangementSlot} please
