@@ -113,6 +113,12 @@ exports.sizePrice = function (po) {
   return currency.say(details.price, 'USD');
 }
 
+exports.differentSize = function (po) {
+  var size = po.getSizeName();
+  if (size.toLowerCase() === "medium") return "Large";
+  return "Medium";
+}
+
 // OKay
 
 exports.okay = function (po) {

@@ -137,6 +137,22 @@ RecipientSelectionIntent Can I send flowers to {recipientSlot}
 RecipientSelectionIntent I need flowers for {recipientSlot}
 RecipientSelectionIntent let's send to {recipientSlot}
 
+RecipientSelectionIntent no {recipientSlot}
+RecipientSelectionIntent no  {recipientSlot} please
+RecipientSelectionIntent no For {recipientSlot}
+RecipientSelectionIntent no Oh {recipientSlot}
+RecipientSelectionIntent no Send flowers to {recipientSlot}
+RecipientSelectionIntent no Send to {recipientSlot}
+RecipientSelectionIntent no I want {recipientSlot}
+RecipientSelectionIntent no I would like to send to {recipientSlot}
+RecipientSelectionIntent no Should go to {recipientSlot}
+RecipientSelectionIntent no I want to send to {recipientSlot}
+RecipientSelectionIntent no These are for {recipientSlot}
+RecipientSelectionIntent no Please send them to {recipientSlot}
+RecipientSelectionIntent no Can I send flowers to {recipientSlot}
+RecipientSelectionIntent no I need flowers for {recipientSlot}
+RecipientSelectionIntent no let's send to {recipientSlot}
+
 
 SizeSelectionIntent {sizeSlot}
 SizeSelectionIntent {sizeSlot} please
@@ -322,6 +338,8 @@ DescriptionIntent What is the price of the {sizeSlot}
 DescriptionIntent Tell me the price of the {sizeSlot}
 DescriptionIntent How much does the {sizeSlot} cost
 DescriptionIntent How much is the {sizeSlot}
+DescriptionIntent Can you tell me what is in the {sizeSlot}
+DescriptionIntent Can you tell me what's in the {sizeSlot}
 
 DescriptionIntent What's in the {arrangementSlot}
 DescriptionIntent Tell me about the {arrangementSlot}
@@ -337,6 +355,8 @@ DescriptionIntent What is the price of the {arrangementSlot}
 DescriptionIntent Tell me the price of the {arrangementSlot}
 DescriptionIntent How much does the {arrangementSlot} cost
 DescriptionIntent How much is the {arrangementSlot}
+DescriptionIntent Can you tell me what is in the {arrangementSlot}
+DescriptionIntent Can you tell me what's in the {arrangementSlot}
 
 DescriptionIntent What's in the {sizeSlot} {bouquet}
 DescriptionIntent Tell me about the {sizeSlot} {bouquet}
@@ -352,6 +372,9 @@ DescriptionIntent What is the price of the {sizeSlot} {bouquet}
 DescriptionIntent Tell me the price of the {sizeSlot} {bouquet}
 DescriptionIntent How much does the {sizeSlot} {bouquet} cost
 DescriptionIntent How much is the {sizeSlot} {bouquet}
+DescriptionIntent Can you tell me what is in the {sizeSlot} {bouquet}
+DescriptionIntent Can you tell me what's in the {sizeSlot} {bouquet}
+
 
 DescriptionIntent What's in the {arrangementSlot} {bouquet}
 DescriptionIntent Tell me about the {arrangementSlot} {bouquet}
@@ -367,6 +390,8 @@ DescriptionIntent What is the price of the {arrangementSlot} {bouquet}
 DescriptionIntent Tell me the price of the {arrangementSlot} {bouquet}
 DescriptionIntent How much does the {arrangementSlot} {bouquet} cost
 DescriptionIntent How much is the {arrangementSlot} {bouquet}
+DescriptionIntent Can you tell me what is in the {arrangementSlot} {bouquet}
+DescriptionIntent Can you tell me what's in the {arrangementSlot} {bouquet}
 
 DescriptionIntent Who can I send flowers to
 DescriptionIntent What are my options
@@ -469,7 +494,6 @@ ArrangementSelectionIntent Send a {arrangementSlot} {bouquet}
 ArrangementSelectionIntent Send a {arrangementSlot} {bouquet} please
 ArrangementSelectionIntent Send a {arrangementSlot} please
 
-ArrangementSelectionIntent No {arrangementSlot}
 ArrangementSelectionIntent No {arrangementSlot} {bouquet}
 ArrangementSelectionIntent No {arrangementSlot} {bouquet} please
 ArrangementSelectionIntent No {arrangementSlot} please
@@ -642,13 +666,23 @@ DateSelectionIntent no I need the  {bouquet} on {deliveryDateSlot}
 
 AMAZON.RepeatIntent again
 AMAZON.RepeatIntent again please
+AMAZON.RepeatIntent can you give me those options again
+AMAZON.RepeatIntent can you repeat that
 AMAZON.RepeatIntent can you repeat that
 AMAZON.RepeatIntent can you repeat that please
+AMAZON.RepeatIntent can you say my options again
+AMAZON.RepeatIntent can you say that again
 AMAZON.RepeatIntent couldn't hear you
+AMAZON.RepeatIntent could you please repeat that
+AMAZON.RepeatIntent could you repeat that
+AMAZON.RepeatIntent could you repeat the options again
+AMAZON.RepeatIntent could you say my options again
+AMAZON.RepeatIntent could you say that again
+AMAZON.RepeatIntent could you say the options again
 AMAZON.RepeatIntent huh
+AMAZON.RepeatIntent i'm not sure what you said
 AMAZON.RepeatIntent i couldn't hear you
 AMAZON.RepeatIntent i didn't catch that
-AMAZON.RepeatIntent i'm not sure what you said
 AMAZON.RepeatIntent once again
 AMAZON.RepeatIntent once again please
 AMAZON.RepeatIntent once more
@@ -660,8 +694,8 @@ AMAZON.RepeatIntent play it again
 AMAZON.RepeatIntent play it again please
 AMAZON.RepeatIntent please repeat
 AMAZON.RepeatIntent please repeat that
-AMAZON.RepeatIntent please repeat what you said
 AMAZON.RepeatIntent please repeat the details
+AMAZON.RepeatIntent please repeat what you said
 AMAZON.RepeatIntent repeat
 AMAZON.RepeatIntent repeat it
 AMAZON.RepeatIntent repeat it please
@@ -670,6 +704,7 @@ AMAZON.RepeatIntent repeat the details
 AMAZON.RepeatIntent repeat the details Please
 AMAZON.RepeatIntent say it again
 AMAZON.RepeatIntent say it again please
+AMAZON.RepeatIntent say that again
 AMAZON.RepeatIntent say that again
 AMAZON.RepeatIntent say that again please
 AMAZON.RepeatIntent tell me again
@@ -681,9 +716,19 @@ AMAZON.RepeatIntent try it again please
 AMAZON.RepeatIntent wait
 AMAZON.RepeatIntent wait what
 AMAZON.RepeatIntent what
+AMAZON.RepeatIntent what's that
+AMAZON.RepeatIntent what are my options again
+AMAZON.RepeatIntent what are the arrangements again
+AMAZON.RepeatIntent what are they again
 AMAZON.RepeatIntent what did you say
 AMAZON.RepeatIntent what was that
-AMAZON.RepeatIntent what's that
+AMAZON.RepeatIntent what were my options again
+AMAZON.RepeatIntent what were they again
+AMAZON.RepeatIntent what were your options again
+AMAZON.RepeatIntent will you give me the options again
+AMAZON.RepeatIntent will you repeat that
+AMAZON.RepeatIntent will you say that again
+
 
 
 AMAZON.YesIntent absolutely
@@ -723,6 +768,8 @@ AMAZON.YesIntent sure sounds good
 AMAZON.YesIntent sure thing
 AMAZON.YesIntent thanks
 AMAZON.YesIntent that's it
+AMAZON.YesIntent that's her
+AMAZON.YesIntent that's him
 AMAZON.YesIntent that is her
 AMAZON.YesIntent that is him
 AMAZON.YesIntent uh huh
@@ -941,6 +988,37 @@ AMAZON.StopIntent stop please
 AMAZON.StopIntent that's all
 AMAZON.StopIntent that's it
 AMAZON.StopIntent the end
-AMAZON.StopIntent we're done
-AMAZON.StopIntent we're done here
+AMAZON.StopIntent no all done
+AMAZON.StopIntent no cancel
+AMAZON.StopIntent no cancel please
+AMAZON.StopIntent no cancel that
+AMAZON.StopIntent no cancel that please
+AMAZON.StopIntent no close
+AMAZON.StopIntent no complete
+AMAZON.StopIntent no done
+AMAZON.StopIntent no end
+AMAZON.StopIntent no end please
+AMAZON.StopIntent no exit
+AMAZON.StopIntent no exit please
+AMAZON.StopIntent no finished
+AMAZON.StopIntent no goodbye
+AMAZON.StopIntent no goodnight
+AMAZON.StopIntent no i am done
+AMAZON.StopIntent no i'm done
+AMAZON.StopIntent no  i'm out
+AMAZON.StopIntent no no more
+AMAZON.StopIntent no no more please
+AMAZON.StopIntent no please close
+AMAZON.StopIntent no please end
+AMAZON.StopIntent no please stop
+AMAZON.StopIntent no stop
+AMAZON.StopIntent no stop please
+AMAZON.StopIntent no that's all
+AMAZON.StopIntent no that's it
+AMAZON.StopIntent no the end
+AMAZON.StopIntent no we're done
+AMAZON.StopIntent no we're done here
+
+
+
 

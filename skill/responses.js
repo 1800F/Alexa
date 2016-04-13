@@ -18,14 +18,14 @@ var responses = function () {
     Errors: {
 
       NotConnectedToAccount: {
-        tell: "{welcomePhrase}. Before I can help you place an order, you'll need to connect to your 1-800-Flowers account.\n        To help you get started, I've added a link to the authorization process in the Home screen of the Alexa app.\n        <break time=\"1s\"/>\n        When you're ready, come back and I'll be happy to help you place your order!",
+        tell: "Hi there! Before I can help you place an order, you'll need to connect to your 1-800-Flowers account.\n        To help you get started, I've added a link to the authorization process in the Home screen of the Alexa app.\n        <break time=\"1s\"/>\n        When you're ready, come back and I'll be happy to help you place your order!",
         card: authCard
       },
       NoRecipientsInAddressBook: {
-        tell: "{welcomePhrase}. Before I can help you place an order, you'll need to add at least one address to your 1-800-Flowers address book online.    <break time=\"1s\"/>      When you're ready, come back and I'll be happy to help you place your order!",
+        tell: "{welcomePhrase} Before I can help you place an order, you'll need to add at least one address to your 1-800-Flowers address book online.    <break time=\"1s\"/>      When you're ready, come back and I'll be happy to help you place your order!",
       },
       NoPaymentMethod: {
-        tell: "{welcomePhrase}. Before I can help you place an order, you'll need to add a payment method to your 1-800-Flowers account online.    <break time=\"1s\"/>      When you're ready, come back and I'll be happy to help you place your order!",
+        tell: "{welcomePhrase} Before I can help you place an order, you'll need to add a payment method to your 1-800-Flowers account online.    <break time=\"1s\"/>      When you're ready, come back and I'll be happy to help you place your order!",
       },
       ErrorAtLaunch: {
         tell: "I'm really sorry, but I can't take floral orders right now.\n          <break time=\"1s\"/>\n          Please check back soon and thank you for visiting 1-800-Flowers."
@@ -253,7 +253,7 @@ var responses = function () {
         reprompt: "Should I place your order for {price}?"
       },
       CancelOrder: {
-        ask: "Okay, what order change would you like to make,",
+        ask: "Oh, OK. You can change any part of your order by just stating the change you want to make. For example, you can say, Send to Bertha. and the recipient will change to Bertha instead of {recipient}. Or, if you'd rather have a {differentSize}, just say, {differentSize}.  You can also tell me a new date and I will check to see if the new date is deliverable. What is the change you’d like to make?",
         reprompt: "Did you want to cancel your order?",
       },
     },
@@ -271,8 +271,11 @@ var responses = function () {
           type: 'Standard',
           title: 'You bought flowers!',
           text: 'Your {arrangementSize} {arrangementType} order has been placed!\n' +
+            '-\n' +
             '{recipient}\n{address}\n' +
+            '-\n' +
             'Delivery Date: {deliveryDate}\n' +
+            '-\n' +
             'Order Total: {priceTextFormatted}',
           image: {
             smallImageUrl: '{imageUrl}',

@@ -180,6 +180,7 @@ PartialOrder.prototype.clearArrangementDescriptions = function() {
 }
 
 PartialOrder.prototype.pickArrangement = function(arrangementName) {
+  if (verbose) console.log(arrangementName);
   var self = this;
   if (!arrangementName) {
     self.arrangement = null;
@@ -188,6 +189,7 @@ PartialOrder.prototype.pickArrangement = function(arrangementName) {
   var entry = Catalog.findByName(arrangementName);
   self.arrangement =_.pick(entry,['name','sku']);
   return self.getArrangementDetails().then(function (details) {
+    if (verbose) console.log(JSON.stringify(details));
     var isValid =  details.items && details.items.length;
     if(!isValid) self.arrangement = null;
     return self.arrangement;
@@ -265,6 +267,10 @@ PartialOrder.prototype.getSizeDetailsByName = function (name) {
   name = name || self.size;
   var size = self.getSizeByName(name);
   return _.find(self.arrangement.details.items,function(item){ return item.sku == size.sku });
+}
+
+PartialOrder.prototype.getSizeName = function() {
+  return this.size;
 }
 
 // Cache products
