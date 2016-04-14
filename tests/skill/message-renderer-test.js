@@ -4,8 +4,10 @@ var assert = require('chai').assert,
     messageRenderer = require('../../skill/message-renderer.js'),
     Promise = require('bluebird');
 
+var juice = false;
 var data = {
   drink: 'water',
+  juice: 'V8',
   small_image: 'race-car-small'
 };
 
@@ -44,7 +46,7 @@ var variables = {
     return Promise.resolve('a');
   },
   drink: function drink(data) {
-    return Promise.resolve(data.drink);
+    return Promise.resolve(juice ? data.juice : data.drink);
   },
   small_image: function small_image(data) {
     return Promise.resolve(data.small_image);
@@ -60,10 +62,12 @@ describe('message renderer', function () {
   itIs('Can work with messages without needs ', 'Generic.NoNeeds', { say: 'Do you like trees?' });
   itIs('Processes simple cards', 'Card.Simple', { card: { type: 'Simple', title: 'Blah', content: 'I want a water' } });
   itIs('Processes standard cards', 'Card.Standard', { card: { type: 'Standard', title: 'a Blah', text: 'I want a water', image: { smallImageUrl: "https://carfu.com/resources/card-images/race-car-small.png", largeImageUrl: "https://carfu.com/resources/card-images/race-car-large.png" } } });
+  itIs('Processes standard cards clone deeply', 'Card.Standard', { card: { type: 'Standard', title: 'a Blah', text: 'I want a V8', image: { smallImageUrl: "https://carfu.com/resources/card-images/race-car-small.png", largeImageUrl: "https://carfu.com/resources/card-images/race-car-large.png" } } });
 
   function itIs(testName, msg, shouldBe) {
     it(testName, function (done) {
       sut(msg, data).then(function (actual) {
+        if (msg == 'Card.Standard') juice = true;
         assert.deepEqual(actual, shouldBe);
       }).then(function () {
         return done();
