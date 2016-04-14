@@ -7,7 +7,7 @@ var template = require('../services/template.js'),
 module.exports = function (responses, variables) {
 
   return function (msgPath, data) {
-    var msg = _.clone(_.at(responses, msgPath)[0]),
+    var msg = _.cloneDeep(_.at(responses, msgPath)[0]),
         toRender = ['ask', 'tell', 'say', 'reprompt', 'card.title', 'card.content', 'card.text', 'card.image.smallImageUrl', 'card.image.largeImageUrl'];
 
     return Promise.all(_(toRender).map(function (key) {
