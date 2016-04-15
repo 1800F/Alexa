@@ -144,7 +144,7 @@ module.exports = StateMachine({
           .then(function(api){return PartialOrder.fromRequest(api,request); })
           .then(function(po){
             po = PartialOrder.empty();
-            return replyWith(null, 'launch', request,po);
+            return replyWith(null, 'options-review', request, po);
           });
       }
     },
@@ -423,6 +423,9 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
+          if (request.intent.name === 'ArrangementSelectionIntent') {
+            return replyWith('QueryDate.InvalidDate', 'query-date', request, po);
+          }
           if (request.intent.name == 'AMAZON.YesIntent') {
             if(po.deliverDateOffers && po.deliverDateOffers.length == 1) {
               po.acceptPossibleDeliveryDate(po.deliverDateOffers[0]);

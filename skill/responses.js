@@ -222,12 +222,12 @@ var responses = function () {
         say: "{okay}, {deliveryDate}.",
       },
       DateSelectionAgain: {
-        ask: "To select a date you can say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'. What day would you like the flowers delivered?",
+        ask: "To select a date you can say, 'tomorrow,' or 'next Wednesday,' or the month and day, like, 'March sixth'. What day would you like the flowers delivered?",
         reprompt: "When would you like the flowers delivered?",
       },
        InvalidDate: {
-        ask: "To select a date just say the month and day, like 'March 6th' or you can say 'tomorrow' or 'next Wednesday'.  When would you like the flowers delivered?" ,
-        reprompt: "To select a date you can say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'.  When would you like the flowers delivered?",
+        ask: "To select a date just say, 'tomorrow,' or, 'next Wednesday,' or say the month and day, like, 'March sixth.'  When would you like the flowers delivered?" ,
+        reprompt: "To select a date you can say, 'tomorrow,' or 'next Wednesday,' or the month and day, like, 'March sixth'.  When would you like the flowers delivered?",
       },
       ContinueWithOrder: {
         ask: "Would you like to continue with your order?",
@@ -247,7 +247,7 @@ var responses = function () {
       NotAValidDate: {
         //For developer ... please ensure the logic of this phrase makes sense with the code you create (dateMinusOne should never bring up a non-available date).
         ask: "This arrangement is not available for delivery on {possibleDeliveryDate}. Would you like to deliver on {deliveryDateOffers}?",
-        reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
+        reprompt: "To select a date just say 'tomorrow,' or 'next Wednesday,' or the month and day, like 'March sixth'."
       }
     },
 
