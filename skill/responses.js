@@ -226,7 +226,7 @@ var responses = function () {
         reprompt: "When would you like the flowers delivered?",
       },
        InvalidDate: {
-        ask: "To select a date just say, 'tomorrow,' or, 'next Wednesday,' or say the month and day, like, "March sixth."  When would you like the flowers delivered?" ,
+        ask: "To select a date just say, 'tomorrow,' or, 'next Wednesday,' or say the month and day, like, 'March sixth.'  When would you like the flowers delivered?" ,
         reprompt: "To select a date you can say, 'tomorrow,' or 'next Wednesday,' or the month and day, like, 'March sixth'.  When would you like the flowers delivered?",
       },
       ContinueWithOrder: {
