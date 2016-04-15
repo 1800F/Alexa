@@ -423,6 +423,9 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
+          if (request.intent.name === 'DateSelectionIntent') {
+            return replyWith('QueryDate.InvalidDate', 'query-date', request, po);
+          }
           if (request.intent.name == 'AMAZON.YesIntent') {
             if(po.deliverDateOffers && po.deliverDateOffers.length == 1) {
               po.acceptPossibleDeliveryDate(po.deliverDateOffers[0]);
