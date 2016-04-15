@@ -80,8 +80,10 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
       }
     };
     return userrequest('POST', '/getRecipients', {}, body, "account").then(function (body) {
-      // if (options.verbose) console.log("Recipients: " + JSON.stringify(body.MDMRecipientsResponse));
-      return body.MDMRecipientsResponse.MDMRecipients.MDMRecipient;
+      if (options.verbose) console.log("Recipients: " + JSON.stringify(body.MDMRecipientsResponse));
+      if (body.MDMRecipientsResponse.MDMRecipients)
+        return body.MDMRecipientsResponse.MDMRecipients.MDMRecipient;
+      else return body.ExceptionResult;
     });
   }
 
