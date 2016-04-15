@@ -87,6 +87,7 @@ module.exports = StateMachine({
         SizeSelectionIntent: 'size-selection',
         DateSelectionIntent: 'date-selection',
         OrderReviewIntent: 'order-review',
+        "AMAZON.RepeatIntent": 'repeat',
         "AMAZON.StartOverIntent": 'start-over',
         "AMAZON.HelpIntent": 'help-menu',
         "AMAZON.StopIntent": 'exit'
@@ -108,8 +109,15 @@ module.exports = StateMachine({
     "launch": {
       enter: function enter(request) {
         return this.Access(request)
-        .then(PartialOrder.empty)
-        .then(function (po) {
+        .then(function(api) {
+          return PartialOrder.exists(request);
+        })
+        .then(function(exists) {
+          if (exists) {
+            return Promise.reject(StateMachineSkill.ERRORS.BAD_RESPONSE);
+          }
+          
+          var po = PartialOrder.empty();
           po.possibleRecipient = request.intent.params.recipientSlot;
           po.possibleDeliveryDate = request.intent.params.deliveryDateSlot;
           po.pickArrangement(request.intent.params.arrangementSlot);
@@ -118,13 +126,25 @@ module.exports = StateMachine({
         });
       }
     },
+    "repeat": {
+      enter: function enter(request) {
+        return this.Access(request)
+          .then(function(api) { return PartialOrder.fromRequest(api,request); })
+          .then(function(po) {
+            if (request.session.attributes.reply) {
+              return replyWith(request.session.attributes.reply.msgPath, request.session.attributes.reply.state, request, po);
+            }
+            return replyWith(null, 'launch', request, null);
+          });
+      }
+    },
     "start-over": {
       enter: function enter(request) {
         return this.Access(request)
           .then(function(api){return PartialOrder.fromRequest(api,request); })
           .then(function(po){
             po = PartialOrder.empty();
-            return replyWith(null, 'launch', request,po);
+            return replyWith(null, 'options-review', request, po);
           });
       }
     },
@@ -247,8 +267,7 @@ module.exports = StateMachine({
     "query-arrangement-type": {
       to: {
         DescriptionIntent: 'arrangement-descriptions',
-        LaunchIntent: 'arrangement-selection',
-        "AMAZON.RepeatIntent": 'options-review'
+        LaunchIntent: 'arrangement-selection'
       }
     },
     "arrangement-descriptions": {
@@ -302,13 +321,15 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          if (verbose) console.log(request.intent.params);
-          return po.pickArrangement(request.intent.params.arrangementSlot).then(function (success) {
-            if (!success) {
-              return replyWith('Errors.ErrorGeneral', 'die', request, po);
-            }
-            return replyWith('ArrangementSelectionIntent.ArrangementValidation', 'options-review', request, po);
-          });
+          if (request.intent.params && request.intent.params.arrangementSlot) {
+            if (verbose) console.log('Arrangement Selection Params ',request.intent.params);
+            return po.pickArrangement(request.intent.params.arrangementSlot).then(function (success) {
+              if (!success) {
+                return replyWith('Errors.ErrorGeneral', 'die', request, po);
+              }
+              return replyWith('ArrangementSelectionIntent.ArrangementValidation', 'options-review', request, po);
+            });
+          }
         });
       }
     },
@@ -324,8 +345,7 @@ module.exports = StateMachine({
     "query-size": {
       to: {
         DescriptionIntent: 'size-descriptions',
-        LaunchIntent: 'size-selection',
-        "AMAZON.RepeatIntent": 'options-review'
+        LaunchIntent: 'size-selection'
       }
     },
     "size-descriptions": {
@@ -403,6 +423,9 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
+          if (request.intent.name === 'ArrangementSelectionIntent') {
+            return replyWith('QueryDate.InvalidDate', 'query-date', request, po);
+          }
           if (request.intent.name == 'AMAZON.YesIntent') {
             if(po.deliverDateOffers && po.deliverDateOffers.length == 1) {
               po.acceptPossibleDeliveryDate(po.deliverDateOffers[0]);
@@ -575,12 +598,16 @@ module.exports = StateMachine({
 function replyWith(msgPath, state, request, partialOrder) {
   if (verbose) console.log('Move to state [' + state + '] and say ' + msgPath);
   return renderMessage(msgPath, partialOrder).then(function (msg) {
+    // For AMAZON.RepeatIntent
+    var reply = null;
+    if (msg && msg.ask) reply = { msgPath: msgPath, state: state };
     return {
       message: msg,
       to: state,
       session: {
         partialOrder: partialOrder ? partialOrder.serialize() : request.session.attributes.partialOrder,
-        startTimestamp: request.session.attributes.startTimestamp
+        startTimestamp: request.session.attributes.startTimestamp,
+        reply: reply
       }
     };
   });

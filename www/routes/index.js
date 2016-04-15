@@ -74,7 +74,8 @@ router.post('/', function (req, res, next) {
           , data.noBillingAddress ? 'a billing address' : ''
           , data.noContacts ? 'contacts' : ''
         ])),
-        created: false
+        created: false,
+        site: config.flowers.site.toUpperCase()
       });
     }).catch(function (err) {
       console.error(err.stack);
@@ -160,7 +161,8 @@ router.post('/create', function (req, res, next) {
                 , 'a billing address'
                 , 'contacts'
               ])),
-              created: true
+              created: true,
+              site: config.flowers.site.toUpperCase()
           });
         }
       }).catch(function (err) {
@@ -280,7 +282,8 @@ router.get('/terms-of-use', function (req, res, next) {
 router.get('/forgotten-password', function (req, res, next) {
   res.render('home/forgotten-password', {
     page: "forgotten-password",
-    title: "1800flowers - Forgotten Username Success"
+    title: "1800flowers - Forgotten Username Success",
+    site: config.flowers.site.toUpperCase()
   });
 });
 

@@ -8,6 +8,7 @@
     "secret": "rT6kX2qU3iS3pH5aQ6iV6sQ4pK1yV1aB4dP5yU5jU6nE0bT5iM",
     "endpoint": "https://ecommerce.800-flowers.net/alexa/uat",
     "web": "https://flowers-staging.rain.agency",
+    "site": "akamai.1800flowers-uat.net",
     "version": "v1",
     "verbose": true,
     "logsAreInsensitive": true,

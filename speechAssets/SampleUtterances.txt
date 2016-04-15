@@ -33,93 +33,9 @@ LaunchIntent {action} {sizeSlot} {bouquet} to {recipientSlot}
 LaunchIntent {action} {sizeSlot} {bouquet} to {recipientSlot} on {deliveryDateSlot}
 LaunchIntent {action} flowers to {recipientSlot}
 LaunchIntent {action} flowers to {recipientSlot} on {deliveryDateSlot}
-LaunchIntent for {bouquet}
+LaunchIntent {bouquet}
 
-LaunchIntent to order {bouquet}
-LaunchIntent to order {bouquet} for {deliveryDateSlot}
-LaunchIntent to order {bouquet} for {recipientSlot}
-LaunchIntent to order me {bouquet}
-LaunchIntent to order me {bouquet} for {deliveryDateSlot}
-LaunchIntent to order {recipientSlot} {bouquet}
-LaunchIntent to order {recipientSlot} some  {bouquet}
-LaunchIntent to order {recipientSlot} {bouquet} for {deliveryDateSlot}
-LaunchIntent to order {recipientSlot} some  {bouquet} for {deliveryDateSlot}
-LaunchIntent to send a {sizeSlot} {arrangementSlot} to {recipientSlot} on {deliveryDateSlot}
-LaunchIntent to send a {sizeSlot} {arrangementSlot} {bouquet} to {recipientSlot} on {deliveryDateSlot}
-LaunchIntent to send a {sizeSlot} {bouquet} of flowers to {recipientSlot} on {deliveryDateSlot}
-LaunchIntent to send {bouquet} on {deliveryDateSlot}
-LaunchIntent to send {bouquet} to {recipientSlot}
-LaunchIntent to send some flowers on {deliveryDateSlot}
-LaunchIntent to send some flowers to {recipientSlot}
-LaunchIntent to send some flowers to {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I want to send some {bouquet}
-LaunchIntent I want to send some flowers to {recipientSlot}
-LaunchIntent I want to send some flowers to {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I want to send {bouquet}
-LaunchIntent I want to send {bouquet} to {recipientSlot}
-LaunchIntent I want to send {bouquet} to {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I want to send {bouquet}
-LaunchIntent I want to send {bouquet} to {recipientSlot}
-LaunchIntent I want to send {bouquet} to {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I want to send a {sizeSlot} {bouquet}
-LaunchIntent I want to send a {sizeSlot} {bouquet} to {recipientSlot}
-LaunchIntent I want to send a {sizeSlot} {bouquet} to {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I want a {sizeSlot} {arrangementSlot} for {recipientSlot}
-LaunchIntent I want a {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot}
-LaunchIntent I want a {sizeSlot} {arrangementSlot} for {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I want a {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot} on {deliveryDateSlot}
-LaunchIntent to send a {sizeSlot} {bouquet} to {recipientSlot}
-LaunchIntent to send a {sizeSlot} {bouquet} to {recipientSlot} on {deliveryDateSlot}
-LaunchIntent to send {recipientSlot} some flowers
-LaunchIntent I need some flowers for {recipientSlot}
-LaunchIntent I need some flowers for {deliveryDateSlot}
-LaunchIntent I need some flowers for {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I need {bouquet}
-LaunchIntent I need {bouquet} of flowers
-LaunchIntent I need {bouquet} for {recipientSlot}
-LaunchIntent I need {bouquet} for {deliveryDateSlot}
-LaunchIntent I need {bouquet} for {recipientSlot} on  {deliveryDateSlot}
-LaunchIntent I need a {sizeSlot} {arrangementSlot}
-LaunchIntent I need a {sizeSlot} {arrangementSlot} {bouquet}
-LaunchIntent I need a {sizeSlot} {arrangementSlot} for {recipientSlot}
-LaunchIntent I need a {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot}
-LaunchIntent I need a {sizeSlot} {arrangementSlot} for {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I need a {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I need to order {bouquet}
-LaunchIntent I need to order {bouquet} for {recipientSlot}
-LaunchIntent I need to order {bouquet} for {deliveryDateSlot}
-LaunchIntent I need to order a {sizeSlot} {arrangementSlot} for {recipientSlot}
-LaunchIntent I need to order a {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot}
-LaunchIntent I need to order a {sizeSlot} {arrangementSlot} for {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I need to order a {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I need some flowers
-LaunchIntent I need a {bouquet}
-LaunchIntent I need a {bouquet} stat
-LaunchIntent I need a {bouquet} now
-LaunchIntent I need some flowers for {recipientSlot}
-LaunchIntent I need some flowers for {deliveryDateSlot}
-LaunchIntent I need some flowers on {deliveryDateSlot}
-LaunchIntent I need some flowers for {recipientSlot} on  {deliveryDateSlot}
-LaunchIntent I need to send a {sizeSlot} {arrangementSlot} to {recipientSlot}
-LaunchIntent I need to send a {sizeSlot} {arrangementSlot} {bouquet} to {recipientSlot}
-LaunchIntent I need to send a {sizeSlot} {arrangementSlot} to {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I need to send a {sizeSlot} {arrangementSlot} {bouquet} to {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I need {bouquet}
-LaunchIntent I need {bouquet} for {recipientSlot}
-LaunchIntent I need {bouquet} for {deliveryDateSlot}
-LaunchIntent I need {bouquet} for {recipientSlot} on  {deliveryDateSlot}
-LaunchIntent I need a {sizeSlot} {arrangementSlot} for {recipientSlot}
-LaunchIntent I need a {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot}
-LaunchIntent I need a {sizeSlot} {arrangementSlot} for {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I need a {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I need to order {bouquet}
-LaunchIntent I need to order {bouquet} for {recipientSlot}
-LaunchIntent I need to order {bouquet} for {deliveryDateSlot}
-LaunchIntent I need to order a {sizeSlot} {arrangementSlot} for {recipientSlot}
-LaunchIntent I need to order a {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot}
-LaunchIntent I need to order a {sizeSlot} {arrangementSlot} for {recipientSlot} on {deliveryDateSlot}
-LaunchIntent I need to order a {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot} on {deliveryDateSlot}
-LaunchIntent for {bouquet}
+
 
 RecipientSelectionIntent {recipientSlot}
 RecipientSelectionIntent {recipientSlot} please
@@ -962,7 +878,7 @@ AMAZON.HelpIntent what questions can i ask
 
 AMAZON.StopIntent all done
 AMAZON.StopIntent cancel
-AMAZON.StopIntent  cancel please
+AMAZON.StopIntent cancel please
 AMAZON.StopIntent cancel that
 AMAZON.StopIntent cancel that please
 AMAZON.StopIntent close
@@ -1019,6 +935,17 @@ AMAZON.StopIntent no the end
 AMAZON.StopIntent no we're done
 AMAZON.StopIntent no we're done here
 
+AMAZON.StartOverIntent start my order over
+AMAZON.StartOverIntent let's start over
+AMAZON.StartOverIntent start my order over
+AMAZON.StartOverIntent I want to start my order over
+AMAZON.StartOverIntent start again
+AMAZON.StartOverIntent can we start again
+AMAZON.StartOverIntent can we start a new order
+AMAZON.StartOverIntent I want to start again
+AMAZON.StartOverIntent I want to start a new order
+AMAZON.StartOverIntent I want to start over
+AMAZON.StartOverIntent I need to start over
 
 
 
