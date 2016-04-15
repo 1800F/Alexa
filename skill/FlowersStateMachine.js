@@ -144,7 +144,7 @@ module.exports = StateMachine({
           .then(function(api){return PartialOrder.fromRequest(api,request); })
           .then(function(po){
             po = PartialOrder.empty();
-            return replyWith(null, 'launch', request,po);
+            return replyWith(null, 'options-review', request, po);
           });
       }
     },
