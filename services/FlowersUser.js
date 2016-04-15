@@ -235,7 +235,10 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
           qAuthReq = null;
           if(toks.error) return Promise.reject(toks.error);
           tokens.access_token = toks.access_token;
-          return issue(method, tokens.access_token, path, queryString, body, options, apiType);
+          return issue(method, tokens.access_token, path, queryString, body, options, apiType).then(function (restwo){
+              if (restwo.statusCode >= 400) return Promise.reject(restwo.body);
+              return restwo.body;
+            });
         }).catch(function(e){
           qAuthReq = null;
           tokens.access_token = null;

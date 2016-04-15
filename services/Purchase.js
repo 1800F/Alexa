@@ -516,9 +516,22 @@ var Purchase = module.exports= function Purchase(options,tokens) {
       return issue(method, token, path, queryString, body, options, apiType).then(function (res) {
         if (res.statusCode == 401) {
           //Our token expired
-          if (!tokens.access_token) tokens.refresh_token = null; //Must have already tried a refresh, so this next time, go anew
-          tokens.access_token = null;
-          return apprequest.apply(self, args);
+          // if (!tokens.access_token) tokens.refresh_token = null; //Must have already tried a refresh, so this next time, go anew
+          // tokens.access_token = null;
+          // return apprequest.apply(self, args);
+          return qAuthReq = oauthReq('password' ,options.defaultCredentials , options,'payment').then(function (toks) {
+            qAuthReq = null;
+            if(toks.error) return Promise.reject(toks.error);
+            tokens.access_token = toks.access_token;
+            return issue(method, tokens.access_token, path, queryString, body, options, apiType).then(function (restwo){
+              if (restwo.statusCode >= 400) return Promise.reject(restwo.body);
+              return restwo.body;
+            });
+          }).catch(function(e){
+            qAuthReq = null;
+            tokens.access_token = null;
+            return Promise.reject(e);
+          });
         }
         if (res.statusCode >= 400) return Promise.reject(res.body);
         return res.body;
