@@ -90,7 +90,8 @@ module.exports = StateMachine({
         "AMAZON.RepeatIntent": 'repeat',
         "AMAZON.StartOverIntent": 'start-over',
         "AMAZON.HelpIntent": 'help-menu',
-        "AMAZON.StopIntent": 'exit'
+        "AMAZON.StopIntent": 'exit',
+        "AMAZON.CancelIntent": 'exit'
       }
     },
     'exit': {
