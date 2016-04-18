@@ -268,7 +268,8 @@ module.exports = StateMachine({
     "query-arrangement-type": {
       to: {
         DescriptionIntent: 'arrangement-descriptions',
-        LaunchIntent: 'arrangement-selection'
+        LaunchIntent: 'arrangement-selection',
+        RecipientSelectionIntent: 'arrangement-selection'
       }
     },
     "arrangement-descriptions": {
@@ -330,6 +331,8 @@ module.exports = StateMachine({
               }
               return replyWith('ArrangementSelectionIntent.ArrangementValidation', 'options-review', request, po);
             });
+          } else {
+            return Promise.reject(StateMachineSkill.ERRORS.BAD_RESPONSE);
           }
         });
       }
