@@ -430,6 +430,9 @@ module.exports = StateMachine({
           if (request.intent.name === 'ArrangementSelectionIntent') {
             return replyWith('QueryDate.InvalidDate', 'query-date', request, po);
           }
+          if (request.intent.name === 'RecipientSelectionIntent') {
+            return replyWith('QueryDate.InvalidDate', 'query-date', request, po);
+          }
           if (request.intent.name == 'AMAZON.YesIntent') {
             if(po.deliverDateOffers && po.deliverDateOffers.length == 1) {
               po.acceptPossibleDeliveryDate(po.deliverDateOffers[0]);
