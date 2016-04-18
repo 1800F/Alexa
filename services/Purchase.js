@@ -514,6 +514,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
   function purchaseRequest(method, path, queryString, body, apiType) {
     return getAuthToken().then(function (token) {
       return issue(method, token, path, queryString, body, options, apiType).then(function (res) {
+        console.log("PURCHASE TOKEN: " + token);
         if (res.statusCode == 401) {
           //Our token expired
           return qAuthReq = oauthReq('password' ,options.defaultCredentials , options,'payment').then(function (toks) {

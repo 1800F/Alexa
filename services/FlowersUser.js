@@ -199,6 +199,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
       }
       return purchase.authorizeCC(payment, product.total, user)
         .then(function(authorization) {
+          console.log("authorizeCC RESPONSE: " + JSON.stringify(authorization));
           // Error
           if (authorization.authCode.trim() != 100) {
             return authorization.errors.error;

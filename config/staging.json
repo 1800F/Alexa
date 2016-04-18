@@ -11,6 +11,7 @@
     "site": "akamai.1800flowers-uat.net",
     "version": "v1",
     "verbose": true,
+    "superVerbose": true,
     "logsAreInsensitive": true,
     "platform": "echo",
     "paymentCredentials": {
