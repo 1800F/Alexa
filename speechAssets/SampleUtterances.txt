@@ -1,4 +1,11 @@
 AMAZON.CancelIntent cancel
+AMAZON.CancelIntent cancel please
+AMAZON.CancelIntent never mind
+AMAZON.CancelIntent forget it
+AMAZON.CancelIntent go back
+AMAZON.CancelIntent back
+AMAZON.CancelIntent abort
+AMAZON.CancelIntent halt
 
 AMAZON.RepeatIntent again
 AMAZON.RepeatIntent again please
