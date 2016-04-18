@@ -453,7 +453,7 @@ module.exports = StateMachine({
                 else {
                   return po.findDeliveryDateOffers(po.possibleDeliveryDate)
                     .then(function(offers) {
-                      if(!offers) return replyWith('Error.ErrorGeneral', 'die', request,po);
+                      if((!offers) || (offers.length === 0)) return replyWith('QueryDate.InvalidDate', 'query-date', request,po);
                       return replyWith('ValidatePossibleDeliveryDate.NotAValidDate', 'query-date', request,po);
                     });
                 }
