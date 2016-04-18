@@ -1,6 +1,83 @@
 {
   "intents": [
     {
+      "intent": "AMAZON.CancelIntent"
+    }
+    , {
+      "intent": "AMAZON.YesIntent"
+    }
+    , {
+      "intent": "AMAZON.NoIntent"
+    }
+    , {
+      "intent": "AMAZON.HelpIntent"
+    }
+    , {
+      "intent": "AMAZON.StopIntent"
+    }
+    , {
+      "intent": "AMAZON.StartOverIntent"
+    }
+    , {
+      "intent": "AMAZON.RepeatIntent"
+    }
+    , {
+      "intent": "ArrangementSelectionIntent",
+      "slots": [
+        {
+          "name": "arrangementSlot",
+          "type": "ARRANGEMENT_TYPES"
+        },
+        {
+          "name": "bouquet",
+          "type": "BOUQUET"
+        }
+      ]
+    }
+    , {
+      "intent": "SizeSelectionIntent",
+      "slots": [
+        {
+          "name": "sizeSlot",
+          "type": "ARRANGEMENT_SIZES"
+        },
+        {
+          "name": "bouquet",
+          "type": "BOUQUET"
+        }
+      ]
+    }
+    , {
+     "intent": "DateSelectionIntent",
+     "slots": [
+     {
+         "name": "deliveryDateSlot",
+         "type": "AMAZON.DATE"
+       },
+       {
+          "name": "bouquet",
+          "type": "BOUQUET"
+       }
+     ]
+    }
+    , {
+     "intent": "DescriptionIntent",
+     "slots": [
+     {
+         "name": "arrangementSlot",
+         "type": "ARRANGEMENT_TYPES"
+       },
+        {
+         "name": "sizeSlot",
+         "type": "ARRANGEMENT_SIZES"
+       },
+       {
+          "name": "bouquet",
+          "type": "BOUQUET"
+       }
+      ]
+    }
+    , {
       "intent": "LaunchIntent",
       "slots": [
         {
@@ -28,8 +105,8 @@
           "type": "ACTION"
         }
       ]
-    },
-    {
+    }
+    , {
       "intent": "RecipientSelectionIntent",
       "slots": [
         {
@@ -37,83 +114,6 @@
           "type": "AMAZON.US_FIRST_NAME"
         }
       ]
-    },
-    {
-      "intent": "ArrangementSelectionIntent",
-      "slots": [
-        {
-          "name": "arrangementSlot",
-          "type": "ARRANGEMENT_TYPES"
-        },
-        {
-          "name": "bouquet",
-          "type": "BOUQUET"
-        }
-      ]
-    },
-    {
-      "intent": "SizeSelectionIntent",
-      "slots": [
-        {
-          "name": "sizeSlot",
-          "type": "ARRANGEMENT_SIZES"
-        },
-        {
-          "name": "bouquet",
-          "type": "BOUQUET"
-        }
-      ]
-    },
-    {
-     "intent": "DateSelectionIntent",
-     "slots": [
-     {
-         "name": "deliveryDateSlot",
-         "type": "AMAZON.DATE"
-       },
-       {
-          "name": "bouquet",
-          "type": "BOUQUET"
-       }
-     ]
-    },
-    {
-     "intent": "DescriptionIntent",
-     "slots": [
-     {
-         "name": "arrangementSlot",
-         "type": "ARRANGEMENT_TYPES"
-       },
-        {
-         "name": "sizeSlot",
-         "type": "ARRANGEMENT_SIZES"
-       },
-       {
-          "name": "bouquet",
-          "type": "BOUQUET"
-       }
-      ]
-    },
-    {
-      "intent": "AMAZON.YesIntent"
-    },
-    {
-      "intent": "AMAZON.NoIntent"
-    },
-    {
-      "intent": "AMAZON.HelpIntent"
-    },
-    {
-      "intent": "AMAZON.StopIntent"
-    },
-    {
-      "intent": "AMAZON.CancelIntent"
-    },
-    {
-      "intent": "AMAZON.StartOverIntent"
-    },
-     {
-      "intent": "AMAZON.RepeatIntent"
     }
   ]
 }

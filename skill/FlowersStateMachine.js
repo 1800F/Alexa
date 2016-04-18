@@ -90,7 +90,8 @@ module.exports = StateMachine({
         "AMAZON.RepeatIntent": 'repeat',
         "AMAZON.StartOverIntent": 'start-over',
         "AMAZON.HelpIntent": 'help-menu',
-        "AMAZON.StopIntent": 'exit'
+        "AMAZON.StopIntent": 'exit',
+        "AMAZON.CancelIntent": 'exit'
       }
     },
     'exit': {
@@ -267,7 +268,8 @@ module.exports = StateMachine({
     "query-arrangement-type": {
       to: {
         DescriptionIntent: 'arrangement-descriptions',
-        LaunchIntent: 'arrangement-selection'
+        LaunchIntent: 'arrangement-selection',
+        RecipientSelectionIntent: 'arrangement-selection'
       }
     },
     "arrangement-descriptions": {
@@ -329,6 +331,8 @@ module.exports = StateMachine({
               }
               return replyWith('ArrangementSelectionIntent.ArrangementValidation', 'options-review', request, po);
             });
+          } else {
+            return Promise.reject(StateMachineSkill.ERRORS.BAD_RESPONSE);
           }
         });
       }
@@ -423,7 +427,8 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          if (request.intent.name === 'ArrangementSelectionIntent') {
+          if ((request.intent.name === 'ArrangementSelectionIntent') ||
+              (request.intent.name === 'RecipientSelectionIntent')) {
             return replyWith('QueryDate.InvalidDate', 'query-date', request, po);
           }
           if (request.intent.name == 'AMAZON.YesIntent') {
@@ -453,7 +458,7 @@ module.exports = StateMachine({
                 else {
                   return po.findDeliveryDateOffers(po.possibleDeliveryDate)
                     .then(function(offers) {
-                      if(!offers) return replyWith('Error.ErrorGeneral', 'die', request,po);
+                      if((!offers) || (offers.length === 0)) return replyWith('QueryDate.InvalidDate', 'query-date', request,po);
                       return replyWith('ValidatePossibleDeliveryDate.NotAValidDate', 'query-date', request,po);
                     });
                 }
