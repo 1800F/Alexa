@@ -427,10 +427,8 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          if (request.intent.name === 'ArrangementSelectionIntent') {
-            return replyWith('QueryDate.InvalidDate', 'query-date', request, po);
-          }
-          if (request.intent.name === 'RecipientSelectionIntent') {
+          if ((request.intent.name === 'ArrangementSelectionIntent') ||
+              (request.intent.name === 'RecipientSelectionIntent')) {
             return replyWith('QueryDate.InvalidDate', 'query-date', request, po);
           }
           if (request.intent.name == 'AMAZON.YesIntent') {
