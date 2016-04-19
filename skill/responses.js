@@ -37,7 +37,7 @@ var responses = function () {
         tell: "I'm sorry, but there was an error in processing your order and I'm unable to continue at this time.\n          <break time=\"1s\"/>\n          Please check back soon to try your order again, and thank you for visiting 1-800-Flowers."
       },
       ErrorNonPlannedAtLaunch: {
-        tell: "I'm sorry, I couldn't understand you. To launch this skill you can say, Alexa ask 1-800-Flowers to order flowers or simply say Alexa open 1-800-Flowers."
+        tell: "I'm sorry, I couldn't understand you. Please launch this skill again when you are ready to order flowers."
       }
     },
 
