@@ -525,10 +525,10 @@ module.exports = StateMachine({
         .then(function(po){
           if (request.intent.name == 'AMAZON.YesIntent') {
             // Once we're good to test `place order` uncommented these 3 lines
-            // return po.placeOrder().then(function(isValid){
-              // if(!isValid) return replyWith('Errors.ErrorAtOrder','die',request,po);
+            return po.placeOrder().then(function(isValid){
+              if(!isValid) return replyWith('Errors.ErrorAtOrder','die',request,po);
               return replyWith('QueryBuyConfirmation.SendToSomeoneElse','clear-and-restart',request,po);
-            // });
+            });
           }else if (request.intent.name == 'AMAZON.NoIntent') {
             return replyWith('QueryBuyConfirmation.CancelOrder','cancel-order-confirmation',request,po);
           }
