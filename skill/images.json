@@ -1,6 +1,22 @@
 {
-    "thank you": "/img/thankyou.jpg",
-    "love and romance": "/img/love.jpg",
-    "mother's day": "/img/mothersday.jpg",
-    "birthday": "/img/birthday.jpg"
+    "thank you": {
+        "small": "/img/thankyouS.jpg",
+        "medium": "/img/thankyouM.jpg",
+        "large": "/img/thankyouL.jpg"
+    },
+    "love and romance": {
+        "small": "/img/loveS.jpg",
+        "medium": "/img/loveM.jpg",
+        "large": "/img/loveL.jpg"
+    },
+    "mother's day": {
+        "small": "/img/mothersdayS.jpg",
+        "medium": "/img/mothersdayM.jpg",
+        "large": "/img/mothersdayL.jpg"
+    },
+    "birthday": {
+        "small": "/img/birthdayS.jpg",
+        "medium": "/img/birthdayM.jpg",
+        "large": "/img/birthdayL.jpg"
+    }
 }
