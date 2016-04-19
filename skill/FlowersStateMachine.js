@@ -349,7 +349,8 @@ module.exports = StateMachine({
     "query-size": {
       to: {
         DescriptionIntent: 'size-descriptions',
-        LaunchIntent: 'size-selection'
+        LaunchIntent: 'size-selection',
+        RecipientSelectionIntent: 'size-selection'
       }
     },
     "size-descriptions": {
@@ -403,8 +404,12 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
-          po.pickSize(request.intent.params.sizeSlot);
-          return replyWith('SizeSelectionIntent.SizeValidation', 'options-review', request, po);
+          if (request.intent.params && request.intent.params.sizeSlot) {
+            po.pickSize(request.intent.params.sizeSlot);
+            return replyWith('SizeSelectionIntent.SizeValidation', 'options-review', request, po);
+          } else {
+            return Promise.reject(StateMachineSkill.ERRORS.BAD_RESPONSE);
+          }
         });
       }
     },
