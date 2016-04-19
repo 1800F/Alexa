@@ -6,7 +6,7 @@
   "flowers": {
     "key": "a83c0dbb-a3b4-4360-8afc-9059c17d30ab",
     "secret": "Y1pK3mP5xG1gT7mG4vR8bD6eS3nM3tN5gV2xI4kN0wM2gX4jX4",
-    "endpoint": "https://ecommerce.800-flowers.net/alexa/uat",
+    "endpoint": "https://ecommerce.800-flowers.net/alexa/prod",
     "web": "https://flowers-dev.rain.agency",
     "site": "1800flowers.com",
     "version": "v1",
