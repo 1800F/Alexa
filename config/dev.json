@@ -4,11 +4,11 @@
     "hostSkill": true
   },
   "flowers": {
-    "key": "a83c0dbb-a3b4-4360-8afc-9059c17d30ab",
-    "secret": "Y1pK3mP5xG1gT7mG4vR8bD6eS3nM3tN5gV2xI4kN0wM2gX4jX4",
-    "endpoint": "https://ecommerce.800-flowers.net/alexa/prod",
+    "key": "c4078e06-7f12-442f-ae72-def09015a4f8",
+    "secret": "rT6kX2qU3iS3pH5aQ6iV6sQ4pK1yV1aB4dP5yU5jU6nE0bT5iM",
+    "endpoint": "https://ecommerce.800-flowers.net/alexa/uat",
     "web": "https://flowers-dev.rain.agency",
-    "site": "1800flowers.com",
+    "site": "akamai.1800flowers-uat.net",
     "version": "v1",
     "verbose": true,
     "logsAreInsensitive": true,
@@ -16,12 +16,12 @@
     "platform": "echo",
     "encryptKey": "18F-SuperSekritSki11Inf!",
     "paymentCredentials": {
-      "user": "w0097user",
-      "password": "w0097password"
+      "user": "test",
+      "password": "test"
     },
     "defaultCredentials": {
-      "username": "flowers-api@rain.agency",
-      "password": "r@!nF10W3r5APIg0AleX4"
+      "username": "1stevenh@rain.agency",
+      "password": "1rainPssword"
     }
   },
   "alexa": {
