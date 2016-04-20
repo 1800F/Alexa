@@ -3,6 +3,7 @@
 var router = exports.router = require('../infrastructure/mount.js')(__dirname),
     config = require('../../config/'),
     Flowers = require('../../services/Flowers.js'),
+    Purchase = require('../../services/Purchase.js'),
     flowers = Flowers(config.flowers),
     OAuthHelpers = require('../../services/oauth-helpers.js'),
     oauthhelper = OAuthHelpers(config.alexa.auth),
@@ -97,6 +98,8 @@ router.post('/', function (req, res, next) {
 
 router.post('/oauth', function (req, res, next) {
   var token_expiration = config.alexa.auth.token_expiration || 63113851;
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
   if (verbose && logsAreInsensitive && false) {
     console.log("OAUTH POSTED");
     console.log(req.body);
@@ -231,7 +234,7 @@ router.get('/privacy-policy', function (req, res, next) {
  // });
 
   //TEST PURCHASE API
-  // var purchase = Flowers.Purchase(config.flowers);
+  //var purchase = Purchase(config.flowers);
   // purchase.login().then(function (tokens) {
     //console.log("AUTH TOKENS CCAUTH---------------" + JSON.stringify(tokens.access_token));
     // var cc = newCrypto.encryptCreditCard("4455121235351234");
