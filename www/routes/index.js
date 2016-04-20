@@ -98,6 +98,8 @@ router.post('/', function (req, res, next) {
 
 router.post('/oauth', function (req, res, next) {
   var token_expiration = config.alexa.auth.token_expiration || 63113851;
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
   if (verbose && logsAreInsensitive && false) {
     console.log("OAUTH POSTED");
     console.log(req.body);
