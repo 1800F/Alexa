@@ -46,8 +46,8 @@ var responses = function () {
         say: "{welcomePhrase}"
       },
       RecipientSelection: {
-        ask: "Who would you like to send flowers to?",
-        reprompt: "What's the first name of the person you want to send flowers to?"
+        ask: "What is the first name of the person you would like to send flowers to?",
+        reprompt: "I can see the first names of people in your 1-800-flowers address book. What is the name of the person you want to send flowers to?"
       },
        RecipientSelectionAlt: {
         ask: "Who are the flowers for?",
