@@ -3,6 +3,7 @@
 var router = exports.router = require('../infrastructure/mount.js')(__dirname),
     config = require('../../config/'),
     Flowers = require('../../services/Flowers.js'),
+    Purchase = require('../../services/Purchase.js'),
     flowers = Flowers(config.flowers),
     OAuthHelpers = require('../../services/oauth-helpers.js'),
     oauthhelper = OAuthHelpers(config.alexa.auth),
@@ -69,6 +70,7 @@ router.post('/', function (req, res, next) {
         title: "1800flowers - Account Linked",
         auth_code: authCode,
         redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
+        isAndroid: isAndroid(req),
         nextSteps: lang.enumerate(_.compact([
             data.noCC ? 'a credit card' : ''
           , data.noBillingAddress ? 'a billing address' : ''
@@ -155,6 +157,7 @@ router.post('/create', function (req, res, next) {
               page: "success",
               title: "1800flowers - Account Created",
               auth_code: authCode,
+              isAndroid: isAndroid(req),
               redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
               nextSteps: lang.enumerate(_.compact([
                 'contacts'
@@ -231,7 +234,7 @@ router.get('/privacy-policy', function (req, res, next) {
  // });
 
   //TEST PURCHASE API
-  // var purchase = Flowers.Purchase(config.flowers);
+  //var purchase = Purchase(config.flowers);
   // purchase.login().then(function (tokens) {
     //console.log("AUTH TOKENS CCAUTH---------------" + JSON.stringify(tokens.access_token));
     // var cc = newCrypto.encryptCreditCard("4455121235351234");
@@ -293,3 +296,8 @@ router.get('forgotten-password-success', function (req, res, next) {
     title: '1800flowers'
   });
 });
+
+function isAndroid(request) {
+  var ua = request.headers['user-agent'];
+  return /Android/.test(ua);
+}

@@ -323,6 +323,19 @@ module.exports = StateMachine({
         return this.Access(request)
         .then(function(api){ return PartialOrder.fromRequest(api,request); })
         .then(function(po){
+          // Some arrangement can be taken as recipients
+          if (request.intent.name === 'RecipientSelectionIntent') {
+            // We need to map `love` or `romance` to `love and romance`
+            var matched = [
+              'love'
+              , 'romance'
+            ]
+            var slot = request.intent.params.recipientSlot.toLowerCase() || '';
+            if (matched.indexOf(slot) != -1) {
+              request.intent.params.arrangementSlot = 'love and romance';
+              if (verbose) console.log('Mapping to ' + request.intent.params.arrangementSlot);
+            }
+          }
           if (request.intent.params && request.intent.params.arrangementSlot) {
             if (verbose) console.log('Arrangement Selection Params ',request.intent.params);
             return po.pickArrangement(request.intent.params.arrangementSlot).then(function (success) {
