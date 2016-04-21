@@ -548,7 +548,7 @@ DescriptionIntent I need the descriptions
 DescriptionIntent Can I have the descriptions
 DescriptionIntent give me the descriptions
 DescriptionIntent I would like to hear the descriptions
-DescriptionIntent I would liek the descriptions
+DescriptionIntent I would like the descriptions
 DescriptionIntent Can I hear the descriptions
 DescriptionIntent please give me the descriptions
 DescriptionIntent tell me about the arrangements
