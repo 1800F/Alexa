@@ -73,11 +73,7 @@ ContactBook.prototype.searchByName = function(name) {
     })
     .flatten()
     .filter(function(contact) {
-      return (
-        (metaphone.compare(contact.firstName, name)) ||
-         (metaphone.compare(contact.lastName, name)) ||
-        (metaphone.compare(contact.firstName + " " + contact.lastName, name))
-     );
+      return (metaphone.compare(contact.firstName, name));
     })
     .value()
     ;
