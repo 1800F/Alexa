@@ -191,11 +191,6 @@ PartialOrder.prototype.pickArrangement = function(arrangementName) {
     self.arrangement = null;
     return Promise.resolve(null);
   }
-  // We need to map `love` or `romance` to `love and romance`
-  if (['love', 'romance'].indexOf(arrangementName.toLowerCase()) != -1) {
-    arrangementName = 'love and romance';
-    if (verbose) console.log('Mapping to ' + arrangementName);
-  }
   var entry = Catalog.findByName(arrangementName);
   self.arrangement =_.pick(entry,['name','sku']);
   return self.getArrangementDetails().then(function (details) {
