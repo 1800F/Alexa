@@ -64,7 +64,7 @@ var responses = function () {
       },
       DateSelection: {
         ask: "When would you like the flowers delivered?",
-        reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
+        reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March sixth'."
       },
       OrderReview: {
         ask: "To review: I have a {arrangementSize} {arrangementType} arrangement to be delivered to {recipient} on {deliveryDate}. " +
