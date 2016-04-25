@@ -540,6 +540,21 @@ DescriptionIntent What is the difference
 DescriptionIntent What do you recommend
 DescriptionIntent What difference is there
 DescriptionIntent What difference is there between the sizes
+DescriptionIntent I need descriptions
+DescriptionIntent give me descriptions
+DescriptionIntent tell me the descriptions
+DescriptionIntent I want the descriptions
+DescriptionIntent I need the descriptions
+DescriptionIntent Can I have the descriptions
+DescriptionIntent give me the descriptions
+DescriptionIntent I would like to hear the descriptions
+DescriptionIntent I would like the descriptions
+DescriptionIntent Can I hear the descriptions
+DescriptionIntent please give me the descriptions
+DescriptionIntent tell me about the arrangements
+DescriptionIntent tell me about the different arrangements
+DescriptionIntent tell me about the sizes
+DescriptionIntent tell me about the different sizes
 
 DescriptionIntent What's in the {sizeSlot}
 DescriptionIntent Tell me about the {sizeSlot}

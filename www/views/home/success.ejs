@@ -1,20 +1,31 @@
 <% include ../partials/header %>
+  <%if (!isAndroid) { %>
   <div class="arrow-container container">
     <div class="arrow"></div>
   </div>
+  <% } %>
   <section class="screen">
     <div class="container">
       <div class="screen-head">
         <h4>Success!</h4>
+        <%if (isAndroid) { %>
+        <p>You have successfully logged in to finish linking your account please press <strong>Link</strong> button below.</p>
+        <div class="form-row">
+          <a href="<%- redirectUrl %>" class="btn green">Link</a>
+        </div>
+        <% } else { %>
         <p>Your account has been successfully linked to the 1-800-Flowers Alexa Skill</p>
         <p>Tap the "X" to return to the Alexa companion app.
+        <% } %>
       </div>
       <div class="screen-head screen-footer">
         <img src="/img/logo-1800flowers.png" alt="1800flowers Logo"/>
       </div>
     </div>
 
+    <%if (!isAndroid) { %>
     <iframe src="<%- redirectUrl %>"></iframe>
+    <% } %>
     
   </section>
   <div class="legal-container">

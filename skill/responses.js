@@ -46,25 +46,25 @@ var responses = function () {
         say: "{welcomePhrase}"
       },
       RecipientSelection: {
-        ask: "Who would you like to send flowers to?",
-        reprompt: "What's the first name of the person you want to send flowers to?"
+        ask: "What is the first name of the person you would like to send flowers to?",
+        reprompt: "I can see the first names of people in your 1-800-flowers address book. What's the name of the person you want me to buy flowers for?"
       },
        RecipientSelectionAlt: {
         ask: "Who are the flowers for?",
         reprompt: "What's the first name of the person you want to send flowers to?"
       },
       ArrangementList: {
-        ask: "I have four types of arrangements available: Mothers Day, Birthday, \"Love and Romance\", and, Thank you. <break time=\"500ms\"/>Which would you like?",
+        ask: "I have four types of arrangements available: Mothers Day, Birthday, \"Love and Romance\", and, Thank you. I can give you descriptions if you need them. <break time=\"200ms\"/>  Which arrangement would you like?",
         reprompt: "Did you want an arrangement for someone's birthday, <break time=\"350ms\"/>Mothers Day,<break time=\"350ms\"/> \"Love and Romance\", <break time=\"350ms\"/>or, to say<break time=\"10ms\"/>Thank you?"
       },
       SizeList: {
         //Note to developer: prices in this response should be read without saying dollars or cents unless it is a full dollar amount with no cents (e.g. $45.99 should be read forty-five ninety-nine, but $45.00 should be read forty-five dollars.)
-        ask: "We have a Large arrangement for {largePrice}, medium for {mediumPrice}, or small for {smallPrice}. Prices do not include taxes or delivery fees. Which size would you like to order?",
+        ask: "We have a Large arrangement for {largePrice}, medium for {mediumPrice}, or small for {smallPrice}. I can give you descriptions if you need them. <break time=\"200ms\"/> Prices do not include taxes or delivery fees. <break time=\"500ms\"/> Which size would you like to order?",
         reprompt: "Did you want a Large, Medium, or Small arrangement?"
       },
       DateSelection: {
         ask: "When would you like the flowers delivered?",
-        reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March 6th'."
+        reprompt: "To select a date just say 'tomorrow' or 'next Wednesday' or the month and day, like 'March sixth'."
       },
       OrderReview: {
         ask: "To review: I have a {arrangementSize} {arrangementType} arrangement to be delivered to {recipient} on {deliveryDate}. " +

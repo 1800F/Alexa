@@ -1,16 +1,24 @@
 <% include ../partials/header %>
+  <%if (!isAndroid) { %>
   <div class="arrow-container container">
     <div class="arrow"></div>
   </div>
+  <% } %>
   <section class="screen">
     <div class="container">
       <div class="screen-head">
         <h4>Almost Done!</h4>
-        <p>You have successfully <%= created ? "created an account. " : "linked your account. " %> 
+        <p>You have successfully <%= created ? "created an account. " : (isAndroid ? "logged in. " : "linked your account. ") %> 
           <strong>
             <%= (nextSteps.length  ? "You must add " + nextSteps : "You have all you need") %>
           </strong> in order to send flowers using the 1-800-Flowers Alexa Skill.
         </p>
+        <% if (isAndroid) { %>
+        <p>To finish linking your account please press <strong>Link</strong> button below.</p>
+        <div class="form-row">
+          <a href="<%- redirectUrl %>" class="btn green">Link</a>
+        </div>
+        <% } %>
       </div>
       <div class="copy-link">
         <p class="note">Copy and paste the link below to your browser</p>
@@ -21,7 +29,9 @@
       </div>
     </div>
 
+    <% if (!isAndroid) { %>
     <iframe src="<%- redirectUrl %>"></iframe>
+    <% } %>
 
   </section>
   <div class="legal-container">

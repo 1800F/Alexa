@@ -70,6 +70,7 @@ router.post('/', function (req, res, next) {
         title: "1800flowers - Account Linked",
         auth_code: authCode,
         redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
+        isAndroid: isAndroid(req),
         nextSteps: lang.enumerate(_.compact([
             data.noCC ? 'a credit card' : ''
           , data.noBillingAddress ? 'a billing address' : ''
@@ -98,8 +99,6 @@ router.post('/', function (req, res, next) {
 
 router.post('/oauth', function (req, res, next) {
   var token_expiration = config.alexa.auth.token_expiration || 63113851;
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
   if (verbose && logsAreInsensitive && false) {
     console.log("OAUTH POSTED");
     console.log(req.body);
@@ -158,6 +157,7 @@ router.post('/create', function (req, res, next) {
               page: "success",
               title: "1800flowers - Account Created",
               auth_code: authCode,
+              isAndroid: isAndroid(req),
               redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
               nextSteps: lang.enumerate(_.compact([
                 'contacts'
@@ -296,3 +296,8 @@ router.get('forgotten-password-success', function (req, res, next) {
     title: '1800flowers'
   });
 });
+
+function isAndroid(request) {
+  var ua = request.headers['user-agent'];
+  return /Android/.test(ua);
+}
