@@ -122,8 +122,8 @@ router.get('/no-account', function (req, res, next) {
 
 router.get('/create', function (req, res, next) {
   res.render('home/create', {
-    page: "account-required",
-    title: "1800flowers - Account Required",
+    page: "create",
+    title: "1800flowers - Create Account",
     errorCreating: false,
     errorMessage: ""
   });
@@ -198,8 +198,8 @@ router.get('/success', function (req, res, next) {
 
 router.get('/account-required', function (req, res, next) {
   res.render('home/account-required', {
-    page: "create",
-    title: "1800flowers - Create Account"
+    page: "why-have-account",
+    title: "1800flowers - Why Have An Account"
   });
 });
 
