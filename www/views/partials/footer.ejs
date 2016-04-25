@@ -14,10 +14,18 @@
       ga('create','<%=trackingCode %>','auto');ga('send','pageview');
     </script>
     <script>
-      ga('send','event','Linking','<%= page %>')
 			<% if(locals.badPassword) { %>
 				ga('send','event','Linking','password-fail')
-			<% }%>
+			<% }
+        else if(locals.errorCreating) { %>
+        ga('send','event','Linking','create-account-fail')
+      <% }
+      else if(locals.nextSteps && locals.nextSteps.length) { %>
+        ga('send','event','Linking','success-needs-additional')
+      <% }
+      else { %>
+       ga('send','event','Linking','<%= page %>')
+      <% }%>
     </script>
   </body>
 </html>
