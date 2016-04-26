@@ -30,8 +30,6 @@ exports.validate = function (flowersUser) {
       ;
 
       return {
-        systemID: flowersUser.systemID,
-        customerID: flowersUser.customerID,
         noCC: noCC,
         noContacts: noContacts,
         noBillingAddress: noBillingAddress

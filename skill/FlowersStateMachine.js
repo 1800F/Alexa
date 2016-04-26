@@ -118,7 +118,7 @@ module.exports = StateMachine({
           if (exists) {
             return Promise.reject(StateMachineSkill.ERRORS.BAD_RESPONSE);
           }
-          
+
           var po = PartialOrder.empty();
           po.possibleRecipient = request.intent.params.recipientSlot;
           po.possibleDeliveryDate = request.intent.params.deliveryDateSlot;
@@ -641,7 +641,7 @@ module.exports = StateMachine({
     return Promise.try(function () {
       flowers = flowers || Flowers(config.flowers);
       var tokens = oauthhelper.decryptCode(request.user.accessToken);
-      return flowers.buildUser(tokens.systemID, tokens.customerID).then(function (user) {
+      return flowers.buildUser(tokens).then(function (user) {
         self.access = {
           user: user,
           flowers: flowers,
