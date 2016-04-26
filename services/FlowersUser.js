@@ -17,6 +17,9 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
     get tokens() { return tokens; },
     get systemID() { return systemID; },
     get customerID() { return customerID; },
+    get requesterName() { return requesterName; },
+    get requesterLanguage() { return requesterLanguage; },
+    get adminSystemType() { return adminSystemType; },
     // resetToken: resetToken, //FOR DEBUGGING ISSUE WITH OAUTH ONLY -- REMOVE BEFORE PUSHING LIVE
     authenticate: authenticate,
     getPaymentMethods: getPaymentMethods,
@@ -44,6 +47,16 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
     };
     return userrequest('POST', '/authenticateUser', {}, body, "account").then(function(authenticateUser){
       systemID = authenticateUser.authenticateCustomerResponse.customerData.systemID;
+      // Some old users come from a different system, different parameters must be set for those users.
+      if(authenticateUser.authenticateCustomerResponse.customerData.systemID === '18FWEB') {
+        requesterName = '18FWeb';
+        requesterLanguage = '1';
+        adminSystemType = '3001555';
+      } else {
+        requesterName = 'GFGB';
+        requesterLanguage = '-1';
+        adminSystemType = '3001666';
+      }
     });
   }
 
@@ -52,12 +65,12 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
       "GetSavedCardsForCustomer":{
         "control":{
           "requestId":"1400",
-          "requesterName":"GFGB",
-          "requesterLanguage":"-1",
+          "requesterName":requesterName,
+          "requesterLanguage":requesterLanguage,
           "requesterLocale":"en"
         },
         "SourceId":"W0097",
-        "AdminSystemType":"3001666",
+        "AdminSystemType":adminSystemType,
         "AdminPartyId":systemID,
         "InquiryLevel":"4"
       }
@@ -117,11 +130,11 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
       "Get18FCustomerByAdminSysKey":{
         "control":{
           "requestId":"1400",
-          "requesterName":"GFGB",
-          "requesterLanguage":"-1",
+          "requesterName":requesterName,
+          "requesterLanguage":requesterLanguage,
           "requesterLocale":"en"
         },
-        "AdminSystemType":"3001666",
+        "AdminSystemType":adminSystemType,
         "AdminPartyId":systemID,
         "InquiryLevel":"2"
       }
