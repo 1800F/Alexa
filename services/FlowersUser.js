@@ -9,17 +9,19 @@ var Promise = require('bluebird')
   , Purchase = require('./Purchase.js')
 ;
 
-var FlowersUser = module.exports = function FlowersUser(options, tokens, systemID, customerID) {
+var FlowersUser = module.exports = function FlowersUser(options, tokens, userValues) {
   options.transform = options.transform || _.identity;
   if (_.isString(tokens)) tokens = { access_token: tokens };
+  userValues = userValues || {};
 
   return options.transform({
     get tokens() { return tokens; },
-    get systemID() { return systemID; },
-    get customerID() { return customerID; },
-    get requesterName() { return requesterName; },
-    get requesterLanguage() { return requesterLanguage; },
-    get adminSystemType() { return adminSystemType; },
+    get systemID() { return userValues.systemID; },
+    get customerID() { return userValues.customerID; },
+    get requesterName() { return userValues.requesterName; },
+    get requesterLanguage() { return userValues.requesterLanguage; },
+    get adminSystemType() { return userValues.adminSystemType; },
+    get userValues() { return userValues; },
     // resetToken: resetToken, //FOR DEBUGGING ISSUE WITH OAUTH ONLY -- REMOVE BEFORE PUSHING LIVE
     authenticate: authenticate,
     getPaymentMethods: getPaymentMethods,
@@ -46,16 +48,16 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
       }
     };
     return userrequest('POST', '/authenticateUser', {}, body, "account").then(function(authenticateUser){
-      systemID = authenticateUser.authenticateCustomerResponse.customerData.systemID;
+      userValues.systemID = authenticateUser.authenticateCustomerResponse.customerData.systemID;
       // Some old users come from a different system, different parameters must be set for those users.
       if(authenticateUser.authenticateCustomerResponse.customerData.systemID === '18FWEB') {
-        requesterName = '18FWeb';
-        requesterLanguage = '1';
-        adminSystemType = '3001555';
+        userValues.requesterName = '18FWeb';
+        userValues.requesterLanguage = '1';
+        userValues.adminSystemType = '3001555';
       } else {
-        requesterName = 'GFGB';
-        requesterLanguage = '-1';
-        adminSystemType = '3001666';
+        userValues.requesterName = 'GFGB';
+        userValues.requesterLanguage = '-1';
+        userValues.adminSystemType = '3001666';
       }
     });
   }
@@ -65,13 +67,13 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
       "GetSavedCardsForCustomer":{
         "control":{
           "requestId":"1400",
-          "requesterName":requesterName,
-          "requesterLanguage":requesterLanguage,
+          "requesterName":userValues.requesterName,
+          "requesterLanguage":userValues.requesterLanguage,
           "requesterLocale":"en"
         },
         "SourceId":"W0097",
-        "AdminSystemType":adminSystemType,
-        "AdminPartyId":systemID,
+        "AdminSystemType":userValues.adminSystemType,
+        "AdminPartyId":userValues.systemID,
         "InquiryLevel":"4"
       }
     };
@@ -89,7 +91,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
   function getRecipients() {
     var body = {
       "getMDMRecipients":{
-        "contid": customerID
+        "contid": userValues.customerID
       }
     };
     return userrequest('POST', '/getRecipients', {}, body, "account").then(function (body) {
@@ -104,7 +106,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
     var body = {
       "getMDMRecipientAddresses":{
         "demographicsID": demographicsID,
-        "contid": customerID
+        "contid": userValues.customerID
       }
     };
     return userrequest('POST', '/getRecipientAddress', {}, body, "account")
@@ -135,7 +137,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
           "requesterLocale":"en"
         },
         "AdminSystemType":adminSystemType,
-        "AdminPartyId":systemID,
+        "AdminPartyId":userValues.systemID,
         "InquiryLevel":"2"
       }
     };
@@ -143,7 +145,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
     .then(function(body){
       if(!body.Get18FCustomerByAdminSysKeyResponse.result.status.processingStatus.value == 'SUCCESS') return Promise.reject(body);
       body = body.Get18FCustomerByAdminSysKeyResponse.result.response;
-      customerID = body.idPK;
+      userValues.customerID = body.idPK;
       return {
         customerID: body.idPK,
         displayName: body.displayName,
@@ -221,6 +223,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, systemI
             .then( function(order) {
               return getUserAuthToken()
                 .then(function (token) {
+                  //throw new Error('Not placing orders today');
                   return soapRequest(token, 'submitOrder', order, options)
                     .then(function(order) {
                       return order[0];

@@ -32,9 +32,9 @@ var Flowers = module.exports = function Flowers(options, tokens) {
     addCustomerDetails:addCustomerDetails,
   }, 'app');
 
-  function buildUser(systemID, customerID) {
+  function buildUser(userValues) {
     return getAuthToken().then(function(tokens){
-      return FlowersUser(options, tokens, systemID, customerID);
+      return FlowersUser(options, tokens, userValues);
     });
   }
 
