@@ -1,4 +1,4 @@
-'use strict';
+
 
 var router = exports.router = require('../infrastructure/mount.js')(__dirname),
     config = require('../../config/'),
@@ -63,7 +63,7 @@ router.post('/', function (req, res, next) {
     alexaFlowers.validate(user).then(function (data) {
       console.log('--------------------------------------------------------------------VALIDATE DATA---------------------------------');
       console.log(data);
-      var authCode = oauthhelper.encryptTokens({"systemID":data.systemID, "customerID":data.customerID});
+      var authCode = oauthhelper.encryptTokens(user.userValues);
       res.render( data.noCC || data.noContacts || data.noBillingAddress ?'home/success-needs-more' :'home/success'
       , {
         page: "success",
@@ -102,7 +102,7 @@ router.post('/oauth', function (req, res, next) {
   if (verbose && logsAreInsensitive && false) {
     console.log("OAUTH POSTED");
     console.log(req.body);
-  } 
+  }
   if (["authorization_code", "refresh_token"].indexOf(req.body.grant_type) != -1) {
     res.json({
       "access_token": req.body.code,
