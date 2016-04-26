@@ -1,0 +1,42 @@
+{
+  "server": {
+    "port": 3000,
+    "hostSkill": false
+  },
+  "flowers": {
+    "key": "a83c0dbb-a3b4-4360-8afc-9059c17d30ab",
+    "secret": "Y1pK3mP5xG1gT7mG4vR8bD6eS3nM3tN5gV2xI4kN0wM2gX4jX4",
+    "endpoint": "https://ecommerce.800-flowers.net/alexa/prod",
+    "web": "https://flowerskill.com",
+    "site": "1800flowers.com",
+    "version": "v1",
+    "verbose": true,
+    "logsAreInsensitive": true,
+    "platform": "echo",
+    "paymentCredentials": {
+      "user": "w0097user",
+      "password": "w0097password"
+    },
+    "defaultCredentials": {
+      "username": "flowers-api@rain.agency",
+      "password": "r@!nF10W3r5APIg0AleX4"
+    }
+  },
+  "alexa": {
+    "auth": {
+      "redirectUrl": "https://pitangui.amazon.com/spa/skill/account-linking-status.html?vendorId=M1124AJW6N8RI5",
+      "clientId": "alexa-skill",
+      "clientSecret": "x86@Z!yrNZM52S72",
+      "codeKey": "ZKVU!3-6$%bh?8%w",
+      "token_expiration": 1576800000
+    },
+    "appId": "amzn1.echo-sdk-ams.app.6b600e79-2603-40ad-a959-81a74feefd4c"
+  },
+  "skill": {
+    "recipientChoiceCount": 4
+  },
+  "googleAnalytics": {
+    "trackingCode": "UA-76855461-1"
+  },
+  "verbose": true
+}
