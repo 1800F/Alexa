@@ -251,8 +251,8 @@ var responses = function () {
       },
       NotAValidDateForThisAddress: {
         //For developer ... this message should be read when a recipient's address returns not available for delivery and no other delivery date options are available.
-        ask: "This arrangement is not available for delivery on {possibleDeliveryDate} at {recipient}'s address and I can't find the next available delivery date.",
-        reprompt: "You can start over or try another delivery date. What date would you like to try next?"
+        ask: "This arrangement is not available for delivery on {possibleDeliveryDate} at {recipient}'s address and there doesn't seem to be another delivery date available for that address. You can cancel your order or start over with a different recipient. What would you like to do?",
+        reprompt: "You can say, 'Cancel,' or 'Start over,' or you can say the first name of another person in your address book. What would you like to do?"
       }
     },
 
