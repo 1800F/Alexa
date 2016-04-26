@@ -49,7 +49,7 @@ var responses = function () {
         ask: "What is the first name of the person you would like to send flowers to?",
         reprompt: "I can see the first names of people in your 1-800-flowers address book. What's the name of the person you want me to buy flowers for?"
       },
-       RecipientSelectionAlt: {
+      RecipientSelectionAlt: {
         ask: "Who are the flowers for?",
         reprompt: "What's the first name of the person you want to send flowers to?"
       },
@@ -248,6 +248,11 @@ var responses = function () {
         //For developer ... please ensure the logic of this phrase makes sense with the code you create (dateMinusOne should never bring up a non-available date).
         ask: "This arrangement is not available for delivery on {possibleDeliveryDate}. Would you like to deliver on {deliveryDateOffers}?",
         reprompt: "To select a date just say 'tomorrow,' or 'next Wednesday,' or the month and day, like 'March sixth'."
+      },
+      NotAValidDateForThisAddress: {
+        //For developer ... this message should be read when a recipient's address returns not available for delivery and no other delivery date options are available.
+        ask: "This arrangement is not available for delivery on {possibleDeliveryDate} at {recipient}'s address and there doesn't seem to be another delivery date available for that address. You can cancel your order or start over with a different recipient. What would you like to do?",
+        reprompt: "You can say, 'Cancel,' or 'Start over,' or you can say the first name of another person in your address book. What would you like to do?"
       }
     },
 

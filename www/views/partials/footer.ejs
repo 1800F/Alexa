@@ -14,10 +14,26 @@
       ga('create','<%=trackingCode %>','auto');ga('send','pageview');
     </script>
     <script>
-      ga('send','event','Linking','<%= page %>')
 			<% if(locals.badPassword) { %>
-				ga('send','event','Linking','password-fail')
-			<% }%>
+				ga('send','event','Linking','Login Failed');
+			<% }
+        else if(locals.errorCreating) { %>
+        ga('send','event','Linking','create-account-fail');
+      <% }
+      else if(locals.nextSteps && locals.nextSteps.length) {
+        if(locals.nextSteps.indexOf('credit') != -1) { %>
+          ga('send','event','Linking','Needs Payment Information');
+        <% }
+        if(locals.nextSteps.indexOf('billing') != -1) { %>
+          ga('send','event','Linking','Needs Billing Address');
+        <% }
+        if(locals.nextSteps.indexOf('contacts') != -1) { %>
+          ga('send','event','Linking','Needs Contacts');
+        <% }
+      }
+      else { %>
+       ga('send','pageview','<%= page %>');
+      <% }%>
     </script>
   </body>
 </html>

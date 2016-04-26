@@ -74,6 +74,7 @@ module.exports = StateMachine({
     ;
     analytics(request).event('Main Flow', 'Session End', {sc: 'end'}).send();
     if (start) {
+      analytics(request).timing('Main Flow', 'Session Duration', elapsed).send();
       if (verbose) console.log('Session Duration', elapsed); // We used to log this to GA timing API, but they didn't want that anymore, now it's just an FYI
     }
   },
@@ -117,7 +118,7 @@ module.exports = StateMachine({
           if (exists) {
             return Promise.reject(StateMachineSkill.ERRORS.BAD_RESPONSE);
           }
-          
+
           var po = PartialOrder.empty();
           po.possibleRecipient = request.intent.params.recipientSlot;
           po.possibleDeliveryDate = request.intent.params.deliveryDateSlot;
@@ -133,6 +134,7 @@ module.exports = StateMachine({
           .then(function(api) { return PartialOrder.fromRequest(api,request); })
           .then(function(po) {
             if (request.session.attributes.reply) {
+              po.analytics.event('Main Flow', 'Repeat').send();
               return replyWith(request.session.attributes.reply.msgPath, request.session.attributes.reply.state, request, po);
             }
             return replyWith(null, 'launch', request, null);
@@ -144,6 +146,7 @@ module.exports = StateMachine({
         return this.Access(request)
           .then(function(api){return PartialOrder.fromRequest(api,request); })
           .then(function(po){
+            po.analytics.event('Main Flow', 'Start Over').send();
             po = PartialOrder.empty();
             return replyWith(null, 'options-review', request, po);
           });
@@ -159,21 +162,36 @@ module.exports = StateMachine({
               po.hasPaymentMethod()
             ])
             .spread(function (contactBook, hasPaymentMethod) {
-              if(!po.contactBook.hasContacts()) return replyWith('Errors.NoRecipientsInAddressBook', 'die', request, po);
-              if(!hasPaymentMethod) return replyWith('Errors.NoPaymentMethod', 'die', request, po);
+              if(!po.contactBook.hasContacts()) {
+                po.analytics.event('Main Flow', 'Goodbye - No Recipients').send();
+                return replyWith('Errors.NoRecipientsInAddressBook', 'die', request, po);
+              } 
+              if(!hasPaymentMethod) {
+                po.analytics.event('Main Flow', 'Goodbye - No Payment Method').send();
+                return replyWith('Errors.NoPaymentMethod', 'die', request, po);
+              } 
               if(!po.hasRecipient()) {
+                po.analytics.event('Main Flow', 'Select Recipient').send();
                 if(po.possibleRecipient) return replyWith(null,'validate-possible-recipient',request,po);
                 else if(po.hasDeliveryDate() || po.hasArrangement() || po.hasSize()) {
                   return replyWith('Options.RecipientSelectionAlt', 'query-recipient', request,po);
                 }
                 return replyWith('Options.RecipientSelection','query-recipient',request,po);
               }
-              if(!po.hasArrangement()) return replyWith('Options.ArrangementList', 'query-arrangement-type', request, po);
-              if(!po.hasSize()) return replyWith('Options.SizeList', 'query-size', request, po);
+              if(!po.hasArrangement()) {
+                po.analytics.event('Main Flow', 'Select Arrangement').send();
+                return replyWith('Options.ArrangementList', 'query-arrangement-type', request, po);
+              }
+              if(!po.hasSize()) {
+                po.analytics.event('Main Flow', 'Select Size').send();
+                return replyWith('Options.SizeList', 'query-size', request, po);
+              } 
               if(!po.hasDeliveryDate()) {
+                po.analytics.event('Main Flow', 'Select Date').send();
                 if(po.possibleDeliveryDate) return replyWith(null,'validate-possible-delivery-date',request,po);
                 return replyWith('Options.DateSelection','query-date',request,po);
               }
+              po.analytics.event('Main Flow', 'Review Order').send();
               return replyWith(null,'order-review',request,po);
             });
         });
@@ -231,6 +249,7 @@ module.exports = StateMachine({
           if(!po.hasContactCandidate()) {
             return replyWith('ValidatePossibleRecipient.NotInAddressBook', 'clear-and-query-options-again', request, po);
           }
+          po.analytics.event('Main Flow', 'Validated Possible Recipient Name').send();
           return replyWith('ValidatePossibleRecipient.FirstAddress', 'query-address', request, po);
         });
       }
@@ -246,6 +265,7 @@ module.exports = StateMachine({
               return replyWith('QueryAddress.AddressNotDeliverable', 'query-address-continue', request, po);
             }
             po.acceptCandidateContact();
+            po.analytics.event('Main Flow', 'Address Validated').send();
             return replyWith('QueryAddress.RecipientValidation','options-review',request,po);
           }else if (request.intent.name == 'AMAZON.NoIntent') {
             return replyWith(null, 'query-address-continue', request, po);
@@ -342,6 +362,7 @@ module.exports = StateMachine({
               if (!success) {
                 return replyWith('Errors.ErrorGeneral', 'die', request, po);
               }
+              po.analytics.event('Main Flow', 'Arrangement Selected', {arrangement: request.intent.params.arrangementSlot}).send();
               return replyWith('ArrangementSelectionIntent.ArrangementValidation', 'options-review', request, po);
             });
           } else {
@@ -419,6 +440,7 @@ module.exports = StateMachine({
         .then(function(po){
           if (request.intent.params && request.intent.params.sizeSlot) {
             po.pickSize(request.intent.params.sizeSlot);
+            po.analytics.event('Main Flow', 'Size Selected', {size: request.intent.params.sizeSlot}).send();
             return replyWith('SizeSelectionIntent.SizeValidation', 'options-review', request, po);
           } else {
             return Promise.reject(StateMachineSkill.ERRORS.BAD_RESPONSE);
@@ -476,7 +498,7 @@ module.exports = StateMachine({
                 else {
                   return po.findDeliveryDateOffers(po.possibleDeliveryDate)
                     .then(function(offers) {
-                      if((!offers) || (offers.length === 0)) return replyWith('QueryDate.InvalidDate', 'query-date', request,po);
+                      if((!offers) || (offers.length === 0)) return replyWith('ValidatePossibleDeliveryDate.NotAValidDateForThisAddress', 'query-date', request,po);
                       return replyWith('ValidatePossibleDeliveryDate.NotAValidDate', 'query-date', request,po);
                     });
                 }
@@ -494,6 +516,7 @@ module.exports = StateMachine({
           .then(function(isDeliverable){
             if(isDeliverable) {
               po.acceptPossibleDeliveryDate();
+              po.analytics.event('Main Flow', 'Delivery Date Chosen').send();
               return replyWith(null,'options-review',request,po);
             }
             else {
@@ -523,9 +546,11 @@ module.exports = StateMachine({
           if (request.intent.name == 'AMAZON.YesIntent') {
             return po.prepOrderForPlacement().then(function(isValid){
               if(!isValid) return replyWith('Errors.ErrorAtLaunch','die',request,po);
+              po.analytics.event('Main Flow', 'Order Review Confirmed').send();
               return replyWith('QueryOrderConfirmation.ConfirmOrder','query-buy-confirmation',request,po);
             });
           }else if (request.intent.name == 'AMAZON.NoIntent') {
+            po.analytics.event('Main Flow', 'Order Cancelled on Order Review', {size: request.intent.params.sizeSlot}).send();
             return replyWith('QueryOrderConfirmation.CancelOrder','cancel-order-confirmation',request,po);
           }
         });
@@ -539,10 +564,19 @@ module.exports = StateMachine({
           if (request.intent.name == 'AMAZON.YesIntent') {
             // Once we're good to test `place order` uncommented these 3 lines
             return po.placeOrder().then(function(isValid){
-              if(!isValid) return replyWith('Errors.ErrorAtOrder','die',request,po);
+              if(!isValid) {
+                po.analytics.event('Main Flow', 'Order Failed').send();
+                return replyWith('Errors.ErrorAtOrder','die',request,po);
+              } 
+              po.analytics.event('Main Flow', 'Order Completed').send();
+              var item = po.getSizeDetailsByName();
+              var trans = po.analytics.transaction("Alexa Order", po.order.charges.total, po.order.charges.shippingTotal, po.order.charges.taxes);
+              trans.item(po.order.charges.item, 1, item.sku);
+              trans.send();
               return replyWith('QueryBuyConfirmation.SendToSomeoneElse','clear-and-restart',request,po);
             });
           }else if (request.intent.name == 'AMAZON.NoIntent') {
+            po.analytics.event('Main Flow', 'Order Cancelled on Purchase Confirmation').send();
             return replyWith('QueryBuyConfirmation.CancelOrder','cancel-order-confirmation',request,po);
           }
         });
@@ -607,7 +641,7 @@ module.exports = StateMachine({
     return Promise.try(function () {
       flowers = flowers || Flowers(config.flowers);
       var tokens = oauthhelper.decryptCode(request.user.accessToken);
-      return flowers.buildUser(tokens.systemID, tokens.customerID).then(function (user) {
+      return flowers.buildUser(tokens).then(function (user) {
         self.access = {
           user: user,
           flowers: flowers,
@@ -645,8 +679,8 @@ function renderMessage(msgPath, partialOrder) {
 function SimpleHelpMessage(msgPath, analyticEvent, toState) {
   return {
     enter: function enter(request) {
-      var analytics = universalAnalytics(config.googleAnalytics.trackingCode, request.session.user.userId, { strictCidFormat: false });
-      analytics.event('Help Flow', analyticEvent).send();
+      //var analytics = universalAnalytics(config.googleAnalytics.trackingCode, request.session.user.userId, { strictCidFormat: false });
+      analytics(request).event('Help Flow', analyticEvent).send();
       return replyWith(msgPath, toState || 'die', request, null);
     }
   };
