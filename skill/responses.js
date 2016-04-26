@@ -248,6 +248,11 @@ var responses = function () {
         //For developer ... please ensure the logic of this phrase makes sense with the code you create (dateMinusOne should never bring up a non-available date).
         ask: "This arrangement is not available for delivery on {possibleDeliveryDate}. Would you like to deliver on {deliveryDateOffers}?",
         reprompt: "To select a date just say 'tomorrow,' or 'next Wednesday,' or the month and day, like 'March sixth'."
+      },
+      NotAValidDateForThisAddress: {
+        //For developer ... this message should be read when a recipient's address returns not available for delivery and no other delivery date options are available.
+        ask: "This arrangement is not available for delivery on {possibleDeliveryDate} at {recipient}'s address and I can't find the next available delivery date.",
+        reprompt: "You can start over or try another delivery date. What date would you like to try next?"
       }
     },
 
