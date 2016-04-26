@@ -25,6 +25,8 @@ var gulp = require('gulp')
     , jsSource = src + 'js/'
     , jsDest = dest + 'js/'
     , watchJsFiles = src + 'js/**.js'
+
+    , robotsFile = src + 'robots.txt'
     ;
 
 gulp.task('font', function() {
@@ -60,6 +62,11 @@ gulp.task('js', function() {
   .pipe(gulp.dest(jsDest))
 });
 
+gulp.task('robots', function() {
+  return gulp.src(robotsFile)
+  .pipe(gulp.dest(dest))
+});
+
 gulp.task('minCss', function(){
   return gulp.src(cssBuild)
   .pipe(minifyCss())
@@ -83,7 +90,7 @@ gulp.task('clean',function(){
 })
 
 gulp.task('compile',function(cb){
-  runSequence('clean',['less','img','font', 'js'], cb);
+  runSequence('clean',['less','img','font','js','robots'], cb);
 })
 
 gulp.task('run', function(cb){
@@ -91,5 +98,5 @@ gulp.task('run', function(cb){
 });
 
 gulp.task('default', function (cb) {
-  runSequence('clean',['less','img','font', 'js'],'run', cb);
+  runSequence('clean',['less','img','font','js','robots'],'run', cb);
 });
