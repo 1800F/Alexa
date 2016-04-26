@@ -50,7 +50,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, userVal
     return userrequest('POST', '/authenticateUser', {}, body, "account").then(function(authenticateUser){
       userValues.systemID = authenticateUser.authenticateCustomerResponse.customerData.systemID;
       // Some old users come from a different system, different parameters must be set for those users.
-      if(authenticateUser.authenticateCustomerResponse.customerData.systemID === '18FWEB') {
+      if(authenticateUser.authenticateCustomerResponse.customerData.existingSystem === '18FWEB') {
         userValues.requesterName = '18FWeb';
         userValues.requesterLanguage = '1';
         userValues.adminSystemType = '3001555';
@@ -132,11 +132,11 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, userVal
       "Get18FCustomerByAdminSysKey":{
         "control":{
           "requestId":"1400",
-          "requesterName":requesterName,
-          "requesterLanguage":requesterLanguage,
+          "requesterName":userValues.requesterName,
+          "requesterLanguage":userValues.requesterLanguage,
           "requesterLocale":"en"
         },
-        "AdminSystemType":adminSystemType,
+        "AdminSystemType":userValues.adminSystemType,
         "AdminPartyId":userValues.systemID,
         "InquiryLevel":"2"
       }
@@ -223,7 +223,6 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, userVal
             .then( function(order) {
               return getUserAuthToken()
                 .then(function (token) {
-                  //throw new Error('Not placing orders today');
                   return soapRequest(token, 'submitOrder', order, options)
                     .then(function(order) {
                       return order[0];
