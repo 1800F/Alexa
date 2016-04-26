@@ -49,7 +49,7 @@ var responses = function () {
         ask: "What is the first name of the person you would like to send flowers to?",
         reprompt: "I can see the first names of people in your 1-800-flowers address book. What's the name of the person you want me to buy flowers for?"
       },
-       RecipientSelectionAlt: {
+      RecipientSelectionAlt: {
         ask: "Who are the flowers for?",
         reprompt: "What's the first name of the person you want to send flowers to?"
       },
