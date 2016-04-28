@@ -258,7 +258,7 @@ var responses = function () {
 
     QueryOrderConfirmation: {
       ConfirmOrder: {
-        ask: "Your order total is {price} including taxes or shipping or service charges, to be billed to your {paymentType}. Should I place the order?",
+        ask: "Your order total is {price} including taxes, shipping and service charges, to be billed to your {paymentType}. Should I place the order?",
         reprompt: "Should I place your order for {price}?"
       },
       CancelOrder: {
