@@ -242,6 +242,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, userVal
     .then(function (token) {
       return issue(method, token, path, queryString, body, options, apiType);
     }).then(function (res) {
+      console.log("USERREQ LOG DEBUGGING CC ISSUE: " + JSON.stringify(res));
       if (res.statusCode < 200 || (res.statusCode >= 300 && res.statusCode != 401)) return Promise.reject(res);
       if (res.statusCode == 201 && !res.body) res.body = {};
       if (res.statusCode == 401) {
