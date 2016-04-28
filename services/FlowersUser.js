@@ -240,10 +240,10 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, userVal
     }
     return getUserAuthToken()
     .then(function (token) {
-      console.log("USERREQ LOG DEBUGGING CC ISSUE -- REQUEST BODY: " + JSON.stringify(body));
+      //console.log("USERREQ LOG DEBUGGING CC ISSUE -- REQUEST BODY: " + JSON.stringify(body));
       return issue(method, token, path, queryString, body, options, apiType);
     }).then(function (res) {
-      console.log("USERREQ LOG DEBUGGING CC ISSUE -- RESPONSE: " + JSON.stringify(res));
+      //console.log("USERREQ LOG DEBUGGING CC ISSUE -- RESPONSE: " + JSON.stringify(res));
       if (res.statusCode < 200 || (res.statusCode >= 300 && res.statusCode != 401)) return Promise.reject(res);
       if (res.statusCode == 201 && !res.body) res.body = {};
       if (res.statusCode == 401) {

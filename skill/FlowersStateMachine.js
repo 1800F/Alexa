@@ -193,9 +193,6 @@ module.exports = StateMachine({
               }
               po.analytics.event('Main Flow', 'Review Order').send();
               return replyWith(null,'order-review',request,po);
-            }), function(promiseRejected) {
-              console.log("getContactBook or getPaymentMethod Failed: " + promiseRejected);
-              return replyWith('Errors.NoPaymentMethod', 'die', request, po);
             });
         });
       }
