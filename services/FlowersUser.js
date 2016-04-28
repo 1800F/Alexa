@@ -77,6 +77,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, userVal
         "InquiryLevel":"4"
       }
     };
+    console.log('Get Saved Cards',body);
     return userrequest('POST', '/getSavedCC', {}, body, "account").then(function(body){
       var val = _.at(body,'GetSavedCardsForCustomerResponse.result.response.financialProfile.chargeCard');
       if(!val.length) return null;
