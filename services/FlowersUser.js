@@ -13,6 +13,9 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, userVal
   options.transform = options.transform || _.identity;
   if (_.isString(tokens)) tokens = { access_token: tokens };
   userValues = userValues || {};
+  userValues.requesterName = userValues.requesterName || '18FWeb';
+  userValues.requesterLanguage = userValues.requesterLanguage || '1';
+  userValues.adminSystemType = userValues.adminSystemType || '3001555';
 
   return options.transform({
     get tokens() { return tokens; },
