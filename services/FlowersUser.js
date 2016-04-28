@@ -13,6 +13,9 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, userVal
   options.transform = options.transform || _.identity;
   if (_.isString(tokens)) tokens = { access_token: tokens };
   userValues = userValues || {};
+  userValues.requesterName = userValues.requesterName || 'GFGB';
+  userValues.requesterLanguage = userValues.requesterLanguage || '-1';
+  userValues.adminSystemType = userValues.adminSystemType || '3001666';
 
   return options.transform({
     get tokens() { return tokens; },
@@ -77,6 +80,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, userVal
         "InquiryLevel":"4"
       }
     };
+    console.log('Get Saved Cards',body);
     return userrequest('POST', '/getSavedCC', {}, body, "account").then(function(body){
       var val = _.at(body,'GetSavedCardsForCustomerResponse.result.response.financialProfile.chargeCard');
       if(!val.length) return null;
