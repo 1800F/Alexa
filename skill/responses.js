@@ -59,7 +59,7 @@ var responses = function () {
       },
       SizeList: {
         //Note to developer: prices in this response should be read without saying dollars or cents unless it is a full dollar amount with no cents (e.g. $45.99 should be read forty-five ninety-nine, but $45.00 should be read forty-five dollars.)
-        ask: "We have a Large arrangement for {largePrice}, medium for {mediumPrice}, or small for {smallPrice}. I can give you descriptions if you need them. <break time=\"200ms\"/> Prices do not include taxes or shipping or service charges. <break time=\"500ms\"/> Which size would you like to order?",
+        ask: "We have a Large arrangement for {largePrice}, medium for {mediumPrice}, or small for {smallPrice}. I can give you descriptions if you need them. <break time=\"200ms\"/> Prices do not include tax or shipping or service charges. <break time=\"500ms\"/> Which size would you like to order?",
         reprompt: "Did you want a Large, Medium, or Small arrangement?"
       },
       DateSelection: {
@@ -191,8 +191,8 @@ var responses = function () {
 
     QuerySize: {
       FirstSizeDescription: {
-        ask: "{sizeDescription} Would you like to buy a {sizeName} arrangement for {sizePrice} before taxes or shipping or service charges?",
-        reprompt: "Would you like to buy a {sizeName} arrangement for {sizePrice} before taxes or shipping or service charges?"
+        ask: "{sizeDescription} Would you like to buy a {sizeName} arrangement for {sizePrice} before tax or shipping or service charges?",
+        reprompt: "Would you like to buy a {sizeName} arrangement for {sizePrice} before tax or shipping or service charges?"
       },
       ContinueWithOrder: {
         ask: "Would you like to continue with your order?",
@@ -202,7 +202,7 @@ var responses = function () {
 
     SizeDescriptions: {
       NextSizeDescription: {
-        ask: "{sizeDescription} Would you like a {sizeName} arrangement for {sizePrice} before taxes or shipping or service charges?",
+        ask: "{sizeDescription} Would you like a {sizeName} arrangement for {sizePrice} before tax or shipping or service charges?",
         reprompt: "Would you like to send a {sizeName} arrangement?"
       },
       ContinueWithOrder: {
@@ -258,7 +258,7 @@ var responses = function () {
 
     QueryOrderConfirmation: {
       ConfirmOrder: {
-        ask: "Your order total is {price} including taxes shipping and service charges, to be billed to your {paymentType}. Should I place the order?",
+        ask: "Your order total is {price} including tax and shipping or service charges, to be billed to your {paymentType}. Should I place the order?",
         reprompt: "Should I place your order for {price}?"
       },
       CancelOrder: {
