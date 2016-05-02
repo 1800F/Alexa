@@ -13,6 +13,9 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, userVal
   options.transform = options.transform || _.identity;
   if (_.isString(tokens)) tokens = { access_token: tokens };
   userValues = userValues || {};
+  userValues.requesterName = userValues.requesterName || 'GFGB';
+  userValues.requesterLanguage = userValues.requesterLanguage || '-1';
+  userValues.adminSystemType = userValues.adminSystemType || '3001666';
 
   return options.transform({
     get tokens() { return tokens; },
@@ -77,6 +80,7 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, userVal
         "InquiryLevel":"4"
       }
     };
+    console.log('Get Saved Cards',body);
     return userrequest('POST', '/getSavedCC', {}, body, "account").then(function(body){
       var val = _.at(body,'GetSavedCardsForCustomerResponse.result.response.financialProfile.chargeCard');
       if(!val.length) return null;
@@ -240,8 +244,10 @@ var FlowersUser = module.exports = function FlowersUser(options, tokens, userVal
     }
     return getUserAuthToken()
     .then(function (token) {
+      //console.log("USERREQ LOG DEBUGGING CC ISSUE -- REQUEST BODY: " + JSON.stringify(body));
       return issue(method, token, path, queryString, body, options, apiType);
     }).then(function (res) {
+      //console.log("USERREQ LOG DEBUGGING CC ISSUE -- RESPONSE: " + JSON.stringify(res));
       if (res.statusCode < 200 || (res.statusCode >= 300 && res.statusCode != 401)) return Promise.reject(res);
       if (res.statusCode == 201 && !res.body) res.body = {};
       if (res.statusCode == 401) {
