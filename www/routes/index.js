@@ -160,7 +160,7 @@ router.post('/create', function (req, res, next) {
               isAndroid: isAndroid(req),
               redirectUrl: oauthhelper.redirectTo(req.body.state, authCode),
               nextSteps: lang.enumerate(_.compact([
-                'contacts'
+                'a credit card'
                 , 'a billing address'
                 , 'contacts'
               ])),

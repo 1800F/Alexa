@@ -360,7 +360,7 @@ var Purchase = module.exports= function Purchase(options,tokens) {
                   "ord:crossBrandOrderInfo": "",
                   "ord:personalizationInformation": "",
                   "ord:shippingMethod": "",
-                  "ord:cardMessage": "",
+                  "ord:cardMessage": "From: " + user.firstName + " " + user.lastName,
                   "ord:ocassionCode": "8",
                   "ord:holidayCode": "",
                   "ord:itemDiscountAmount": "0.00",
