@@ -17,7 +17,7 @@ var _ = require('lodash')
 exports.choices = [
   {
     'name': 'Mother\'s Day'
-    , 'sku': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? '90950' : '146638')
+    , 'sku': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? '90950' : '159123')
     , 'description': "The Mother's Day arrangement features light pink roses, pink Oriental, Hybrid, and Peruvian lilies, carnations, white snapdragons, pink stock, and salal tips. It is artistically designed in an eight-inch-tall, pink, vintage-inspired glass vase."
     , 'sizes': [
       {
@@ -39,29 +39,29 @@ exports.choices = [
   }
   , {
     'name': 'Birthday'
-    , 'sku': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? '90950' : '91576')
+    , 'sku': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? '90950' : '159120')
     , 'description': "The \"birthday arrangement\" features hot-pink roses, purple carnations, hot-pink mini carnations, yellow daisy poms, purple alstroemeria, athos poms, solidago and salal, all gathered in a stylish, 8-inch glass vase tied with colorful ribbon. It comes with an 18-inch Mylar birthday balloon."
     , 'sizes': [
       {
         'name': 'small'
-        , 'suffix': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? 'S' : 'SHB')
+        , 'suffix': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? 'S' : 'S')
         , 'description': "The small 11-stem \"birthday arrangement\" is about 14 inches high, including the stylish eight inch glass vase. It's about 10 inches in diameter."
       }
       , {
         'name': 'medium'
-        , 'suffix': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? 'M' : 'MHB')
+        , 'suffix': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? 'M' : 'M')
         , 'description': "The 15-stem medium \"birthday arrangement\" is about 15 inches high, including the stylish, eight-inch vase, and it's about 11.5 inches in diameter."
       }
       , {
         'name': 'large'
-        , 'suffix': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? 'L' : 'LHB')
+        , 'suffix': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? 'L' : 'L')
         , 'description': "The large \"birthday arrangement\" has 18 stems and is about 16 inches high, including the stylish, eight-inch vase. It's roughly 13 inches in diameter."
       }
     ]
   }
   , {
     'name': 'Love and Romance'
-    , 'sku': '90950'
+    , 'sku': '159122'
     , 'description': "The \"love and romance\" bouquet has gorgeous red and pink roses, lilies, <phoneme alphabet=\"ipa\" ph=\"ˈgɝ.bɝ.əˌ\">Gerbera</phoneme> daisies and alstroemeria, in an eight-inch glass vase tied with <phoneme alphabet=\"ipa\" ph=\"ˈsa.tinˌ\">satin</phoneme> ribbon."
     , 'sizes': [
       {
@@ -83,7 +83,7 @@ exports.choices = [
   }
   , {
     'name': 'Thank You'
-    , 'sku': '100299'
+    , 'sku': '159121'
     , 'description': "The colorful \"Thank you\" bouquet is the next best thing to a friendly hug! It is crafted by our expert florists from the hot-pink roses, Asiatic lilies, medium sunflowers, lavender stock, orange alstroemeria and athos poms in a classic cylinder vase."
     , 'sizes': [
       {
