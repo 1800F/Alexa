@@ -9,10 +9,10 @@
         "medium": "/img/loveM.jpg",
         "large": "/img/loveL.jpg"
     },
-    "mother's day": {
-        "small": "/img/mothersdayS.jpg",
-        "medium": "/img/mothersdayM.jpg",
-        "large": "/img/mothersdayL.jpg"
+    "roses": {
+        "small": "/img/rosesS.jpg",
+        "medium": "/img/rosesM.jpg",
+        "large": "/img/rosesL.jpg"
     },
     "birthday": {
         "small": "/img/birthdayS.jpg",
