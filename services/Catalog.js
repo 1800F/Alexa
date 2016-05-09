@@ -22,17 +22,17 @@ exports.choices = [
     , 'sizes': [
       {
         'name': 'small'
-        , 'sku': '1120RD'
+        , 'sku': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? '90950S' : '1120RD')
         , 'description': "The small, 12-stem arrangement measures approximately 22 inches high, by 15 inches in diameter."
       }
       , {
         'name': 'medium'
-        , 'sku': '103449'
+        , 'sku': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? '90950M' : '103449')
         , 'description': "The medium \"rose arrangement\" consists of 12 stems and is about 22 inches high and 15 inches in diameter. It also comes with an 8-ounce box of delicious assorted chocolates. The chocolate assortment may vary due to local availability."
       }
       , {
         'name': 'large'
-        , 'sku': '1121RD'
+        , 'sku': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? '90950L' : '1121RD')
         , 'description': "The 18-stem, large rose arrangement stands about 22 inches high and is 18 inches in diameter."
       }
     ]
