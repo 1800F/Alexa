@@ -54,8 +54,8 @@ var responses = function () {
         reprompt: "What's the first name of the person you want to send flowers to?"
       },
       ArrangementList: {
-        ask: "I have four types of arrangements available: Mothers Day, Birthday, \"Love and Romance\", and, Thank you. I can give you descriptions if you need them. <break time=\"200ms\"/>  Which arrangement would you like?",
-        reprompt: "Did you want an arrangement for someone's birthday, <break time=\"350ms\"/>Mothers Day,<break time=\"350ms\"/> \"Love and Romance\", <break time=\"350ms\"/>or, to say<break time=\"10ms\"/>Thank you?"
+        ask: "I have four types of arrangements available: Roses, Birthday, \"Love and Romance\", and, Thank you. I can give you descriptions if you need them. <break time=\"200ms\"/>  Which arrangement would you like?",
+        reprompt: "Did you want to send someone some roses, or perhaps, a birthday arrangement, <break time=\"350ms\"/> a \"Love and Romance\" arrangement <break time=\"350ms\"/>or, an arrangement to say<break time=\"10ms\"/>Thank you? Which would you like?"
       },
       SizeList: {
         //Note to developer: prices in this response should be read without saying dollars or cents unless it is a full dollar amount with no cents (e.g. $45.99 should be read forty-five ninety-nine, but $45.00 should be read forty-five dollars.)
@@ -157,7 +157,7 @@ var responses = function () {
         reprompt: "Would you like to send a {arrangementName} arrangement?"
       },
       ArrangementListAgain: {
-        say: "{okay}, I have arrangements for Mother's Day, Birthday, Love and Romance, and 'Thank you'.",
+        say: "{okay}, I have rose arrangements as well as arrangements for Love and Romance, Birthday, and 'Thank you'.",
         reprompt: ""
       },
       MoreArrangmentsOnline: {
@@ -313,7 +313,7 @@ var responses = function () {
           + "You can send flowers to your contacts in your 1 800 Flowers account. "
           + "Just say their name to send them flowers.   <break time=\"1s\"/>\n "
           + "You can add contacts and update addresses on 1 800 Flowers.com.   <break time=\"1s\"/>\n "
-          + "You can select the type of arrangement like; Mother's Day, Birthday, Thank You, or Love and Romance. "
+          + "You can select the type of arrangement like; Roses, Birthday, Thank You, or Love and Romance. "
           + "You can also choose between small, medium, and large arrangement sizes.    <break time=\"1s\"/>\n "
           + "Lastly, tell me what day you would like the flowers delivered and I will make sure they get there.",
       },
