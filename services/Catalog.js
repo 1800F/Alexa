@@ -16,24 +16,24 @@ var _ = require('lodash')
 
 exports.choices = [
   {
-    'name': 'Mother\'s Day'
-    , 'sku': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? '90950' : '159123')
-    , 'description': "The Mother's Day arrangement features light pink roses, pink Oriental, Hybrid, and Peruvian lilies, carnations, white snapdragons, pink stock, and salal tips. It is artistically designed in an eight-inch-tall, pink, vintage-inspired glass vase."
+    'name': 'Roses'
+    , 'sku': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? '90950' : '1120RD')
+    , 'description': "This is a stunning arrangement of premium long-stem red roses, handcrafted by our expert florists with fresh gypsophila, in an 11-inch classic glass vase. Because this arrangement is crafted by local florists, the colors, varieties, and container may vary due to local availability."
     , 'sizes': [
       {
         'name': 'small'
-        , 'suffix': 'S'
-        , 'description': "The small, 13-stem Mother's Day arrangement is about 17 inches high, including the eight-inch pink vase. And it's about 14 inches in diameter."
+        , 'sku': '1120RD'
+        , 'description': "The small, 12-stem arrangement measures approximately 22 inches high, by 15 inches in diameter."
       }
       , {
         'name': 'medium'
-        , 'suffix': 'M'
-        , 'description': "The medium Mother's Day arrangement stands about 18 inches high, including the eight-inch pink vase. And it's about 16 inches in diameter."
+        , 'sku': '103449'
+        , 'description': "The medium \"rose arrangement\" consists of 12 stems and is about 22 inches high and 15 inches in diameter. It also comes with an 8-ounce box of delicious assorted chocolates. The chocolate assortment may vary due to local availability."
       }
       , {
         'name': 'large'
-        , 'suffix': 'L'
-        , 'description': "The 20-stem large Mother's Day arrangement stands about 19 inches high, including the eight-inch pink vase. It's roughly 18 inches in diameter."
+        , 'sku': '1121RD'
+        , 'description': "The 18-stem, large rose arrangement stands about 22 inches high and is 18 inches in diameter."
       }
     ]
   }
