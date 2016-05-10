@@ -17,7 +17,7 @@ var _ = require('lodash')
 exports.choices = [
   {
     'name': 'Roses'
-    , 'sku': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? '90950' : '1120RD')
+    , 'sku': (config.flowers.endpoint === "https://ecommerce.800-flowers.net/alexa/uat" ? '90950' : '1120')
     , 'description': "This is a stunning arrangement of premium long-stem red roses, handcrafted by our expert florists with fresh gypsophila, in an 11-inch classic glass vase. Because this arrangement is crafted by local florists, the colors, varieties, and container may vary due to local availability."
     , 'sizes': [
       {
