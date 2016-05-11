@@ -393,7 +393,7 @@ PartialOrder.prototype.prepOrderForPlacement = function(){
     charges.total = charges.item + charges.shippingTotal;
   })
   .then(function(){
-    return purchase.getTaxes(item.sku, self.order.address.postalCode, item.price, self.order.charges.shippingTotal);
+    return purchase.getTaxes(item.sku, self.order.address.postalCode, item.price, self.order.charges.shippingTotal.toString());
   }).then(function(txs){
     self.order.charges.taxes = +txs;
     self.order.charges.total +=  +txs;
