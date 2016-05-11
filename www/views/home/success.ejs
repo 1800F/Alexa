@@ -14,8 +14,7 @@
           <a href="<%- redirectUrl %>" class="btn green">Link</a>
         </div>
         <% } else { %>
-        <p>Your account has been successfully linked to the 1-800-Flowers Alexa Skill</p>
-        <p>Tap the "X" to return to the Alexa companion app.
+        <p>Your account has been successfully linked to the 1-800-Flowers Alexa Skill.</p>
         <% } %>
       </div>
       <div class="screen-head screen-footer">
@@ -26,7 +25,7 @@
     <%if (!isAndroid) { %>
     <iframe src="<%- redirectUrl %>"></iframe>
     <% } %>
-    
+
   </section>
   <div class="legal-container">
     <p><a href="<%= url('/terms-of-use')%>">Terms of Use</a><a href="<%= url('/privacy-policy')%>">Privacy Policy</a></p>
