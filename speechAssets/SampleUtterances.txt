@@ -640,7 +640,7 @@ ArrangementSelectionIntent {arrangementSlot} {bouquet}
 ArrangementSelectionIntent {arrangementSlot} {bouquet} please
 ArrangementSelectionIntent {arrangementSlot} please
 ArrangementSelectionIntent A {arrangementSlot}
-ArrangementSelectionIntent A {arrangementSlot} 
+ArrangementSelectionIntent A {arrangementSlot}
 ArrangementSelectionIntent A {arrangementSlot} {bouquet}
 ArrangementSelectionIntent A {arrangementSlot} {bouquet}
 ArrangementSelectionIntent A {arrangementSlot} {bouquet} please
@@ -726,7 +726,7 @@ ArrangementSelectionIntent No {arrangementSlot} {bouquet}
 ArrangementSelectionIntent No {arrangementSlot} {bouquet} please
 ArrangementSelectionIntent No {arrangementSlot} please
 ArrangementSelectionIntent No A {arrangementSlot}
-ArrangementSelectionIntent No A {arrangementSlot} 
+ArrangementSelectionIntent No A {arrangementSlot}
 ArrangementSelectionIntent No A {arrangementSlot} {bouquet}
 ArrangementSelectionIntent No A {arrangementSlot} {bouquet}
 ArrangementSelectionIntent No A {arrangementSlot} {bouquet} please
@@ -908,6 +908,8 @@ LaunchIntent {action} {recipientSlot} on {deliveryDateSlot}
 LaunchIntent {action} {recipientSlot} some  {bouquet}
 LaunchIntent {action} {recipientSlot} some  {bouquet} for {deliveryDateSlot}
 LaunchIntent {action} {recipientSlot} some flowers
+LaunchIntent {action} {recipientSlot} {bouquet} on {deliveryDateSlot}
+LaunchIntent {action} {recipientSlot} {bouquet} for {arrangementSlot}
 LaunchIntent {action} {sizeSlot} {arrangementSlot} {bouquet}
 LaunchIntent {action} {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot}
 LaunchIntent {action} {sizeSlot} {arrangementSlot} {bouquet} for {recipientSlot} on {deliveryDateSlot}
@@ -923,6 +925,16 @@ LaunchIntent {action} {sizeSlot} {bouquet} to {recipientSlot}
 LaunchIntent {action} {sizeSlot} {bouquet} to {recipientSlot} on {deliveryDateSlot}
 LaunchIntent {action} flowers to {recipientSlot}
 LaunchIntent {action} flowers to {recipientSlot} on {deliveryDateSlot}
+LaunchIntent {action} {arrangementSlot} {bouquet} for {recipientSlot}
+LaunchIntent {action} {arrangementSlot} {bouquet} to {recipientSlot}
+LaunchIntent {action} {arrangementSlot} for {recipientSlot}
+LaunchIntent {action} {arrangementSlot} for {recipientSlot} on {deliveryDateSlot}
+LaunchIntent {action} {arrangementSlot} on {deliveryDateSlot} for {recipientSlot}
+LaunchIntent {action} {arrangementSlot} on {deliveryDateSlot}
+LaunchIntent {action} {sizeSlot} {bouquet} of {arrangementSlot}
+LaunchIntent {action} {sizeSlot} {bouquet} of {arrangementSlot} on {deliveryDateSlot}
+LaunchIntent {action} {sizeSlot} {bouquet} of {arrangementSlot} for {recipientSlot}
+LaunchIntent {action} {sizeSlot} {bouquet} of {arrangementSlot} for {recipientSlot} on {deliveryDateSlot}
 LaunchIntent {bouquet}
 
 RecipientSelectionIntent {recipientSlot}
