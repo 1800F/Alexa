@@ -13,6 +13,11 @@ if (config.server.hostSkill) {
       succeed: function succeed(msg) {
         //if(config.verbose) console.log('Skill yields',JSON.stringify(msg,null,2));
         res.json(msg);
+      },
+      done: function done(err, msg) {
+        if (err) return next(err);
+
+        res.json(msg);
       }
     });
   });

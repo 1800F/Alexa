@@ -40,5 +40,11 @@
   "googleAnalytics": {
     "trackingCode": "UA-76855461-2"
   },
+  "sentry": {
+    "DSN": "https://f0d43191de704660b9db5b3990cd4d15:f9c71486bf384517bdadd076876d3b32@sentry.rain.agency/18",
+    "captureErrors": true,
+    "captureTimeoutWarnings": true,
+    "captureMemoryWarnings": true
+  },
   "verbose": true
 }

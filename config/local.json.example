@@ -40,5 +40,11 @@
   "googleAnalytics": {
     "trackingCode": "[CHANGE-THIS]"
   },
+  "sentry": {
+    "DSN": "",
+    "captureErrors": false,
+    "captureTimeoutWarnings": false,
+    "captureMemoryWarnings": false
+  },
   "verbose": true
 }
